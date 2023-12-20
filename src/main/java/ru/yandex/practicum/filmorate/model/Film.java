@@ -11,6 +11,7 @@ public class Film {
 	private int id;
 
 	@NotEmpty(message = "Name cannot be empty")
+	@NotBlank(message = "Name cannot be blank")
 	private String name;
 
 	@Size(max = 200, message = "Description size cannot be more than 200 symbols")

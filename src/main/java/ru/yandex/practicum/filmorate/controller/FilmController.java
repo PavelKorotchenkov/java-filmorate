@@ -34,7 +34,7 @@ public class FilmController {
 	}
 
 	@PutMapping
-	public Film updateFilm(@Valid @RequestBody Film film) {
+	public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
 		if (films.containsKey(film.getId())) {
 			films.put(film.getId(), film);
 			log.info("Updated Film with id {}", film.getId());
@@ -43,6 +43,6 @@ public class FilmController {
 			throw new ValidationException("No film in DB with id " + film.getId());
 		}
 
-		return film;
+		return ResponseEntity.status(HttpStatus.OK).body(film);
 	}
 }

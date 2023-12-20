@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 import javax.validation.Valid;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -25,18 +27,21 @@ public class UserController {
 	}
 
 	@PostMapping
-	public User addUser(@Valid @RequestBody User user) {
+	public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+		if (user.getLogin().contains(" ")) {
+			throw new ValidationException("Login cannot contain spaces");
+		}
 		if (user.getName() == null || user.getName().isBlank()) {
 			user.setName(user.getLogin());
 		}
 		user.setId(++userId);
 		users.put(user.getId(), user);
 		log.info("Added User with id {}", user.getId());
-		return user;
+		return ResponseEntity.status(HttpStatus.CREATED).body(user);
 	}
 
 	@PutMapping
-	public User updateUser(@Valid @RequestBody User user) {
+	public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
 		if (users.containsKey(user.getId())) {
 			users.put(user.getId(), user);
 			log.info("Updated User with id {}", user.getId());
@@ -50,6 +55,7 @@ public class UserController {
 		}
 
 		users.put(user.getId(), user);
-		return user;
+		return ResponseEntity.status(HttpStatus.OK).body(user);
+
 	}
 }

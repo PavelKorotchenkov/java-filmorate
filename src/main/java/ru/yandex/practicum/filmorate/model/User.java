@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import javax.validation.constraints.*;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.validator.NoSpaces;
 
 import java.time.LocalDate;
 
@@ -14,6 +15,7 @@ public class User {
 	private String email;
 
 	@NotEmpty(message = "Login cannot be empty")
+	@NoSpaces
 	private String login;
 
 	private String name;
