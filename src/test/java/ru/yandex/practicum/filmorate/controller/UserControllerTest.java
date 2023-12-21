@@ -40,7 +40,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void givenValidUser_whenPost_thenOk() throws Exception {
+	void whenPostValidUserThenOk() throws Exception {
 		String userJson = objectMapper.writeValueAsString(user);
 
 		ResultActions result = mockMvc.perform(post("/users")
@@ -51,7 +51,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void givenUserWithBlankName_whenPost_thenOk() throws Exception {
+	void whenPostUserWithBlankNameThenOk() throws Exception {
 		user.setName("");
 		String userJson = objectMapper.writeValueAsString(user);
 
@@ -62,7 +62,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void givenUserWithBlankEmail_whenPost_thenBadRequest() throws Exception {
+	void whenPostUserWithBlankEmailThenBadRequest() throws Exception {
 		user.setEmail("");
 		String filmJson = objectMapper.writeValueAsString(user);
 
@@ -74,7 +74,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void givenUserWithInvalidEmail_whenPost_thenBadRequest() throws Exception {
+	void whenPostUserWithInvalidEmailThenBadRequest() throws Exception {
 		user.setEmail("email");
 		String filmJson = objectMapper.writeValueAsString(user);
 
@@ -86,7 +86,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void givenUserWithBlankLogin_whenPost_thenBadRequest() throws Exception {
+	void whenPostUserWithBlankLoginThenBadRequest() throws Exception {
 		user.setLogin("");
 		String filmJson = objectMapper.writeValueAsString(user);
 
@@ -98,7 +98,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void givenUserWithInvalidLogin_whenPost_thenBadRequest() throws Exception {
+	void whenPostUserWithInvalidLoginThenBadRequest() throws Exception {
 		user.setLogin("log in");
 		String filmJson = objectMapper.writeValueAsString(user);
 
@@ -110,7 +110,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void givenFilmWithInvalidReleaseDate_whenPost_thenBadRequest() throws Exception {
+	void whenPostUserWithInvalidBirthdayDateThenBadRequest() throws Exception {
 		user.setBirthday(LocalDate.of(2095, 12,27));
 		String filmJson = objectMapper.writeValueAsString(user);
 
@@ -120,6 +120,4 @@ class UserControllerTest {
 
 		result.andExpect(status().isBadRequest());
 	}
-
-
 }

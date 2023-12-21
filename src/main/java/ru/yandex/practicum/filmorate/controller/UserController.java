@@ -28,11 +28,8 @@ public class UserController {
 
 	@PostMapping
 	public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
-		if (user.getLogin().contains(" ")) {
-			throw new ValidationException("Login cannot contain spaces");
-		}
-		if (user.getName() == null || user.getName().isBlank()) {
-			user.setName(user.getLogin());
+		if (shouldSetSameNameAsLogin(user)) {
+
 		}
 		user.setId(++userId);
 		users.put(user.getId(), user);
@@ -50,12 +47,15 @@ public class UserController {
 			throw new ValidationException("No user in DB with id " + user.getId());
 		}
 
-		if (user.getName() == null || user.getName().isBlank()) {
+		if (shouldSetSameNameAsLogin(user)) {
 			user.setName(user.getLogin());
 		}
 
 		users.put(user.getId(), user);
 		return ResponseEntity.status(HttpStatus.OK).body(user);
+	}
 
+	private boolean shouldSetSameNameAsLogin(User user) {
+		return user.getName() == null || user.getName().isBlank();
 	}
 }

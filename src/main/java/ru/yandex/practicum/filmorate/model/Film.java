@@ -10,7 +10,6 @@ import java.time.LocalDate;
 public class Film {
 	private int id;
 
-	@NotEmpty(message = "Name cannot be empty")
 	@NotBlank(message = "Name cannot be blank")
 	private String name;
 

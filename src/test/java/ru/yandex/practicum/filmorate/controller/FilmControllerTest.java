@@ -46,7 +46,7 @@ class FilmControllerTest {
 	}
 
 	@Test
-	void givenValidFilm_whenPost_thenOk() throws Exception {
+	void whenPostValidFilmThenOk() throws Exception {
 		String filmJson = objectMapper.writeValueAsString(film);
 
 		ResultActions result = mockMvc.perform(post("/films")
@@ -57,7 +57,7 @@ class FilmControllerTest {
 	}
 
 	@Test
-	void givenFilmWithEmptyName_whenPost_thenBadRequest() throws Exception {
+	void whenPostFilmWithEmptyNameThenBadRequest() throws Exception {
 		film.setName("");
 		String filmJson = objectMapper.writeValueAsString(film);
 
@@ -69,7 +69,7 @@ class FilmControllerTest {
 	}
 
 	@Test
-	void givenFilmWithBlankName_whenPost_thenBadRequest() throws Exception {
+	void whenPostFilmWithBlankNameThenBadRequest() throws Exception {
 		film.setName(" ");
 		String filmJson = objectMapper.writeValueAsString(film);
 
@@ -81,7 +81,7 @@ class FilmControllerTest {
 	}
 
 	@Test
-	void givenFilmWithLongDesc_whenPost_thenBadRequest() throws Exception {
+	void whenPostFilmWithLongDescThenBadRequest() throws Exception {
 		film.setDescription(longDescription);
 		String filmJson = objectMapper.writeValueAsString(film);
 
@@ -93,7 +93,7 @@ class FilmControllerTest {
 	}
 
 	@Test
-	void givenFilmWithInvalidReleaseDate_whenPost_thenBadRequest() throws Exception {
+	void whenPostFilmWithInvalidReleaseDateThenBadRequest() throws Exception {
 		film.setReleaseDate(LocalDate.of(1895, 12,27));
 		String filmJson = objectMapper.writeValueAsString(film);
 
@@ -105,7 +105,7 @@ class FilmControllerTest {
 	}
 
 	@Test
-	void givenFilmWithInvalidDurationZero_whenPost_thenBadRequest() throws Exception {
+	void whenPostFilmWithDurationZeroThenBadRequest() throws Exception {
 		film.setDuration(0);
 		String filmJson = objectMapper.writeValueAsString(film);
 
@@ -117,7 +117,7 @@ class FilmControllerTest {
 	}
 
 	@Test
-	void givenFilmWithInvalidDurationMinus_whenPost_thenBadRequest() throws Exception {
+	void whenPostFilmWithNegativeDurationThenBadRequest() throws Exception {
 		film.setDuration(-1);
 		String filmJson = objectMapper.writeValueAsString(film);
 

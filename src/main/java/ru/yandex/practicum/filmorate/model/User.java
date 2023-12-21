@@ -11,11 +11,11 @@ public class User {
 	private int id;
 
 	@Email(message = "Should have Email format")
-	@NotEmpty(message = "Name cannot be empty")
+	@NotBlank(message = "Name cannot be empty")
 	private String email;
 
-	@NotEmpty(message = "Login cannot be empty")
 	@NoSpaces
+	@NotBlank(message = "Login cannot be empty")
 	private String login;
 
 	private String name;
