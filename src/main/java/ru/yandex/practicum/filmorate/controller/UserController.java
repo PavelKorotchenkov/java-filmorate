@@ -29,7 +29,7 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
 		if (shouldSetSameNameAsLogin(user)) {
-
+			user.setName(user.getLogin());
 		}
 		user.setId(++userId);
 		users.put(user.getId(), user);
