@@ -40,6 +40,7 @@ public class FilmController {
 			log.info("Updated Film with id {}", film.getId());
 		} else {
 			log.debug("No film in DB with id {}", film.getId());
+			//return ResponseEntity.status(HttpStatus.NOT_FOUND).body(film);
 			throw new ValidationException("No film in DB with id " + film.getId());
 		}
 
