@@ -42,7 +42,6 @@ class FilmControllerTest {
 		film.setDescription("Description");
 		film.setReleaseDate(LocalDate.of(2000, 10, 25));
 		film.setDuration(7200000);
-
 	}
 
 	@Test
