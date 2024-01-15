@@ -39,7 +39,7 @@ public class UserService {
 		User user = userStorage.findUser(userId);
 		User friend = userStorage.findUser(friendId);
 		if (user != null && friend != null) {
-			user.addToFriendList(friend) ;
+			user.addToFriendList(friend);
 			friend.addToFriendList(user);
 		}
 	}
