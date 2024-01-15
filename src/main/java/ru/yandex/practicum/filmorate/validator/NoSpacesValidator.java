@@ -7,7 +7,6 @@ public class NoSpacesValidator implements ConstraintValidator<NoSpaces, String> 
 
 	@Override
 	public void initialize(NoSpaces constraintAnnotation) {
-
 	}
 
 	@Override

@@ -5,10 +5,12 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.LocalDateNotBefore;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Data
 public class Film {
-	private int id;
+	private Long id;
 
 	@NotBlank(message = "Name cannot be blank")
 	private String name;
@@ -24,4 +26,13 @@ public class Film {
 	@NotNull(message = "Film duration cannot be empty")
 	private long duration;
 
+	private Set<Long> likedUsers = new LinkedHashSet<>();
+
+	public void addToLikedUsers(Long userId) {
+		likedUsers.add(userId);
+	}
+
+	public void deleteFromLikedUsers(Long userId) {
+		likedUsers.remove(userId);
+	}
 }
