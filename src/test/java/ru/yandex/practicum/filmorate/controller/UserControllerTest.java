@@ -1,16 +1,15 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.time.LocalDate;
 
@@ -19,20 +18,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc
+@RequiredArgsConstructor
 class UserControllerTest {
-	@Autowired
 	private MockMvc mockMvc;
-
-	@Autowired
 	private ObjectMapper objectMapper;
-
 	private UserController controller;
 
 	private User user;
 
 	@BeforeEach
 	void setUp() {
-		controller = new UserController(new UserService());
 		user = new User();
 		user.setEmail("email@dat.ru");
 		user.setLogin("Login");

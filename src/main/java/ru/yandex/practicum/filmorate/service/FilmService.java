@@ -15,10 +15,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FilmService {
-	@Autowired
-	FilmStorage filmStorage;
-	@Autowired
-	UserStorage userStorage;
+	private final FilmStorage filmStorage;
+	private final UserStorage userStorage;
 
 	public Film addFilm(Film film) {
 		return filmStorage.add(film);
