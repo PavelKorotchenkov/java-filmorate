@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 
@@ -113,7 +112,7 @@ class UserControllerTest {
 
 	@Test
 	void whenPostUserWithInvalidBirthdayDateThenBadRequest() throws Exception {
-		user.setBirthday(LocalDate.of(2095, 12,27));
+		user.setBirthday(LocalDate.of(2095, 12, 27));
 		String filmJson = objectMapper.writeValueAsString(user);
 
 		ResultActions result = mockMvc.perform(post("/users")
