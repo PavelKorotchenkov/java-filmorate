@@ -1,61 +1,71 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import javax.validation.Valid;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
+import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-	private final Map<Integer, User> users = new HashMap<>();
-	private int userId;
+	private final UserService userService;
 
-	@GetMapping
+	@Autowired
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
+
+	@GetMapping()
 	public Collection<User> getUsers() {
-		return List.copyOf(users.values());
+		return userService.getAllUsers();
+	}
+
+	@GetMapping("/{userId}")
+	public User getUserById(@PathVariable Long userId) {
+		return userService.getUserById(userId);
+	}
+
+	@GetMapping("{userId}/friends")
+	public Set<User> getUserFriends(@PathVariable Long userId) {
+		return userService.getUserById(userId).getFriendList();
+	}
+
+	@GetMapping("{userId}/friends/common/{friendId}")
+	public Set<User> getUserFriends(@PathVariable Long userId, @PathVariable Long friendId) {
+		return userService.showMutualFriends(userId, friendId);
 	}
 
 	@PostMapping
 	public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
-		if (shouldSetSameNameAsLogin(user)) {
-			user.setName(user.getLogin());
-		}
-		user.setId(++userId);
-		users.put(user.getId(), user);
-		log.info("Added User with id {}", user.getId());
+		userService.addUser(user);
 		return ResponseEntity.status(HttpStatus.CREATED).body(user);
 	}
 
 	@PutMapping
 	public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
-		if (users.containsKey(user.getId())) {
-			users.put(user.getId(), user);
-			log.info("Updated User with id {}", user.getId());
-		} else {
-			log.debug("No user in DB with id {}", user.getId());
-			throw new ValidationException("No user in DB with id " + user.getId());
-		}
-
-		if (shouldSetSameNameAsLogin(user)) {
-			user.setName(user.getLogin());
-		}
-
-		users.put(user.getId(), user);
+		userService.updateUser(user);
 		return ResponseEntity.status(HttpStatus.OK).body(user);
 	}
 
-	private boolean shouldSetSameNameAsLogin(User user) {
-		return user.getName() == null || user.getName().isBlank();
+	@PutMapping("{userId}/friends/{friendId}")
+	public ResponseEntity<User> addFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+		userService.addFriend(friendId, userId);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
+
+	@DeleteMapping("{userId}/friends/{friendId}")
+	public ResponseEntity<User> deleteFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+		userService.deleteFriend(friendId, userId);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+
 }
