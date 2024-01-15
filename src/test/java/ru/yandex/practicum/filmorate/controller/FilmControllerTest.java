@@ -11,8 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 
@@ -96,7 +94,7 @@ class FilmControllerTest {
 
 	@Test
 	void whenPostFilmWithInvalidReleaseDateThenBadRequest() throws Exception {
-		film.setReleaseDate(LocalDate.of(1895, 12,27));
+		film.setReleaseDate(LocalDate.of(1895, 12, 27));
 		String filmJson = objectMapper.writeValueAsString(film);
 
 		ResultActions result = mockMvc.perform(post("/films")
