@@ -19,7 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(FilmController.class)
 @AutoConfigureMockMvc
-@RequiredArgsConstructor
 class FilmControllerTest {
 	@Autowired
 	private MockMvc mockMvc;

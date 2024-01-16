@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,11 +47,11 @@ public class FilmService {
 		user.deleteFromLikedFilms(filmId);
 	}
 
-	public Set<Film> showMostLikedFilms(int topFilmsSize) {
+	public List<Film> showMostLikedFilms(int topFilmsSize) {
 		return filmStorage.getAllFilms().stream()
 				.sorted(this::compareByLikes)
 				.limit(topFilmsSize)
-				.collect(Collectors.toSet());
+				.collect(Collectors.toList());
 	}
 
 	private int compareByLikes(Film f0, Film f1) {
