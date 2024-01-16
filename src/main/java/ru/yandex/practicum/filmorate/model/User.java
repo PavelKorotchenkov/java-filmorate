@@ -11,8 +11,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(exclude = {"friendList", "likedFilms"})
@@ -35,9 +35,9 @@ public class User {
 
 	@JsonBackReference
 	@ToString.Exclude
-	private Set<User> friendList = new LinkedHashSet<>();
+	private List<User> friendList = new ArrayList<>();
 	@ToString.Exclude
-	private Set<Long> likedFilms = new LinkedHashSet<>();
+	private List<Long> likedFilms = new ArrayList<>();
 
 	public void addToLikedFilms(Long filmId) {
 		likedFilms.add(filmId);

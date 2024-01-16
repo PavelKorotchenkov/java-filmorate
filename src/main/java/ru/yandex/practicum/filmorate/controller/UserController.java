@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -34,12 +35,12 @@ public class UserController {
 	}
 
 	@GetMapping("{userId}/friends")
-	public Set<User> getUserFriends(@PathVariable Long userId) {
+	public List<User> getUserFriends(@PathVariable Long userId) {
 		return userService.getUserById(userId).getFriendList();
 	}
 
 	@GetMapping("{userId}/friends/common/{friendId}")
-	public Set<User> getUserFriends(@PathVariable Long userId, @PathVariable Long friendId) {
+	public List<User> getMutualUserFriends(@PathVariable Long userId, @PathVariable Long friendId) {
 		return userService.showMutualFriends(userId, friendId);
 	}
 

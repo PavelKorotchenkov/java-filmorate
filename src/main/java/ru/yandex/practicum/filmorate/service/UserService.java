@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -51,8 +49,8 @@ public class UserService {
 		}
 	}
 
-	public Set<User> showMutualFriends(Long userId, Long friendId) {
-		Set<User> result = new HashSet<>();
+	public List<User> showMutualFriends(Long userId, Long friendId) {
+		List<User> result = new ArrayList<>();
 		User user = userStorage.findUser(userId);
 		User friend = userStorage.findUser(friendId);
 		if (user != null && friend != null) {

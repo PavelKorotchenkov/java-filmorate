@@ -5,14 +5,17 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
-	private final Map<Long, User> users = new HashMap<>();
+	private final Map<Long, User> users;
 	private Long userId = 0L;
+
+	public InMemoryUserStorage(Map<Long, User> users) {
+		this.users = users;
+	}
 
 	@Override
 	public User findUser(Long userId) {
