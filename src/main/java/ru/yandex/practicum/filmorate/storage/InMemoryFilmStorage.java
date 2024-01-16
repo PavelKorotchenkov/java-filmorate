@@ -15,7 +15,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 	private Long filmID = 0L;
 
 	@Autowired
-	public InMemoryFilmStorage(Map<Long, Film> map){
+	public InMemoryFilmStorage(Map<Long, Film> map) {
 		this.films = map;
 	}
 
