@@ -21,17 +21,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
-
 	@Autowired
 	private ObjectMapper objectMapper;
-
+	@Autowired
 	private UserController controller;
 
 	private User user;
 
 	@BeforeEach
 	void setUp() {
-		controller = new UserController();
 		user = new User();
 		user.setEmail("email@dat.ru");
 		user.setLogin("Login");
@@ -111,7 +109,7 @@ class UserControllerTest {
 
 	@Test
 	void whenPostUserWithInvalidBirthdayDateThenBadRequest() throws Exception {
-		user.setBirthday(LocalDate.of(2095, 12,27));
+		user.setBirthday(LocalDate.of(2095, 12, 27));
 		String filmJson = objectMapper.writeValueAsString(user);
 
 		ResultActions result = mockMvc.perform(post("/users")

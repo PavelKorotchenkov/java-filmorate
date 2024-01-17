@@ -21,10 +21,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FilmControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
-
 	@Autowired
 	private ObjectMapper objectMapper;
-
+	@Autowired
 	private FilmController controller;
 
 	private Film film;
@@ -36,13 +35,11 @@ class FilmControllerTest {
 
 	@BeforeEach
 	void setUp() {
-		controller = new FilmController();
 		film = new Film();
 		film.setName("Name");
 		film.setDescription("Description");
 		film.setReleaseDate(LocalDate.of(2000, 10, 25));
 		film.setDuration(7200000);
-
 	}
 
 	@Test
@@ -94,7 +91,7 @@ class FilmControllerTest {
 
 	@Test
 	void whenPostFilmWithInvalidReleaseDateThenBadRequest() throws Exception {
-		film.setReleaseDate(LocalDate.of(1895, 12,27));
+		film.setReleaseDate(LocalDate.of(1895, 12, 27));
 		String filmJson = objectMapper.writeValueAsString(film);
 
 		ResultActions result = mockMvc.perform(post("/films")
