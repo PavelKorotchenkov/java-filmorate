@@ -36,7 +36,7 @@ class FilmControllerTest {
 	@BeforeEach
 	void setUp() {
 		film = new Film();
-		film.setName("Name");
+		film.setTitle("Name");
 		film.setDescription("Description");
 		film.setReleaseDate(LocalDate.of(2000, 10, 25));
 		film.setDuration(7200000);
@@ -55,7 +55,7 @@ class FilmControllerTest {
 
 	@Test
 	void whenPostFilmWithEmptyNameThenBadRequest() throws Exception {
-		film.setName("");
+		film.setTitle("");
 		String filmJson = objectMapper.writeValueAsString(film);
 
 		ResultActions result = mockMvc.perform(post("/films")
@@ -67,7 +67,7 @@ class FilmControllerTest {
 
 	@Test
 	void whenPostFilmWithBlankNameThenBadRequest() throws Exception {
-		film.setName(" ");
+		film.setTitle(" ");
 		String filmJson = objectMapper.writeValueAsString(film);
 
 		ResultActions result = mockMvc.perform(post("/films")
