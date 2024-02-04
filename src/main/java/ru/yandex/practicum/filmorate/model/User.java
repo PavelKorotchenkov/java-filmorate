@@ -36,6 +36,7 @@ public class User {
 	@JsonBackReference
 	@ToString.Exclude
 	private List<User> friendList = new ArrayList<>();
+
 	@ToString.Exclude
 	private List<Long> likedFilms = new ArrayList<>();
 

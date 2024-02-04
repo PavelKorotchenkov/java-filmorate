@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
-import javax.validation.constraints.*;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.LocalDateNotBefore;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -13,7 +16,7 @@ public class Film {
 	private Long id;
 
 	@NotBlank(message = "Name cannot be blank")
-	private String name;
+	private String title;
 
 	@Size(max = 200, message = "Description size cannot be more than 200 symbols")
 	private String description;
