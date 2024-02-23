@@ -1,5 +1,4 @@
 # java-filmorate
-![sql schema.](src/main/resources/shema.png)
 
 В БД хранятся пользователи и фильмы. 
 Функционал:
