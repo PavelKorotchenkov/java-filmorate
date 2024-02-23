@@ -7,13 +7,11 @@ import java.util.Collection;
 
 @Component
 public interface UserStorage {
-	User findUser(Long userId);
+	User save(User user);
 
-	Collection<User> getAllUsers();
+	Collection<User> findAllUsers();
 
-	User add(User film);
+	User findUserById(Long userId);
 
-	User delete(Long userId);
-
-	User update(User film);
+	User update(User user);
 }

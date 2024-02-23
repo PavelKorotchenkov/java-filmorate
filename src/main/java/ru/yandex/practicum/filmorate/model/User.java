@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.*;
 import ru.yandex.practicum.filmorate.validator.NoSpaces;
 
 import javax.validation.constraints.Email;
@@ -16,6 +14,8 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(exclude = {"friendList", "likedFilms"})
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 	private Long id;
 
@@ -33,26 +33,27 @@ public class User {
 	@NotNull(message = "Date of Birth cannot be empty")
 	private LocalDate birthday;
 
-	@JsonBackReference
+	//@JsonBackReference
 	@ToString.Exclude
 	private List<User> friendList = new ArrayList<>();
 
+	//@JsonBackReference
 	@ToString.Exclude
 	private List<Long> likedFilms = new ArrayList<>();
 
-	public void addToLikedFilms(Long filmId) {
-		likedFilms.add(filmId);
+	public User(Long id, String email, String login, String name, LocalDate birthday) {
+		this.id = id;
+		this.email = email;
+		this.login = login;
+		this.name = name;
+		this.birthday = birthday;
 	}
 
-	public void deleteFromLikedFilms(Long filmId) {
-		likedFilms.remove(filmId);
-	}
-
-	public void addToFriendList(User user) {
-		friendList.add(user);
-	}
-
-	public void deleteFromFriendList(User user) {
-		friendList.remove(user);
+	@JsonCreator
+	public User(String email, String login, String name, LocalDate birthday) {
+		this.email = email;
+		this.login = login;
+		this.name = name;
+		this.birthday = birthday;
 	}
 }
