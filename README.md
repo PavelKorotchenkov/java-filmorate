@@ -1,5 +1,4 @@
 # java-filmorate
-![sql schema.](src/main/resources/sprint_11_sql_table.png)
 
 В БД хранятся пользователи и фильмы. 
 Функционал:
