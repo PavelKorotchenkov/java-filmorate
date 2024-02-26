@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -7,10 +8,11 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.LikeService;
 
 import javax.validation.Valid;
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
+@Slf4j
 public class FilmController {
 	private final FilmService filmService;
 	private final LikeService likeService;
@@ -23,36 +25,43 @@ public class FilmController {
 
 	@PostMapping
 	public Film addFilm(@Valid @RequestBody Film film) {
+		log.info("Получен запрос на добавление фильма: {}", film);
 		return filmService.addFilm(film);
 	}
 
 	@GetMapping
-	public Collection<Film> getFilms() {
+	public List<Film> getFilms() {
+		log.info("Получен запрос на получение всех фильмов");
 		return filmService.getAllFilms();
 	}
 
 	@GetMapping("/{filmId}")
 	public Film getFilmById(@PathVariable Long filmId) {
+		log.info("Получен запрос на получение фильма с id: {}", filmId);
 		return filmService.getFilmById(filmId);
 	}
 
 	@PutMapping
 	public Film updateFilm(@Valid @RequestBody Film film) {
+		log.info("Получен запрос на изменение фильма: {}", film);
 		return filmService.updateFilm(film);
 	}
 
 	@PutMapping("/{filmId}/like/{userId}")
 	public void likeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
+		log.info("Получен запрос - фильму с id {} поставил лайк пользователь с id {}", filmId, userId);
 		likeService.addLike(filmId, userId);
 	}
 
 	@DeleteMapping("/{filmId}/like/{userId}")
 	public void deleteLike(@PathVariable Long filmId, @PathVariable Long userId) {
+		log.info("Получен запрос - фильму с id {} убрал лайк пользователь с id {}", filmId, userId);
 		likeService.deleteLike(filmId, userId);
 	}
 
 	@GetMapping("/popular")
-	public Collection<Film> getTopRatedFilms(@RequestParam(defaultValue = "10") int count) {
-		return likeService.showPopular(count);
+	public List<Film> getTopRatedFilms(@RequestParam(defaultValue = "10") int count) {
+		log.info("Получен запрос на получение топ {} фильмов", count);
+		return filmService.showPopular(count);
 	}
 }

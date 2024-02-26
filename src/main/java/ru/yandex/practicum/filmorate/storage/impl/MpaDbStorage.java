@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -23,7 +22,7 @@ public class MpaDbStorage implements MpaStorage {
 	}
 
 	@Override
-	public Collection<Mpa> findAllMpas() {
+	public List<Mpa> findAllMpas() {
 		log.info("Запрос всех возрастных рейтингов");
 		return jdbcTemplate.query(
 				"SELECT * " +

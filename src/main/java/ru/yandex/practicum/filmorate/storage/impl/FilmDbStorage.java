@@ -16,7 +16,10 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
 import java.sql.Types;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -56,9 +59,9 @@ public class FilmDbStorage implements FilmStorage {
 	}
 
 	@Override
-	public Collection<Film> findAllFilms() {
+	public List<Film> findAllFilms() {
 		log.info("Запрос всех фильмов");
-		Collection<Film> films = jdbcTemplate.query(
+		List<Film> films = jdbcTemplate.query(
 				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name " +
 						"FROM films f " +
 						"LEFT JOIN mpa ON f.mpa_id = mpa.id",

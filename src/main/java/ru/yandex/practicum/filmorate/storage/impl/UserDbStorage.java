@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorate.util.RowMapper;
 
 import java.sql.Types;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -48,7 +47,7 @@ public class UserDbStorage implements UserStorage {
 	}
 
 	@Override
-	public Collection<User> findAllUsers() {
+	public List<User> findAllUsers() {
 		log.info("Запрос всех пользователей");
 		return jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday FROM users",

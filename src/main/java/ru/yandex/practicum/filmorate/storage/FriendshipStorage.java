@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
+import java.util.List;
 
 @Component
 public interface FriendshipStorage {
@@ -11,7 +11,7 @@ public interface FriendshipStorage {
 
 	void deleteFriend(Long userId, Long friendId);
 
-	Collection<User> findAllFriends(Long id);
+	List<User> findAllFriends(Long id);
 
-	Collection<User> findAllMutualFriends(Long userId, Long friendId);
+	List<User> findAllMutualFriends(Long userId, Long friendId);
 }

@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +47,7 @@ class UserDbStorageTest {
 		userStorage.save(newUser);
 		userStorage.save(newUser2);
 
-		Collection<User> users = userStorage.findAllUsers();
+		List<User> users = userStorage.findAllUsers();
 
 		assertEquals(2, users.size());
 		Assertions.assertTrue(users.contains(newUser));

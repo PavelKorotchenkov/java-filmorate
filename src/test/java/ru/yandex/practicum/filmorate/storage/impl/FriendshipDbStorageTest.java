@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.List;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -76,7 +76,7 @@ class FriendshipDbStorageTest {
 
 		friendshipStorage.addFriend(newUser.getId(), friend.getId());
 		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
-		Collection<User> friends = friendshipStorage.findAllFriends(newUser.getId());
+		List<User> friends = friendshipStorage.findAllFriends(newUser.getId());
 
 		Assertions.assertTrue(friends.contains(friend));
 		Assertions.assertTrue(friends.contains(friend2));
@@ -101,7 +101,7 @@ class FriendshipDbStorageTest {
 
 		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
 		friendshipStorage.addFriend(friend.getId(), friend2.getId());
-		Collection<User> friends = friendshipStorage.findAllMutualFriends(newUser.getId(), friend.getId());
+		List<User> friends = friendshipStorage.findAllMutualFriends(newUser.getId(), friend.getId());
 
 		Assertions.assertTrue(friends.contains(friend2));
 	}
@@ -127,7 +127,7 @@ class FriendshipDbStorageTest {
 		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
 
 		friendshipStorage.deleteFriend(newUser.getId(), friend2.getId());
-		Collection<User> friends = friendshipStorage.findAllFriends(newUser.getId());
+		List<User> friends = friendshipStorage.findAllFriends(newUser.getId());
 
 		Assertions.assertTrue(friends.contains(friend));
 		Assertions.assertFalse(friends.contains(friend2));

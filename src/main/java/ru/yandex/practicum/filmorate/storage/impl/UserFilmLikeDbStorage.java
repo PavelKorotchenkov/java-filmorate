@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.List;
 
 @Repository
 @Component
@@ -25,10 +25,11 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
 	}
 
 	@Override
-	public Collection<Film> findPopular(int count) {
+	public List<Film> findPopular(int count) {
 		log.info("Находим топ {} популярных фильмов", count);
 		return jdbcTemplate.query(
-				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, COUNT(ufl.user_id) AS user_like_count " +
+				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+						"COUNT(ufl.user_id) AS user_like_count " +
 						"FROM films f " +
 						"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
 						"LEFT JOIN user_film_like ufl on f.id = ufl.film_id " +

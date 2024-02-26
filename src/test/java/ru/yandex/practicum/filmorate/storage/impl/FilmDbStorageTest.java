@@ -12,8 +12,8 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -55,7 +55,7 @@ class FilmDbStorageTest {
 		filmStorage.save(newFilm);
 		filmStorage.save(newFilm2);
 
-		Collection<Film> films = filmStorage.findAllFilms();
+		List<Film> films = filmStorage.findAllFilms();
 
 		assertEquals(2, films.size());
 		Assertions.assertTrue(films.contains(newFilm));

@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -24,7 +23,7 @@ public class GenreDbStorage implements GenreStorage {
 	}
 
 	@Override
-	public Collection<Genre> findAllGenre() {
+	public List<Genre> findAllGenre() {
 		log.info("Запрос всех жанров");
 		return jdbcTemplate.query(
 				"SELECT * " +

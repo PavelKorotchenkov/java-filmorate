@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
+import java.util.List;
 
 @Component
 public interface UserFilmLikeStorage {
@@ -12,5 +12,5 @@ public interface UserFilmLikeStorage {
 
 	void deleteLike(Long filmId, Long userId);
 
-	Collection<Film> findPopular(int count);
+	List<Film> findPopular(int count);
 }

@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -21,7 +22,7 @@ class GenreDbStorageTest {
 	void findAllGenre() {
 		GenreStorage genreStorage = new GenreDbStorage(jdbcTemplate);
 
-		ArrayList<Genre> genres = new ArrayList<>(genreStorage.findAllGenre());
+		List<Genre> genres = new ArrayList<>(genreStorage.findAllGenre());
 
 		Assertions.assertEquals(6, genres.size());
 	}

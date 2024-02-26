@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 @Service
 public class FriendshipService {
@@ -26,11 +26,11 @@ public class FriendshipService {
 		friendshipStorage.addFriend(userId, friendId);
 	}
 
-	public Collection<User> getFriends(Long id) {
+	public List<User> getFriends(Long id) {
 		return friendshipStorage.findAllFriends(id);
 	}
 
-	public Collection<User> showMutualFriends(Long userId, Long friendId) {
+	public List<User> showMutualFriends(Long userId, Long friendId) {
 		userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
 		userStorage.findUserById(friendId); //проверяем, что друг есть в базе
 
@@ -42,6 +42,5 @@ public class FriendshipService {
 		userStorage.findUserById(friendId); //проверяем, что друг есть в базе
 
 		friendshipStorage.deleteFriend(userId, friendId);
-
 	}
 }

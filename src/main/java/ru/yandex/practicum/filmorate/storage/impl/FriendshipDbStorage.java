@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -65,7 +64,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 	}
 
 	@Override
-	public Collection<User> findAllFriends(Long id) {
+	public List<User> findAllFriends(Long id) {
 		log.info("Запрос всех друзей пользователя");
 		return jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday " +
@@ -78,7 +77,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 	}
 
 	@Override
-	public Collection<User> findAllMutualFriends(Long userId, Long friendId) {
+	public List<User> findAllMutualFriends(Long userId, Long friendId) {
 		log.info("Запрос всех общих друзей с другом");
 
 		return jdbcTemplate.query(

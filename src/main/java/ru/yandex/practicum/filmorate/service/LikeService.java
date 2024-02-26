@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 @Service
 public class LikeService {
@@ -35,9 +35,5 @@ public class LikeService {
 		userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
 
 		userFilmLikeStorage.deleteLike(filmId, userId);
-	}
-
-	public Collection<Film> showPopular(int count) {
-		return userFilmLikeStorage.findPopular(count);
 	}
 }

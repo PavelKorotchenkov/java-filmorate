@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 	}
 
 	@Override
-	public Collection<Film> findAllFilms() {
+	public List<Film> findAllFilms() {
 		return List.copyOf(films.values());
 	}
 

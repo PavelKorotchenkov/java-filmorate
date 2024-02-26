@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 @Service
 public class GenreService {
@@ -16,7 +16,7 @@ public class GenreService {
 		this.genreStorage = genreStorage;
 	}
 
-	public Collection<Genre> getGenres() {
+	public List<Genre> getGenres() {
 		return genreStorage.findAllGenre();
 	}
 

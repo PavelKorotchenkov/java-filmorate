@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -21,11 +21,12 @@ public class UserService {
 	public User addUser(User user) {
 		if (!validateUserName(user)) {
 			user.setName(user.getLogin());
+			log.info("Имя пользователя не заполнено, присвоено имя: {}", user.getName());
 		}
 		return userStorage.save(user);
 	}
 
-	public Collection<User> getAllUsers() {
+	public List<User> getAllUsers() {
 		return userStorage.findAllUsers();
 	}
 
@@ -36,6 +37,7 @@ public class UserService {
 	public User updateUser(User user) {
 		if (!validateUserName(user)) {
 			user.setName(user.getLogin());
+			log.info("Имя пользователя не заполнено, присвоено имя: {}", user.getName());
 		}
 		return userStorage.update(user);
 	}

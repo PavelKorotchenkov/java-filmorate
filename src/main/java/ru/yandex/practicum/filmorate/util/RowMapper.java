@@ -5,6 +5,10 @@ import ru.yandex.practicum.filmorate.model.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class RowMapper {
 	public static User mapRowToUser(ResultSet row, int rowNum) throws SQLException {
@@ -32,7 +36,16 @@ public class RowMapper {
 		long mpaId = row.getInt("mpa_id");
 		String mpaName = row.getString("mpa_name");
 		Mpa mpa = new Mpa(mpaId, mpaName);
-		return new Film(id, name, description, releaseDate, duration, mpa);
+		Film film = new Film(id, name, description, releaseDate, duration, mpa);
+
+		Set<Genre> genres = new HashSet<>();
+
+		for (Genre genre : film.getGenres()) {
+			genres.add(findGenreById(genre.getId()));
+		}
+
+		film.setGenres(genres);
+		return film;
 	}
 
 	public static Genre mapRowToGenre(ResultSet row, int rowNum) throws SQLException {
