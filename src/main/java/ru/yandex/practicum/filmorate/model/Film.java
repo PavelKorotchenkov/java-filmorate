@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.yandex.practicum.filmorate.validator.LocalDateNotBefore;
 
 import javax.validation.constraints.NotBlank;
@@ -11,9 +9,11 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Film {
@@ -44,5 +44,31 @@ public class Film {
 		this.releaseDate = releaseDate;
 		this.duration = duration;
 		this.mpa = mpa;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Film{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", description='" + description + '\'' +
+				", releaseDate=" + releaseDate +
+				", duration=" + duration +
+				", mpa=" + mpa +
+				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Film film = (Film) o;
+		return Objects.equals(id, film.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

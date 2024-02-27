@@ -1,15 +1,15 @@
 package ru.yandex.practicum.filmorate.util;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+@Slf4j
 public class RowMapper {
 	public static User mapRowToUser(ResultSet row, int rowNum) throws SQLException {
 		Long id = row.getLong("id");
@@ -38,13 +38,20 @@ public class RowMapper {
 		Mpa mpa = new Mpa(mpaId, mpaName);
 		Film film = new Film(id, name, description, releaseDate, duration, mpa);
 
-		Set<Genre> genres = new HashSet<>();
+		String genreRowData = row.getString("genre");
+		Set<Genre> genreSet = new HashSet<>();
 
-		for (Genre genre : film.getGenres()) {
-			genres.add(findGenreById(genre.getId()));
+		if (genreRowData != null && !genreRowData.isEmpty() && !genreRowData.isBlank()) {
+			String[] genreRow = genreRowData.split(";");
+			for (String s : genreRow) {
+				String[] finalGenre = s.split(",");
+				long genreId = Long.parseLong(finalGenre[0]);
+				String genreName = finalGenre[1];
+				Genre genre = new Genre(genreId, genreName);
+				genreSet.add(genre);
+			}
 		}
-
-		film.setGenres(genres);
+		film.setGenres(genreSet);
 		return film;
 	}
 

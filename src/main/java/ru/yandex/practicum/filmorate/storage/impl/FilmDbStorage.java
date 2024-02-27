@@ -36,11 +36,16 @@ public class FilmDbStorage implements FilmStorage {
 
 	@Override
 	public Film findFilmById(Long id) {
+		//тестовая реализация
 		List<Film> result = jdbcTemplate.query(
-				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name " +
+				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+						"string_agg(g.id || ',' || g.name, ';') AS genre " +
 						"FROM films f " +
 						"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
-						"WHERE f.id = ?",
+						"LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
+						"LEFT JOIN genre AS g ON fg.genre_id = g.id " +
+						"WHERE f.id = ? " +
+						"GROUP BY f.id,f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name;",
 				RowMapper::mapRowToFilm,
 				id
 		);
@@ -51,25 +56,22 @@ public class FilmDbStorage implements FilmStorage {
 
 		Film film = result.get(0);
 		log.info("Найден фильм с id: {}", id);
-
-		Set<Genre> filmGenres = getGenres(id);
-		film.setGenres(filmGenres);
-
 		return film;
 	}
 
 	@Override
 	public List<Film> findAllFilms() {
+		//тестовая реализация
 		log.info("Запрос всех фильмов");
 		List<Film> films = jdbcTemplate.query(
-				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name " +
+				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+						"string_agg(g.id || ',' || g.name, ';') AS genre " +
 						"FROM films f " +
-						"LEFT JOIN mpa ON f.mpa_id = mpa.id",
+						"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
+						"LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
+						"LEFT JOIN genre AS g ON fg.genre_id = g.id " +
+						"GROUP BY f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name;",
 				RowMapper::mapRowToFilm);
-
-		for (Film film : films) {
-			film.setGenres(getGenres(film.getId()));
-		}
 		return films;
 	}
 
@@ -102,7 +104,6 @@ public class FilmDbStorage implements FilmStorage {
 	public Film update(Film film) {
 		Long id = film.getId();
 		findFilmById(id); //проверяем, что фильм есть в базе
-
 		jdbcTemplate.update("UPDATE films " +
 						"SET name = ?, description = ?, releaseDate = ?, duration = ?, mpa_id = ? " +
 						"WHERE id = ?",
@@ -121,7 +122,7 @@ public class FilmDbStorage implements FilmStorage {
 				"SELECT fg.film_id, fg.genre_id AS id, g.name AS name " +
 						"FROM film_genre fg " +
 						"LEFT JOIN genre g ON fg.genre_id = g.id " +
-						"WHERE film_id = ?" +
+						"WHERE film_id = ? " +
 						"ORDER BY id",
 				RowMapper::mapRowToGenre,
 				id

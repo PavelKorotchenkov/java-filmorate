@@ -29,13 +29,16 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
 		log.info("Находим топ {} популярных фильмов", count);
 		return jdbcTemplate.query(
 				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+						"string_agg(g.id || ',' || g.name, ';') AS genre, " +
 						"COUNT(ufl.user_id) AS user_like_count " +
 						"FROM films f " +
 						"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
 						"LEFT JOIN user_film_like ufl on f.id = ufl.film_id " +
+						"LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
+						"LEFT JOIN genre AS g ON fg.genre_id = g.id " +
 						"GROUP BY f.id " +
 						"ORDER BY user_like_count DESC " +
-						"LIMIT ? ",
+						"LIMIT ?",
 				RowMapper::mapRowToFilm,
 				count);
 	}

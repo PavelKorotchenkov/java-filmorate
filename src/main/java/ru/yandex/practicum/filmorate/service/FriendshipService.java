@@ -20,10 +20,10 @@ public class FriendshipService {
 	}
 
 	public void addFriend(Long userId, Long friendId) {
-		userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
-		userStorage.findUserById(friendId); //проверяем, что друг есть в базе
+		User user = userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
+		User friend = userStorage.findUserById(friendId); //проверяем, что друг есть в базе
 
-		friendshipStorage.addFriend(userId, friendId);
+		friendshipStorage.addFriend(user.getId(), friend.getId());
 	}
 
 	public List<User> getFriends(Long id) {
@@ -31,16 +31,16 @@ public class FriendshipService {
 	}
 
 	public List<User> showMutualFriends(Long userId, Long friendId) {
-		userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
-		userStorage.findUserById(friendId); //проверяем, что друг есть в базе
+		User user = userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
+		User friend = userStorage.findUserById(friendId); //проверяем, что друг есть в базе
 
-		return friendshipStorage.findAllMutualFriends(userId, friendId);
+		return friendshipStorage.findAllMutualFriends(user.getId(), friend.getId());
 	}
 
 	public void deleteFriend(Long userId, Long friendId) {
-		userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
-		userStorage.findUserById(friendId); //проверяем, что друг есть в базе
+		User user = userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
+		User friend = userStorage.findUserById(friendId); //проверяем, что друг есть в базе
 
-		friendshipStorage.deleteFriend(userId, friendId);
+		friendshipStorage.deleteFriend(user.getId(), friend.getId());
 	}
 }

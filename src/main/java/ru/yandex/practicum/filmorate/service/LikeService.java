@@ -3,11 +3,10 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-
-import java.util.List;
 
 @Service
 public class LikeService {
@@ -24,16 +23,16 @@ public class LikeService {
 	}
 
 	public void addLike(Long filmId, Long userId) {
-		filmStorage.findFilmById(filmId); //проверяем, что фильм есть в базе
-		userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
+		Film film = filmStorage.findFilmById(filmId); //проверяем, что фильм есть в базе
+		User user = userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
 
-		userFilmLikeStorage.addLike(filmId, userId);
+		userFilmLikeStorage.addLike(film.getId(), user.getId());
 	}
 
 	public void deleteLike(Long filmId, Long userId) {
-		filmStorage.findFilmById(filmId); //проверяем, что пользователь есть в базе
-		userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
+		Film film = filmStorage.findFilmById(filmId); //проверяем, что фильм есть в базе
+		User user = userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
 
-		userFilmLikeStorage.deleteLike(filmId, userId);
+		userFilmLikeStorage.deleteLike(film.getId(), user.getId());
 	}
 }
