@@ -1,11 +1,11 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.mem;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 	}
 
 	@Override
-	public Film findFilm(Long filmId) {
+	public Film findFilmById(Long filmId) {
 		if (!films.containsKey(filmId)) {
 			throw new NotFoundException("No film in database with id " + filmId);
 		}
@@ -28,22 +28,14 @@ public class InMemoryFilmStorage implements FilmStorage {
 	}
 
 	@Override
-	public Collection<Film> getAllFilms() {
+	public List<Film> findAllFilms() {
 		return List.copyOf(films.values());
 	}
 
 	@Override
-	public Film add(Film film) {
+	public Film save(Film film) {
 		film.setId(++filmID);
 		return films.put(film.getId(), film);
-	}
-
-	@Override
-	public Film delete(Long filmId) {
-		if (!films.containsKey(filmId)) {
-			throw new NotFoundException("No film in database with id " + filmId);
-		}
-		return films.remove(filmId);
 	}
 
 	@Override
@@ -52,5 +44,12 @@ public class InMemoryFilmStorage implements FilmStorage {
 			throw new NotFoundException("No film in database with id " + film.getId());
 		}
 		return films.put(film.getId(), film);
+	}
+
+	public Film delete(Long filmId) {
+		if (!films.containsKey(filmId)) {
+			throw new NotFoundException("No film in database with id " + filmId);
+		}
+		return films.remove(filmId);
 	}
 }

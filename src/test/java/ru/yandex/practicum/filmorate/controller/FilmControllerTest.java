@@ -1,15 +1,20 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
 
@@ -18,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(FilmController.class)
 @AutoConfigureMockMvc
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
@@ -25,6 +31,15 @@ class FilmControllerTest {
 	private ObjectMapper objectMapper;
 	@Autowired
 	private FilmController controller;
+
+	@MockBean
+	private FilmService filmService;
+
+	@MockBean
+	private FilmStorage filmStorage;
+
+	@MockBean
+	private JdbcTemplate jdbcTemplate;
 
 	private Film film;
 
@@ -36,7 +51,7 @@ class FilmControllerTest {
 	@BeforeEach
 	void setUp() {
 		film = new Film();
-		film.setTitle("Name");
+		film.setName("Name");
 		film.setDescription("Description");
 		film.setReleaseDate(LocalDate.of(2000, 10, 25));
 		film.setDuration(7200000);
@@ -50,12 +65,12 @@ class FilmControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(filmJson));
 
-		result.andExpect(status().isCreated());
+		result.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
 	void whenPostFilmWithEmptyNameThenBadRequest() throws Exception {
-		film.setTitle("");
+		film.setName("");
 		String filmJson = objectMapper.writeValueAsString(film);
 
 		ResultActions result = mockMvc.perform(post("/films")
@@ -67,7 +82,7 @@ class FilmControllerTest {
 
 	@Test
 	void whenPostFilmWithBlankNameThenBadRequest() throws Exception {
-		film.setTitle(" ");
+		film.setName(" ");
 		String filmJson = objectMapper.writeValueAsString(film);
 
 		ResultActions result = mockMvc.perform(post("/films")

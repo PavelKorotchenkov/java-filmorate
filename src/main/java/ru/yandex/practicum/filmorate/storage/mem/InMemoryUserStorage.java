@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.mem;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class InMemoryUserStorage implements UserStorage {
 	}
 
 	@Override
-	public User findUser(Long userId) {
+	public User findUserById(Long userId) {
 		if (!users.containsKey(userId)) {
 			throw new NotFoundException("No user in database with id: " + userId);
 		}
@@ -26,25 +26,17 @@ public class InMemoryUserStorage implements UserStorage {
 	}
 
 	@Override
-	public Collection<User> getAllUsers() {
+	public List<User> findAllUsers() {
 		return List.copyOf(users.values());
 	}
 
 	@Override
-	public User add(User user) {
+	public User save(User user) {
 		if (nameIsBlank(user)) {
 			user.setName(user.getLogin());
 		}
 		user.setId(++userId);
 		return users.put(user.getId(), user);
-	}
-
-	@Override
-	public User delete(Long userId) {
-		if (!users.containsKey(userId)) {
-			throw new NotFoundException("No user in database with id: " + userId);
-		}
-		return users.remove(userId);
 	}
 
 	@Override
@@ -57,6 +49,13 @@ public class InMemoryUserStorage implements UserStorage {
 			user.setName(user.getLogin());
 		}
 		return users.put(user.getId(), user);
+	}
+
+	public User delete(Long userId) {
+		if (!users.containsKey(userId)) {
+			throw new NotFoundException("No user in database with id: " + userId);
+		}
+		return users.remove(userId);
 	}
 
 	private boolean nameIsBlank(User user) {

@@ -1,65 +1,45 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.*;
+import java.util.List;
 
+@Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserService {
 	private final UserStorage userStorage;
+
+	@Autowired
+	public UserService(UserStorage userStorage) {
+		this.userStorage = userStorage;
+	}
 
 	public User addUser(User user) {
 		if (!validateUserName(user)) {
 			user.setName(user.getLogin());
+			log.info("Имя пользователя не заполнено, присвоено имя: {}", user.getName());
 		}
-		return userStorage.add(user);
+		return userStorage.save(user);
 	}
 
-	public Collection<User> getAllUsers() {
-		return userStorage.getAllUsers();
+	public List<User> getAllUsers() {
+		return userStorage.findAllUsers();
 	}
 
 	public User getUserById(Long userId) {
-		return userStorage.findUser(userId);
+		return userStorage.findUserById(userId);
 	}
 
 	public User updateUser(User user) {
+		if (!validateUserName(user)) {
+			user.setName(user.getLogin());
+			log.info("Имя пользователя не заполнено, присвоено имя: {}", user.getName());
+		}
 		return userStorage.update(user);
-	}
-
-	public void addFriend(Long friendId, Long userId) {
-		User user = userStorage.findUser(userId);
-		User friend = userStorage.findUser(friendId);
-		if (user != null && friend != null) {
-			user.addToFriendList(friend);
-			friend.addToFriendList(user);
-		}
-	}
-
-	public void deleteFriend(Long friendId, Long userId) {
-		User user = userStorage.findUser(userId);
-		User friend = userStorage.findUser(friendId);
-		if (user != null && friend != null) {
-			user.deleteFromFriendList(friend);
-			friend.deleteFromFriendList(user);
-		}
-	}
-
-	public List<User> showMutualFriends(Long userId, Long friendId) {
-		List<User> result = new ArrayList<>();
-		User user = userStorage.findUser(userId);
-		User friend = userStorage.findUser(friendId);
-		if (user != null && friend != null) {
-			result.addAll(user.getFriendList());
-			System.out.println(result);
-			result.retainAll(friend.getFriendList());
-			System.out.println(result);
-		}
-		return result;
 	}
 
 	private boolean validateUserName(User user) {

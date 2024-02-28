@@ -6,12 +6,11 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.List;
 
 @Component
-public interface FilmStorage {
-	Film findFilmById(Long filmId);
+public interface UserFilmLikeStorage {
 
-	List<Film> findAllFilms();
+	void addLike(Long filmId, Long userId);
 
-	Film save(Film film);
+	void deleteLike(Long filmId, Long userId);
 
-	Film update(Film film);
+	List<Film> findPopular(int count);
 }
