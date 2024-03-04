@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -23,7 +22,6 @@ import java.util.Set;
 
 @Slf4j
 @Repository
-@Component
 @Primary
 public class FilmDbStorage implements FilmStorage {
 
@@ -36,7 +34,6 @@ public class FilmDbStorage implements FilmStorage {
 
 	@Override
 	public Film findFilmById(Long id) {
-		//тестовая реализация
 		List<Film> result = jdbcTemplate.query(
 				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
 						"string_agg(g.id || ',' || g.name, ';') AS genre " +
@@ -61,7 +58,6 @@ public class FilmDbStorage implements FilmStorage {
 
 	@Override
 	public List<Film> findAllFilms() {
-		//тестовая реализация
 		log.info("Запрос всех фильмов");
 		List<Film> films = jdbcTemplate.query(
 				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +

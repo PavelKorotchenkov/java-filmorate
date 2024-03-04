@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -20,7 +19,6 @@ import java.util.List;
 
 @Slf4j
 @Repository
-@Component
 @Primary
 public class UserDbStorage implements UserStorage {
 	private final JdbcTemplate jdbcTemplate;
