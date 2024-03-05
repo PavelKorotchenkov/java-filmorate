@@ -13,6 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 @Slf4j
+/*
+FilmController
+ */
 public class FilmController {
 	private final FilmService filmService;
 	private final LikeService likeService;
