@@ -12,7 +12,7 @@ import java.util.Objects;
 public class UserFilmLike {
 	private Long filmId;
 	private Long userId;
-	private LocalDate createdAt;
+	//private LocalDate createdAt;
 
 	@Override
 	public boolean equals(Object o) {
@@ -32,7 +32,7 @@ public class UserFilmLike {
 		return "UserFilmLike{" +
 				"filmId=" + filmId +
 				", userId=" + userId +
-				", createdAt=" + createdAt +
+			//	", createdAt=" + createdAt +
 				'}';
 	}
 }

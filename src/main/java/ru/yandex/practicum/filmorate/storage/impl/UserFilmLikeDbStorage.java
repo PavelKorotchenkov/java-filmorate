@@ -41,12 +41,20 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
 				count);
 	}
 
-	@Override
+	/*@Override
 	public void addLike(Long filmId, Long userId) {
 		log.info("Добавляем лайк фильму {} от юзера {}", filmId, userId);
 		jdbcTemplate.update("INSERT INTO user_film_like (film_id, user_id, created_at) " +
 						"VALUES (?, ?, ?)",
 				filmId, userId, LocalDate.now());
+	}*/
+
+	@Override
+	public void addLike(Long filmId, Long userId) {
+		log.info("Добавляем лайк фильму {} от юзера {}", filmId, userId);
+		jdbcTemplate.update("INSERT INTO user_film_like (film_id, user_id) " +
+						"VALUES (?, ?)",
+				filmId, userId);
 	}
 
 	@Override
