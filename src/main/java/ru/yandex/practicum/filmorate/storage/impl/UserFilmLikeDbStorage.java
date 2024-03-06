@@ -60,4 +60,25 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
 				userId
 		);
 	}
+
+	@Override
+	public List<Film> getAllCommonFilms(Long userId, Long friendId) {
+		String sqlQuery = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, m.name AS mpa_name, " +
+				"string_agg(G2.id || ',' || G2.name, ';') AS genre " +
+				"FROM FILMS f " +
+				"         LEFT JOIN FILM_GENRE FG ON f.ID = FG.FILM_ID " +
+				"         LEFT JOIN MPA M ON M.ID = f.MPA_ID " +
+				"         LEFT JOIN GENRE G2 ON FG.GENRE_ID = G2.ID " +
+				"WHERE f.ID IN ( " +
+				"    SELECT l.FILM_ID " +
+				"    FROM USER_FILM_LIKE l " +
+				"    WHERE l.USER_ID = ? " +
+				"    INTERSECT  " +
+				"    SELECT l.FILM_ID " +
+				"    FROM USER_FILM_LIKE l " +
+				"    WHERE USER_ID = ?" +
+				"     ) " +
+				" GROUP BY f.ID;";
+		return jdbcTemplate.query(sqlQuery, RowMapper::mapRowToFilm, userId, friendId);
+	}
 }
