@@ -76,7 +76,7 @@ public class UserDbStorage implements UserStorage {
 	@Override
 	public User update(User user) {
 		Long id = user.getId();
-		findUserById(id); //проверяем, что пользователь есть в базе
+		findUserById(id); //проверяем, что пользователь есть в базе данных
 
 		jdbcTemplate.update("UPDATE users SET email = ?, name = ?, login = ?, birthday = ? WHERE id = ?",
 				user.getEmail(), user.getName(), user.getLogin(), user.getBirthday(), id);
