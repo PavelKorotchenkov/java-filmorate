@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
@@ -42,5 +43,11 @@ public class FilmService {
 
 	public List<Film> getFilmCommon(Long userId, Long friendId) {
 		return userFilmLikeStorage.getAllCommonFilms(userId, friendId);
+	}
+	public void deleteFilm(Long id) {
+		boolean isDeleted = filmStorage.deleteById(id);
+		if (!isDeleted) {
+			throw new NotFoundException(String.format("Не удалось удалить фильм с id %d", id));
+		}
 	}
 }

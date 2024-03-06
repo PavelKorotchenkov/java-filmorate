@@ -105,6 +105,7 @@ public class FilmDbStorage implements FilmStorage {
 						"WHERE id = ?",
 				film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa().getId(), id);
 
+
 		log.info("Обновлен фильм: " + film);
 
 		updateFilmGenres(film, film.getGenres()); //вносим строку фильм-жанр в связанную таблицу
@@ -112,6 +113,13 @@ public class FilmDbStorage implements FilmStorage {
 
 		return film;
 	}
+
+	@Override
+	public boolean deleteById(Long id) {
+		String sqlQuery = "DELETE FROM FILMS WHERE ID = ?";
+		return jdbcTemplate.update(sqlQuery, id) > 0;
+	}
+
 
 	private Set<Genre> getGenres(Long id) {
 		List<Genre> genres = jdbcTemplate.query(

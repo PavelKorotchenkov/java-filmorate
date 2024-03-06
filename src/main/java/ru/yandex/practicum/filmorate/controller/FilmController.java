@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -69,5 +70,10 @@ public class FilmController {
 	public List<Film> getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
 		log.info("Получен запрос на общие фильмы между пользователями {} and {}", userId, friendId);
 		return filmService.getFilmCommon(userId, friendId);
+	}
+	@DeleteMapping("/{id}")
+	public void deleteFilm(@PathVariable Long id) {
+		log.info("получен запрос на удаление фильма c id {}", id);
+		filmService.deleteFilm(id);
 	}
 }
