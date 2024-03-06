@@ -51,6 +51,11 @@ public class InMemoryUserStorage implements UserStorage {
 		return users.put(user.getId(), user);
 	}
 
+	@Override
+	public boolean deleteById(Long id) {
+		return false;
+	}
+
 	public User delete(Long userId) {
 		if (!users.containsKey(userId)) {
 			throw new NotFoundException("No user in database with id: " + userId);

@@ -2,7 +2,9 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -40,6 +42,15 @@ public class UserService {
 			log.info("Имя пользователя не заполнено, присвоено имя: {}", user.getName());
 		}
 		return userStorage.update(user);
+	}
+
+	public void deleteUser(Long id) {
+	boolean isDeleted = userStorage.deleteById(id);
+		System.err.println(isDeleted);
+		if (!isDeleted) {
+			throw new NotFoundException("Пользователя не удалось удалить пользователя");
+		}
+		log.info("Фильм успешно удален с id {}", id);
 	}
 
 	private boolean validateUserName(User user) {

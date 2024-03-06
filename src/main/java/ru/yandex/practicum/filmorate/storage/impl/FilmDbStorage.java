@@ -113,6 +113,13 @@ public class FilmDbStorage implements FilmStorage {
 		return film;
 	}
 
+	@Override
+	public boolean deleteById(Long id) {
+		String sqlQuery = "DELETE FROM FILMS WHERE ID = ?";
+		return jdbcTemplate.update(sqlQuery, id) > 0;
+	}
+
+
 	private Set<Genre> getGenres(Long id) {
 		List<Genre> genres = jdbcTemplate.query(
 				"SELECT fg.film_id, fg.genre_id AS id, g.name AS name " +
