@@ -36,7 +36,6 @@ public class RowMapper {
 		long mpaId = row.getInt("mpa_id");
 		String mpaName = row.getString("mpa_name");
 		Mpa mpa = new Mpa(mpaId, mpaName);
-		Film film = new Film(id, name, description, releaseDate, duration, mpa);
 
 		String genreRowData = row.getString("genre");
 		Set<Genre> genreSet = new HashSet<>();
@@ -51,7 +50,8 @@ public class RowMapper {
 				genreSet.add(genre);
 			}
 		}
-		film.setGenres(genreSet);
+
+		Film film = new Film(id, name, description, releaseDate, duration, mpa, genreSet);
 
 		String directorRowData = row.getString("director");
 		Set<Director> directorSet = new HashSet<>();

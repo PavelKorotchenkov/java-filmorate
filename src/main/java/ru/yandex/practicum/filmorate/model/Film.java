@@ -38,13 +38,14 @@ public class Film {
 
 	private Set<Director> directors = new HashSet<>();
 
-	public Film(Long id, String name, String description, LocalDate releaseDate, long duration, Mpa mpa) {
+	public Film(Long id, String name, String description, LocalDate releaseDate, long duration, Mpa mpa, Set<Genre> genres) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.releaseDate = releaseDate;
 		this.duration = duration;
 		this.mpa = mpa;
+		this.genres = genres;
 	}
 
 
