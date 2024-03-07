@@ -76,7 +76,7 @@ public class UserDbStorage implements UserStorage {
 	@Override
 	public User update(User user) {
 		Long id = user.getId();
-		findUserById(id); //проверяем, что пользователь есть в базе
+		findUserById(id); //проверяем, что пользователь есть в базе данных
 
 		jdbcTemplate.update("UPDATE users SET email = ?, name = ?, login = ?, birthday = ? WHERE id = ?",
 				user.getEmail(), user.getName(), user.getLogin(), user.getBirthday(), id);
@@ -84,5 +84,11 @@ public class UserDbStorage implements UserStorage {
 		log.info("Обновлен пользователь: " + user);
 
 		return user;
+	}
+
+	@Override
+	public boolean deleteById(Long id) {
+		String sqlQuery = "DELETE FROM USERS WHERE ID = ?";
+		return jdbcTemplate.update(sqlQuery, id) > 0;
 	}
 }

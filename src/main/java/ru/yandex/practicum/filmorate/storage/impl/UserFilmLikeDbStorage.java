@@ -15,12 +15,13 @@ import java.util.List;
 @Slf4j
 public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
 
-	private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	public UserFilmLikeDbStorage(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    @Autowired
+    public UserFilmLikeDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
 
 	@Override
 	public List<Film> findPopular(int count) {
@@ -44,44 +45,45 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
 				count);
 	}
 
-	@Override
-	public void addLike(Long filmId, Long userId) {
-		log.info("Добавляем лайк фильму {} от юзера {}", filmId, userId);
-		jdbcTemplate.update("INSERT INTO user_film_like (film_id, user_id, created_at) " +
-						"VALUES (?, ?, ?)",
-				filmId, userId, LocalDate.now());
-	}
 
-	@Override
-	public void deleteLike(Long filmId, Long userId) {
-		log.info("Удаляем лайк фильму {} от юзера {}", filmId, userId);
-		jdbcTemplate.update(
-				"DELETE FROM user_film_like " +
-						"WHERE film_id = ? " +
-						"AND user_id = ?",
-				filmId,
-				userId
-		);
-	}
+    @Override
+    public void addLike(Long filmId, Long userId) {
+        log.info("Добавляем лайк фильму {} от юзера {}", filmId, userId);
+        jdbcTemplate.update("INSERT INTO user_film_like (film_id, user_id, created_at) " +
+                        "VALUES (?, ?, ?)",
+                filmId, userId, LocalDate.now());
+    }
 
-	@Override
-	public List<Film> getAllCommonFilms(Long userId, Long friendId) {
-		String sqlQuery = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, m.name AS mpa_name, " +
-				"string_agg(G2.id || ',' || G2.name, ';') AS genre " +
-				"FROM FILMS f " +
-				"         LEFT JOIN FILM_GENRE FG ON f.ID = FG.FILM_ID " +
-				"         LEFT JOIN MPA M ON M.ID = f.MPA_ID " +
-				"         LEFT JOIN GENRE G2 ON FG.GENRE_ID = G2.ID " +
-				"WHERE f.ID IN ( " +
-				"    SELECT l.FILM_ID " +
-				"    FROM USER_FILM_LIKE l " +
-				"    WHERE l.USER_ID = ? " +
-				"    INTERSECT  " +
-				"    SELECT l.FILM_ID " +
-				"    FROM USER_FILM_LIKE l " +
-				"    WHERE USER_ID = ?" +
-				"     ) " +
-				" GROUP BY f.ID;";
-		return jdbcTemplate.query(sqlQuery, RowMapper::mapRowToFilm, userId, friendId);
-	}
+    @Override
+    public void deleteLike(Long filmId, Long userId) {
+        log.info("Удаляем лайк фильму {} от юзера {}", filmId, userId);
+        jdbcTemplate.update(
+                "DELETE FROM user_film_like " +
+                        "WHERE film_id = ? " +
+                        "AND user_id = ?",
+                filmId,
+                userId
+        );
+    }
+
+    @Override
+    public List<Film> getAllCommonFilms(Long userId, Long friendId) {
+        String sqlQuery = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, m.name AS mpa_name, " +
+                "string_agg(G2.id || ',' || G2.name, ';') AS genre " +
+                "FROM FILMS f " +
+                "         LEFT JOIN FILM_GENRE FG ON f.ID = FG.FILM_ID " +
+                "         LEFT JOIN MPA M ON M.ID = f.MPA_ID " +
+                "         LEFT JOIN GENRE G2 ON FG.GENRE_ID = G2.ID " +
+                "WHERE f.ID IN ( " +
+                "    SELECT l.FILM_ID " +
+                "    FROM USER_FILM_LIKE l " +
+                "    WHERE l.USER_ID = ? " +
+                "    INTERSECT  " +
+                "    SELECT l.FILM_ID " +
+                "    FROM USER_FILM_LIKE l " +
+                "    WHERE USER_ID = ?" +
+                "     ) " +
+                " GROUP BY f.ID;";
+        return jdbcTemplate.query(sqlQuery, RowMapper::mapRowToFilm, userId, friendId);
+    }
 }
