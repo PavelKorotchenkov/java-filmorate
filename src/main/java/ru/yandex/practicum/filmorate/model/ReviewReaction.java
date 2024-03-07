@@ -11,30 +11,28 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewLike {
+public class ReviewReaction {
 	private Long reviewId;
 	private Long userId;
-	private boolean isPositive;
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		ReviewLike that = (ReviewLike) o;
-		return isPositive == that.isPositive && Objects.equals(reviewId, that.reviewId) && Objects.equals(userId, that.userId);
+		ReviewReaction that = (ReviewReaction) o;
+		return Objects.equals(reviewId, that.reviewId) && Objects.equals(userId, that.userId);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(reviewId, userId, isPositive);
+		return Objects.hash(reviewId, userId);
 	}
 
 	@Override
 	public String toString() {
-		return "ReviewLike{" +
+		return "ReviewReaction{" +
 				"id=" + reviewId +
 				", userId=" + userId +
-				", isPositive=" + isPositive +
 				'}';
 	}
 }

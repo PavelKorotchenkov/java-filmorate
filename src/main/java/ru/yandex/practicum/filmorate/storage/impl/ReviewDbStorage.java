@@ -9,7 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.model.ReviewLike;
+import ru.yandex.practicum.filmorate.model.ReviewReaction;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
@@ -30,19 +30,19 @@ public class ReviewDbStorage implements ReviewStorage {
 
 	@Override
 	public Review addReview(Review review) {
-		log.info("Positive?: " + review.isPositive());
 		PreparedStatementCreatorFactory pscf = new PreparedStatementCreatorFactory(
-				"INSERT INTO reviews (content, isPositive, user_id, film_id) " +
-						"VALUES (?, ?, ?, ?)",
-				Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.INTEGER);
+				"INSERT INTO reviews (content, isPositive, user_id, film_id, useful) " +
+						"VALUES (?, ?, ?, ?, ?)",
+				Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.INTEGER, Types.INTEGER);
 		pscf.setReturnGeneratedKeys(true);
 		PreparedStatementCreator psc =
 				pscf.newPreparedStatementCreator(
 						Arrays.asList(
 								review.getContent(),
-								review.isPositive(),
+								review.getIsPositive(),
 								review.getUserId(),
-								review.getFilmId()));
+								review.getFilmId(),
+								0));
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(psc, keyHolder);
 		long reviewId = keyHolder.getKey().longValue();
@@ -55,49 +55,49 @@ public class ReviewDbStorage implements ReviewStorage {
 	@Override
 	public Review updateReview(Review review) {
 		Long id = review.getReviewId();
-		findReviewById(id); //проверяем, что обзор есть в базе
+		findReviewById(id); //проверяем, что отзыв есть в базе
 		jdbcTemplate.update("UPDATE reviews " +
-						"SET content = ?, isPositive = ?, user_id = ?, film_id = ?, useful = ? " +
+						"SET content = ?, isPositive = ? " +
 						"WHERE id = ?",
-				review.getContent(), review.isPositive(), review.getUserId(), review.getFilmId(), review.getUseful(), id);
+				review.getContent(), review.getIsPositive(), id);
 
-		log.info("Обновлен обзор: " + review);
+		Review updReview = findReviewById(id);
+		log.info("Обновлен отзыв: " + updReview);
 
-		return review;
+		return updReview;
 	}
 
 	@Override
 	public void deleteReview(Long reviewId) {
 		jdbcTemplate.update("DELETE FROM reviews " +
-						"WHERE reviewId = ?",
+						"WHERE id = ?",
 				reviewId);
 
-		log.info("Удален обзор с id: " + reviewId);
+		log.info("Удален отзыв с id: " + reviewId);
 	}
 
 	@Override
 	public Review findReviewById(Long reviewId) {
 		List<Review> result = jdbcTemplate.query(
 				"SELECT * " +
-						"FROM reviews r " +
-						"WHERE r.id = ? " +
-						"ORDER BY useful DESC;",
+						"FROM reviews " +
+						"WHERE id = ?",
 				RowMapper::mapRowToReview,
 				reviewId
 		);
 		if (result.size() != 1) {
-			log.info("Обзор с идентификатором {} не найден.", reviewId);
-			throw new NotFoundException("Обзор с id " + reviewId + " не найден.");
+			log.info("Отзыв с id {} не найден", reviewId);
+			throw new NotFoundException("Отзыв с id " + reviewId + " не найден");
 		}
 
 		Review review = result.get(0);
-		log.info("Найден обзор с id: {}", reviewId);
+		log.info("Найден отзыв с id: {}", reviewId);
 		return review;
 	}
 
 	@Override
 	public List<Review> getAllReviewsByFilmId(Long filmId, int count) {
-		log.info("Запрос обзоров к фильму с id: {}.", filmId);
+		log.info("Запрос отзывов к фильму с id: {}", filmId);
 		return jdbcTemplate.query(
 				"SELECT * FROM reviews " +
 						"WHERE film_id = ? " +
@@ -110,7 +110,7 @@ public class ReviewDbStorage implements ReviewStorage {
 
 	@Override
 	public List<Review> getAllReviews(int count) {
-		log.info("Запрос всех обзоров.");
+		log.info("Запрос всех отзывов");
 		return jdbcTemplate.query(
 				"SELECT * FROM reviews " +
 						"ORDER BY useful DESC " +
@@ -121,13 +121,12 @@ public class ReviewDbStorage implements ReviewStorage {
 
 	@Override
 	public void addLike(Long reviewId, Long userId) {
-		List<ReviewLike> result = jdbcTemplate.query(
+		List<ReviewReaction> result = jdbcTemplate.query(
 				"SELECT review_id, user_id " +
 						"FROM reviews_likes " +
 						"WHERE review_id = ? " +
-						"AND user_id = ? " +
-						"AND isPositive = true;",
-				RowMapper::mapRowToReviewLike,
+						"AND user_id = ?",
+				RowMapper::mapRowToReviewReaction,
 				reviewId,
 				userId
 		);
@@ -145,20 +144,18 @@ public class ReviewDbStorage implements ReviewStorage {
 							"WHERE id = ?",
 					reviewId
 			);
+			log.info("Добавлен лайк отзыву {} от юзера {}", reviewId, userId);
 		}
-
-		log.info("Добавлен лайк обзору {} от юзера {}", reviewId, userId);
 	}
 
 	@Override
 	public void addDislike(Long reviewId, Long userId) {
-		List<ReviewLike> result = jdbcTemplate.query(
+		List<ReviewReaction> result = jdbcTemplate.query(
 				"SELECT review_id, user_id " +
 						"FROM reviews_likes " +
 						"WHERE review_id = ? " +
-						"AND user_id = ? " +
-						"AND isPositive = false;",
-				RowMapper::mapRowToReviewLike,
+						"AND user_id = ?",
+				RowMapper::mapRowToReviewReaction,
 				reviewId,
 				userId
 		);
@@ -176,9 +173,9 @@ public class ReviewDbStorage implements ReviewStorage {
 							"WHERE id = ?",
 					reviewId
 			);
-		}
 
-		log.info("Добавлен дизлайк обзору {} от юзера {}", reviewId, userId);
+			log.info("Добавлен дизлайк отзыву {} от юзера {}", reviewId, userId);
+		}
 	}
 
 	@Override
@@ -187,7 +184,8 @@ public class ReviewDbStorage implements ReviewStorage {
 				"DELETE FROM reviews_likes " +
 						"WHERE review_id = ? " +
 						"AND user_id = ? " +
-						"AND isPositive = true;"
+						"AND isPositive = true;",
+				reviewId, userId
 		);
 
 		jdbcTemplate.update(
@@ -197,16 +195,18 @@ public class ReviewDbStorage implements ReviewStorage {
 				reviewId
 		);
 
-		log.info("Удален лайк обзору {} от юзера {}", reviewId, userId);
+		log.info("Удален лайк отзыву {} от юзера {}", reviewId, userId);
 	}
 
 	@Override
 	public void deleteDislike(Long reviewId, Long userId) {
+
 		jdbcTemplate.update(
 				"DELETE FROM reviews_likes " +
 						"WHERE review_id = ? " +
 						"AND user_id = ? " +
-						"AND isPositive = false;"
+						"AND isPositive = false;",
+				reviewId, userId
 		);
 
 		jdbcTemplate.update(
@@ -216,6 +216,6 @@ public class ReviewDbStorage implements ReviewStorage {
 				reviewId
 		);
 
-		log.info("Удален дизлайк обзору {} от юзера {}", reviewId, userId);
+		log.info("Удален дизлайк отзыву {} от юзера {}", reviewId, userId);
 	}
 }

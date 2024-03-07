@@ -73,16 +73,15 @@ public class RowMapper {
 		boolean isPositive = row.getBoolean("isPositive");
 		Long userId = row.getLong("user_id");
 		Long filmId = row.getLong("film_id");
-		int useful = row.getInt("useful");
+		Long useful = row.getLong("useful");
 
 		return new Review(id, content, isPositive, userId, filmId, useful);
 	}
 
-	public static ReviewLike mapRowToReviewLike(ResultSet row, int rowNum) throws SQLException {
+	public static ReviewReaction mapRowToReviewReaction(ResultSet row, int rowNum) throws SQLException {
 		Long reviewId = row.getLong("review_id");
 		Long userId = row.getLong("user_id");
-		boolean isPositive = row.getBoolean("isPositive");
 
-		return new ReviewLike(reviewId, userId, isPositive);
+		return new ReviewReaction(reviewId, userId);
 	}
 }

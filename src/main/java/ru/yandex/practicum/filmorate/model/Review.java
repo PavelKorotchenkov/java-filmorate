@@ -1,10 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Getter
@@ -13,11 +12,16 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Review {
 	private Long reviewId;
+	@NotNull
+	@NotBlank
 	private String content;
-	private boolean isPositive;
+	@NotNull
+	private Boolean isPositive;
+	@NotNull
 	private Long userId;
+	@NotNull
 	private Long filmId;
-	private int useful;
+	private Long useful;
 
 	@Override
 	public boolean equals(Object o) {
