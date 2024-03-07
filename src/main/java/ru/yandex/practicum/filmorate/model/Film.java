@@ -37,6 +37,8 @@ public class Film {
 
 	private Set<Genre> genres = new HashSet<>();
 
+	private Set<Director> directors = new HashSet<>();
+
 	public Film(Long id, String name, String description, LocalDate releaseDate, long duration, Mpa mpa) {
 		this.id = id;
 		this.name = name;

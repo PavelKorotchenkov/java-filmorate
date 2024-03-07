@@ -46,6 +46,11 @@ public class InMemoryFilmStorage implements FilmStorage {
 		return films.put(film.getId(), film);
 	}
 
+	@Override
+	public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
+		return null;
+	}
+
 	public Film delete(Long filmId) {
 		if (!films.containsKey(filmId)) {
 			throw new NotFoundException("No film in database with id " + filmId);

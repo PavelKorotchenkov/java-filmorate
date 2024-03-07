@@ -52,6 +52,21 @@ public class RowMapper {
 			}
 		}
 		film.setGenres(genreSet);
+
+		String directorRowData = row.getString("director");
+		Set<Director> directorSet = new HashSet<>();
+
+		if (directorRowData != null && !directorRowData.isEmpty() && !directorRowData.isBlank()) {
+			String[] directorRow = directorRowData.split(";");
+			for (String s : directorRow) {
+				String[] finalDirector = s.split(",");
+				long directorId = Long.parseLong(finalDirector[0]);
+				String directorName = finalDirector[1];
+				Director director = new Director(directorId, directorName);
+				directorSet.add(director);
+			}
+		}
+		film.setDirectors(directorSet);
 		return film;
 	}
 
@@ -65,5 +80,11 @@ public class RowMapper {
 		Long id = row.getLong("id");
 		String name = row.getString("name");
 		return new Mpa(id, name);
+	}
+
+	public static Director mapRowToDirector(ResultSet row, int rowNum) throws SQLException {
+		Long id = row.getLong("id");
+		String name = row.getString("name");
+		return new Director(id, name);
 	}
 }

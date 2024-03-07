@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -36,11 +37,14 @@ public class FilmDbStorage implements FilmStorage {
 	public Film findFilmById(Long id) {
 		List<Film> result = jdbcTemplate.query(
 				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
-						"string_agg(g.id || ',' || g.name, ';') AS genre " +
+						"string_agg(g.id || ',' || g.name, ';') AS genre, " +
+						"string_agg(d.id || ',' || d.name, ';') AS director " +
 						"FROM films f " +
 						"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
 						"LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
 						"LEFT JOIN genre AS g ON fg.genre_id = g.id " +
+						"LEFT JOIN film_director AS fd ON f.id = fd.film_id " +
+						"LEFT JOIN director AS d ON fd.director_id = d.id " +
 						"WHERE f.id = ? " +
 						"GROUP BY f.id,f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name;",
 				RowMapper::mapRowToFilm,
@@ -61,11 +65,14 @@ public class FilmDbStorage implements FilmStorage {
 		log.info("Запрос всех фильмов");
 		List<Film> films = jdbcTemplate.query(
 				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
-						"string_agg(g.id || ',' || g.name, ';') AS genre " +
+						"string_agg(g.id || ',' || g.name, ';') AS genre, " +
+						"string_agg(d.id || ',' || d.name, ';') AS director " +
 						"FROM films f " +
 						"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
 						"LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
 						"LEFT JOIN genre AS g ON fg.genre_id = g.id " +
+						"LEFT JOIN film_director AS fd ON f.id = fd.film_id " +
+						"LEFT JOIN director AS d ON fd.director_id = d.id " +
 						"GROUP BY f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name;",
 				RowMapper::mapRowToFilm);
 		return films;
@@ -92,6 +99,7 @@ public class FilmDbStorage implements FilmStorage {
 		log.info("В базу добавлен новый фильм: " + film);
 
 		updateFilmGenres(film, film.getGenres());
+		updateFilmDirector(film);
 
 		return film;
 	}
@@ -109,8 +117,49 @@ public class FilmDbStorage implements FilmStorage {
 
 		updateFilmGenres(film, film.getGenres()); //вносим строку фильм-жанр в связанную таблицу
 		film.setGenres(getGenres(film.getId()));  //получаем названия жанров, обновляем жанры в Film
+		updateFilmDirector(film); //вносим строку фильм-режиссёр в связанную таблицу
 
 		return film;
+	}
+
+	@Override
+	public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
+		String orderBy = "";
+		switch (sortBy) {
+			case ("year"):
+				orderBy = "f.releaseDate";
+				break;
+			case ("likes"):
+				orderBy = "user_like_count";
+				break;
+			default:
+				orderBy = "fd.director_id";
+				break;
+		}
+
+		List<Film> result = jdbcTemplate.query(
+				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+						"string_agg(g.id || ',' || g.name, ';') AS genre, " +
+						"string_agg(d.id || ',' || d.name, ';') AS director, " +
+						"COUNT(ufl.user_id) AS user_like_count " +
+						"FROM film_director fd " +
+						"LEFT JOIN films AS f ON f.id = fd.film_id " +
+						"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
+						"LEFT JOIN user_film_like ufl on f.id = ufl.film_id " +
+						"LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
+						"LEFT JOIN genre AS g ON fg.genre_id = g.id " +
+						"LEFT JOIN director AS d ON fd.director_id = d.id " +
+						"WHERE fd.director_id = ? " +
+						"GROUP BY f.id " +
+						"ORDER BY " + orderBy + " ASC;",
+				RowMapper::mapRowToFilm,
+				directorId
+		);
+		if (result.isEmpty()) {
+			log.info("Режиссёр с идентификатором {} не найден.", directorId);
+			throw new NotFoundException("Режиссёр с id " + directorId + " не найден.");
+		}
+		return result;
 	}
 
 	private Set<Genre> getGenres(Long id) {
@@ -139,5 +188,16 @@ public class FilmDbStorage implements FilmStorage {
 					film.getId(), genre.getId());
 			log.info("К фильму {} добавлен новый жанр {} в связанную таблицу film_genre", film, genre);
 		}
+	}
+
+	public Film updateFilmDirector(Film film) {
+		jdbcTemplate.update("DELETE FROM film_director WHERE film_id = ?",
+				film.getId());
+		for (Director director : film.getDirectors()) {
+			jdbcTemplate.update("INSERT INTO film_director (film_id, director_id) VALUES (?, ?)",
+					film.getId(), director.getId());
+			log.info("К фильму {} добавлен режиссёр {} в связанную таблицу film_director", film, director);
+		}
+		return film;
 	}
 }
