@@ -14,6 +14,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Film {
 	private Long id;
 
