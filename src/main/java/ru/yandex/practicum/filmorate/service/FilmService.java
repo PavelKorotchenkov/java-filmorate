@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
@@ -37,8 +36,9 @@ public class FilmService {
 		return filmStorage.update(film);
 	}
 
-	public List<Film> showPopular(int count) {
-		return userFilmLikeStorage.findPopular(count);
+	public List<Film> showPopularByGenreAndDate(int count,Integer genreId, Integer year) {
+
+		return userFilmLikeStorage.findPopularByGenreAndDate(count, genreId, year);
 	}
 
 	public List<Film> getFilmCommon(Long userId, Long friendId) {
@@ -47,5 +47,9 @@ public class FilmService {
 
 	public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
 		return filmStorage.getFilmsWithDirector(directorId, sortBy);
+	}
+
+	public void deleteFilm(Long id) {
+		filmStorage.deleteById(id);
 	}
 }

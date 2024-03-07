@@ -22,30 +22,31 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
-	@Override
-	public List<Film> findPopular(int count) {
-		log.info("Находим топ {} популярных фильмов", count);
-		return jdbcTemplate.query(
-				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
-						"string_agg(g.id || ',' || g.name, ';') AS genre, " +
-						"string_agg(d.id || ',' || d.name, ';') AS director, " +
-						"COUNT(ufl.user_id) AS user_like_count " +
-						"FROM films f " +
-						"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
-						"LEFT JOIN user_film_like ufl on f.id = ufl.film_id " +
-						"LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
-						"LEFT JOIN genre AS g ON fg.genre_id = g.id " +
-						"LEFT JOIN film_director AS fd ON f.id = fd.film_id " +
-						"LEFT JOIN director AS d ON fd.director_id = d.id " +
-						"GROUP BY f.id " +
-						"ORDER BY user_like_count DESC " +
-						"LIMIT ?",
-				RowMapper::mapRowToFilm,
-				count);
-	}
-
-
+    @Override
+    public List<Film> findPopularByGenreAndDate(int count,Integer genreId, Integer year) {
+        log.info("Находим топ {} популярных фильмов", count);
+        return jdbcTemplate.query(
+                "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+                        "string_agg(g.id || ',' || g.name, ';') AS genre, " +
+                        "string_agg(d.id || ',' || d.name, ';') AS director, " +
+                        "COUNT(ufl.user_id) AS user_like_count " +
+                        "FROM films f " +
+                        "LEFT JOIN mpa ON f.mpa_id = mpa.id " +
+                        "LEFT JOIN user_film_like ufl on f.id = ufl.film_id " +
+                        "LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
+                        "LEFT JOIN genre AS g ON fg.genre_id = g.id " +
+                        "LEFT JOIN film_director AS fd ON f.id = fd.film_id " +
+                        "LEFT JOIN director AS d ON fd.director_id = d.id" +
+                        " WHERE f.id IN (SELECT f.id" +
+                        " FROM films AS f " +
+                        " LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
+                        " WHERE (? IS NULL OR fg.genre_id = ?) " +
+                        " AND (? IS NULL OR YEAR(f.releaseDate) = ?)) "  +
+                        "GROUP BY f.id " +
+                        "ORDER BY user_like_count DESC " +
+                        "LIMIT ?",
+                RowMapper::mapRowToFilm,genreId, genreId, year, year, count);
+    }
     @Override
     public void addLike(Long filmId, Long userId) {
         log.info("Добавляем лайк фильму {} от юзера {}", filmId, userId);

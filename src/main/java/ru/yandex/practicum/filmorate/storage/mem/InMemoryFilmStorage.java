@@ -6,18 +6,15 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-	private final Map<Long, Film> films;
+	private final  Map<Long, Film> films = new HashMap<>();
 	private Long filmID = 0L;
 
-	@Autowired
-	public InMemoryFilmStorage(Map<Long, Film> map) {
-		this.films = map;
-	}
 
 	@Override
 	public Film findFilmById(Long filmId) {
@@ -49,6 +46,11 @@ public class InMemoryFilmStorage implements FilmStorage {
 	@Override
 	public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
 		return null;
+	}
+
+	@Override
+	public boolean deleteById(Long id) {
+		return false;
 	}
 
 	public Film delete(Long filmId) {

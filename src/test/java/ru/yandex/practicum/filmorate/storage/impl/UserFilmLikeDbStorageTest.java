@@ -57,7 +57,7 @@ class UserFilmLikeDbStorageTest {
 		userFilmLikeDbStorage.addLike(fid1, uid2);
 		userFilmLikeDbStorage.addLike(fid2, uid1);
 
-		List<Film> popular = new ArrayList<>(userFilmLikeDbStorage.findPopular(2));
+		List<Film> popular = new ArrayList<>(userFilmLikeDbStorage.findPopularByGenreAndDate(2, null, null));
 		Assertions.assertEquals(fid1, popular.get(0).getId());
 		Assertions.assertEquals(fid2, popular.get(1).getId());
 	}
@@ -83,7 +83,7 @@ class UserFilmLikeDbStorageTest {
 
 		userFilmLikeDbStorage.addLike(fid1, uid1);
 
-		List<Film> popular = new ArrayList<>(userFilmLikeDbStorage.findPopular(1));
+		List<Film> popular = new ArrayList<>(userFilmLikeDbStorage.findPopularByGenreAndDate(1, null, null));
 		Assertions.assertEquals(fid1, popular.get(0).getId());
 	}
 
@@ -126,7 +126,7 @@ class UserFilmLikeDbStorageTest {
 
 		userFilmLikeDbStorage.deleteLike(fid1, uid1);
 
-		List<Film> popular = new ArrayList<>(userFilmLikeDbStorage.findPopular(2));
+		List<Film> popular = new ArrayList<>(userFilmLikeDbStorage.findPopularByGenreAndDate(2, null, null));
 		Assertions.assertEquals(fid2, popular.get(0).getId());
 		Assertions.assertEquals(fid1, popular.get(1).getId());
 	}
