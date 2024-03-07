@@ -23,7 +23,7 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
     }
 
     @Override
-    public List<Film> findPopularByGenreAndDate(int count,Integer genreId, Integer year) {
+    public List<Film> findPopularByGenreAndDate(int count, Integer genreId, Integer year) {
         log.info("Находим топ {} популярных фильмов", count);
         return jdbcTemplate.query(
                 "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
@@ -41,12 +41,13 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
                         " FROM films AS f " +
                         " LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
                         " WHERE (? IS NULL OR fg.genre_id = ?) " +
-                        " AND (? IS NULL OR YEAR(f.releaseDate) = ?)) "  +
+                        " AND (? IS NULL OR YEAR(f.releaseDate) = ?)) " +
                         "GROUP BY f.id " +
                         "ORDER BY user_like_count DESC " +
                         "LIMIT ?",
-                RowMapper::mapRowToFilm,genreId, genreId, year, year, count);
+                RowMapper::mapRowToFilm, genreId, genreId, year, year, count);
     }
+
     @Override
     public void addLike(Long filmId, Long userId) {
         log.info("Добавляем лайк фильму {} от юзера {}", filmId, userId);
