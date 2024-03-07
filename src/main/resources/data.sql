@@ -1,5 +1,7 @@
 DELETE FROM film_genre;
 DELETE FROM user_film_like;
+DELETE FROM reviews_likes;
+DELETE FROM reviews;
 DELETE FROM films;
 DELETE FROM mpa;
 DELETE FROM genre;

@@ -66,4 +66,23 @@ public class RowMapper {
 		String name = row.getString("name");
 		return new Mpa(id, name);
 	}
+
+	public static Review mapRowToReview(ResultSet row, int rowNum) throws SQLException {
+		Long id = row.getLong("id");
+		String content = row.getString("content");
+		boolean isPositive = row.getBoolean("isPositive");
+		Long userId = row.getLong("user_id");
+		Long filmId = row.getLong("film_id");
+		int useful = row.getInt("useful");
+
+		return new Review(id, content, isPositive, userId, filmId, useful);
+	}
+
+	public static ReviewLike mapRowToReviewLike(ResultSet row, int rowNum) throws SQLException {
+		Long reviewId = row.getLong("review_id");
+		Long userId = row.getLong("user_id");
+		boolean isPositive = row.getBoolean("isPositive");
+
+		return new ReviewLike(reviewId, userId, isPositive);
+	}
 }
