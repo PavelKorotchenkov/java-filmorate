@@ -13,6 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 @Slf4j
+/*
+FilmController
+ */
 public class FilmController {
     private final FilmService filmService;
     private final LikeService likeService;
@@ -65,6 +68,13 @@ public class FilmController {
         return filmService.showPopular(count);
     }
 
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getFilmsWithDirector(@PathVariable Long directorId, @RequestParam(defaultValue = "10") String sortBy) {
+        log.info("Получен запрос на получение фильмов режиссёра {} с сортировкой по {}", directorId, sortBy);
+        return filmService.getFilmsWithDirector(directorId, sortBy);
+    }
+
     @GetMapping("/common")
     public List<Film> getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
         log.info("Получен запрос на общие фильмы между пользователями {} and {}", userId, friendId);
@@ -77,3 +87,4 @@ public class FilmController {
         filmService.deleteFilm(id);
     }
 }
+

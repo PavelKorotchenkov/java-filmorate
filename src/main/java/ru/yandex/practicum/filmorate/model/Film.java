@@ -14,8 +14,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Film {
 	private Long id;
 
@@ -36,6 +36,18 @@ public class Film {
 	private Mpa mpa;
 
 	private Set<Genre> genres = new HashSet<>();
+
+	private Set<Director> directors = new HashSet<>();
+
+	public Film(Long id, String name, String description, LocalDate releaseDate, long duration, Mpa mpa, Set<Genre> genres) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.releaseDate = releaseDate;
+		this.duration = duration;
+		this.mpa = mpa;
+		this.genres = genres;
+	}
 
 	public Film(Long id, String name, String description, LocalDate releaseDate, long duration, Mpa mpa) {
 		this.id = id;

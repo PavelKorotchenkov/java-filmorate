@@ -47,8 +47,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 	}
 
 	@Override
-	public boolean deleteById(Long id) {
-		return false;
+	public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
+		return null;
 	}
 
 	public Film delete(Long filmId) {
