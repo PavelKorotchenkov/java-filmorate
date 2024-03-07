@@ -48,6 +48,7 @@ public class Film {
 		this.mpa = mpa;
 		this.genres = genres;
 	}
+
 	public Film(Long id, String name, String description, LocalDate releaseDate, long duration, Mpa mpa) {
 		this.id = id;
 		this.name = name;
