@@ -27,7 +27,8 @@ public class FriendshipService {
 	}
 
 	public List<User> getFriends(Long id) {
-		return friendshipStorage.findAllFriends(id);
+		User user = userStorage.findUserById(id); //проверяем, что пользователь есть в базе
+		return friendshipStorage.findAllFriends(user.getId());
 	}
 
 	public List<User> showMutualFriends(Long userId, Long friendId) {
