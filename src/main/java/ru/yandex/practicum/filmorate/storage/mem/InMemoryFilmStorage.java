@@ -12,51 +12,51 @@ import java.util.Map;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-	private final  Map<Long, Film> films = new HashMap<>();
-	private Long filmID = 0L;
+    private final Map<Long, Film> films = new HashMap<>();
+    private Long filmID = 0L;
 
 
-	@Override
-	public Film findFilmById(Long filmId) {
-		if (!films.containsKey(filmId)) {
-			throw new NotFoundException("No film in database with id " + filmId);
-		}
-		return films.get(filmId);
-	}
+    @Override
+    public Film findFilmById(Long filmId) {
+        if (!films.containsKey(filmId)) {
+            throw new NotFoundException("No film in database with id " + filmId);
+        }
+        return films.get(filmId);
+    }
 
-	@Override
-	public List<Film> findAllFilms() {
-		return List.copyOf(films.values());
-	}
+    @Override
+    public List<Film> findAllFilms() {
+        return List.copyOf(films.values());
+    }
 
-	@Override
-	public Film save(Film film) {
-		film.setId(++filmID);
-		return films.put(film.getId(), film);
-	}
+    @Override
+    public Film save(Film film) {
+        film.setId(++filmID);
+        return films.put(film.getId(), film);
+    }
 
-	@Override
-	public Film update(Film film) {
-		if (!films.containsKey(film.getId())) {
-			throw new NotFoundException("No film in database with id " + film.getId());
-		}
-		return films.put(film.getId(), film);
-	}
+    @Override
+    public Film update(Film film) {
+        if (!films.containsKey(film.getId())) {
+            throw new NotFoundException("No film in database with id " + film.getId());
+        }
+        return films.put(film.getId(), film);
+    }
 
-	@Override
-	public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
-		return null;
-	}
+    @Override
+    public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
+        return null;
+    }
 
-	@Override
-	public boolean deleteById(Long id) {
-		return false;
-	}
+    @Override
+    public boolean deleteById(Long id) {
+        return false;
+    }
 
-	public Film delete(Long filmId) {
-		if (!films.containsKey(filmId)) {
-			throw new NotFoundException("No film in database with id " + filmId);
-		}
-		return films.remove(filmId);
-	}
+    public Film delete(Long filmId) {
+        if (!films.containsKey(filmId)) {
+            throw new NotFoundException("No film in database with id " + filmId);
+        }
+        return films.remove(filmId);
+    }
 }
