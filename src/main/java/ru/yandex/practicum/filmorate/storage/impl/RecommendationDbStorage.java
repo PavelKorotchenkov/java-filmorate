@@ -43,12 +43,15 @@ public class RecommendationDbStorage {
         Optional<User> overlapUser = getUserMaxOverlapLikes(id);
         if (overlapUser.isEmpty()) return new ArrayList<>();
 
-        String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, " +
-                "mpa.name AS mpa_name, string_agg(g.id || ',' || g.name, ';') AS genre \n" +
+        String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, \n" +
+                "string_agg(g.id || ',' || g.name, ';') AS genre, \n" +
+                "string_agg(d.id || ',' || d.name, ';') AS director \n" +
                 "FROM FILMS f \n" +
                 "LEFT JOIN mpa ON f.mpa_id = mpa.id\n" +
                 "LEFT JOIN film_genre AS fg ON f.id = fg.film_id\n" +
                 "LEFT JOIN genre AS g ON fg.genre_id = g.id\n" +
+                "LEFT JOIN film_director AS fd ON f.id = fd.film_id\n" +
+                "LEFT JOIN director AS d ON fd.director_id = d.id\n" +
                 "WHERE f.id IN (\n" +
                 "    SELECT DISTINCT a.film_id\n" +
                 "    FROM user_film_like AS a\n" +
