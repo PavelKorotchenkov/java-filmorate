@@ -1,23 +1,28 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserFilmLikeStorage userFilmLikeStorage;
+    private final UserStorage userStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserFilmLikeStorage userFilmLikeStorage) {
+    public FilmService(FilmStorage filmStorage, UserFilmLikeStorage userFilmLikeStorage, UserStorage userStorage) {
         this.filmStorage = filmStorage;
-
         this.userFilmLikeStorage = userFilmLikeStorage;
+        this.userStorage = userStorage;
     }
 
     public Film addFilm(Film film) {
@@ -42,7 +47,9 @@ public class FilmService {
     }
 
     public List<Film> getFilmCommon(Long userId, Long friendId) {
-        return userFilmLikeStorage.getAllCommonFilms(userId, friendId);
+        User user = userStorage.findUserById(userId);
+        User friend = userStorage.findUserById(friendId);
+        return userFilmLikeStorage.getAllCommonFilms(user.getId(), friend.getId());
     }
 
     public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
