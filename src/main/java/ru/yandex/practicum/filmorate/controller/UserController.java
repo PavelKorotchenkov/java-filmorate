@@ -80,9 +80,9 @@ public class UserController {
     }
   
     @GetMapping("{id}/recommendations")
-	  public List<Film> getRecommendation(@PathVariable long id) {
-		    log.info("Получен запрос - пользователь с id {} получает список рекомендованных фильмов", id);
-		    return userService.getRecommendation(id);
-	  }
+    public List<Film> getRecommendation(@PathVariable long id) {
+        log.info("Получен запрос - пользователь с id {} получает список рекомендованных фильмов", id);
+		return userService.getRecommendation(id);
+    }
 
 }
