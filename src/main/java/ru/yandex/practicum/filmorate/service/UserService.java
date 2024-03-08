@@ -56,7 +56,7 @@ public class UserService {
         }
         log.info("Фильм успешно удален с id {}", id);
     }
-  
+
     public List<Film> getRecommendation(long id) {
       return recommendationDbStorage.getRecommendation(id);
     }
