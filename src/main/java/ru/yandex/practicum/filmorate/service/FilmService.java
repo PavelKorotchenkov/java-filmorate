@@ -10,37 +10,46 @@ import java.util.List;
 
 @Service
 public class FilmService {
-	private final FilmStorage filmStorage;
-	private final UserFilmLikeStorage userFilmLikeStorage;
+    private final FilmStorage filmStorage;
+    private final UserFilmLikeStorage userFilmLikeStorage;
 
-	@Autowired
-	public FilmService(FilmStorage filmStorage, UserFilmLikeStorage userFilmLikeStorage) {
-		this.filmStorage = filmStorage;
+    @Autowired
+    public FilmService(FilmStorage filmStorage, UserFilmLikeStorage userFilmLikeStorage) {
+        this.filmStorage = filmStorage;
 
-		this.userFilmLikeStorage = userFilmLikeStorage;
-	}
+        this.userFilmLikeStorage = userFilmLikeStorage;
+    }
 
-	public Film addFilm(Film film) {
-		return filmStorage.save(film);
-	}
+    public Film addFilm(Film film) {
+        return filmStorage.save(film);
+    }
 
-	public List<Film> getAllFilms() {
-		return filmStorage.findAllFilms();
-	}
+    public List<Film> getAllFilms() {
+        return filmStorage.findAllFilms();
+    }
 
-	public Film getFilmById(Long filmId) {
-		return filmStorage.findFilmById(filmId);
-	}
+    public Film getFilmById(Long filmId) {
+        return filmStorage.findFilmById(filmId);
+    }
 
-	public Film updateFilm(Film film) {
-		return filmStorage.update(film);
-	}
+    public Film updateFilm(Film film) {
+        return filmStorage.update(film);
+    }
 
-	public List<Film> showPopular(int count) {
-		return userFilmLikeStorage.findPopular(count);
-	}
+    public List<Film> showPopularByGenreAndDate(int count, Integer genreId, Integer year) {
 
-	public List<Film> getFilmCommon(Long userId, Long friendId) {
-		return userFilmLikeStorage.getAllCommonFilms(userId, friendId);
-	}
+        return userFilmLikeStorage.findPopularByGenreAndDate(count, genreId, year);
+    }
+
+    public List<Film> getFilmCommon(Long userId, Long friendId) {
+        return userFilmLikeStorage.getAllCommonFilms(userId, friendId);
+    }
+
+    public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
+        return filmStorage.getFilmsWithDirector(directorId, sortBy);
+    }
+
+    public void deleteFilm(Long id) {
+        filmStorage.deleteById(id);
+    }
 }
