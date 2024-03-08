@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.RecommendationStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.storage.impl.RecommendationDbStorage;
 
 import java.util.List;
 
@@ -16,13 +16,13 @@ import java.util.List;
 public class UserService {
 
     private final UserStorage userStorage;
-	  private final RecommendationDbStorage recommendationDbStorage;
+    private final RecommendationStorage recommendationStorage;
 
-	  @Autowired
-	  public UserService(UserStorage userStorage, RecommendationDbStorage recommendationDbStorage) {
-		    this.userStorage = userStorage;
-		    this.recommendationDbStorage = recommendationDbStorage;
-	  }
+    @Autowired
+    public UserService(UserStorage userStorage, RecommendationStorage recommendationStorage) {
+        this.userStorage = userStorage;
+        this.recommendationStorage = recommendationStorage;
+    }
 
     public User addUser(User user) {
         if (!validateUserName(user)) {
@@ -58,7 +58,7 @@ public class UserService {
     }
 
     public List<Film> getRecommendation(long id) {
-      return recommendationDbStorage.getRecommendation(id);
+      return recommendationStorage.getRecommendation(id);
     }
 
     private boolean validateUserName(User user) {

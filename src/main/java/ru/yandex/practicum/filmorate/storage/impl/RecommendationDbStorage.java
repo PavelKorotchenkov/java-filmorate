@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.RecommendationStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class RecommendationDbStorage {
+public class RecommendationDbStorage implements RecommendationStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -39,6 +40,7 @@ public class RecommendationDbStorage {
         }
     }
 
+    @Override
     public List<Film> getRecommendation(long id) {
         Optional<User> overlapUser = getUserMaxOverlapLikes(id);
         if (overlapUser.isEmpty()) return new ArrayList<>();
