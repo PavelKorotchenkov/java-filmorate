@@ -78,7 +78,7 @@ public class UserController {
         log.info("Получен запрос на удаление пользователя с id {}", id);
         userService.deleteUser(id);
     }
-  
+
     @GetMapping("{id}/recommendations")
     public List<Film> getRecommendation(@PathVariable long id) {
         log.info("Получен запрос - пользователь с id {} получает список рекомендованных фильмов", id);
