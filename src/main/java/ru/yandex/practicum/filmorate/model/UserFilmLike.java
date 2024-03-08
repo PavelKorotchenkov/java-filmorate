@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 @Getter
@@ -12,7 +11,6 @@ import java.util.Objects;
 public class UserFilmLike {
 	private Long filmId;
 	private Long userId;
-	//private LocalDate createdAt;
 
 	@Override
 	public boolean equals(Object o) {
@@ -32,7 +30,6 @@ public class UserFilmLike {
 		return "UserFilmLike{" +
 				"filmId=" + filmId +
 				", userId=" + userId +
-			//	", createdAt=" + createdAt +
 				'}';
 	}
 }
