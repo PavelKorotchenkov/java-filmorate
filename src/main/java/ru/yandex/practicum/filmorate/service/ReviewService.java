@@ -66,18 +66,18 @@ public class ReviewService {
 	public void addDislike(Long reviewId, Long userId) {
 		Review review = reviewStorage.findReviewById(reviewId);
 		User user = userStorage.findUserById(userId);
-		reviewStorage.addLike(review.getReviewId(), user.getId());
+		reviewStorage.addDislike(review.getReviewId(), user.getId());
 	}
 
 	public void deleteLike(Long reviewId, Long userId) {
 		Review review = reviewStorage.findReviewById(reviewId);
 		User user = userStorage.findUserById(userId);
-		reviewStorage.addLike(review.getReviewId(), user.getId());
+		reviewStorage.deleteLike(review.getReviewId(), user.getId());
 	}
 
 	public void deleteDislike(Long reviewId, Long userId) {
 		Review review = reviewStorage.findReviewById(reviewId);
 		User user = userStorage.findUserById(userId);
-		reviewStorage.addLike(review.getReviewId(), user.getId());
+		reviewStorage.deleteDislike(review.getReviewId(), user.getId());
 	}
 }
