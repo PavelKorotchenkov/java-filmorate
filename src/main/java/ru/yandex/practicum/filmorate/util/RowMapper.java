@@ -87,4 +87,22 @@ public class RowMapper {
 		String name = row.getString("name");
 		return new Director(id, name);
 	}
+
+	public static Review mapRowToReview(ResultSet row, int rowNum) throws SQLException {
+		Long id = row.getLong("id");
+		String content = row.getString("content");
+		boolean isPositive = row.getBoolean("isPositive");
+		Long userId = row.getLong("user_id");
+		Long filmId = row.getLong("film_id");
+		Long useful = row.getLong("useful");
+
+		return new Review(id, content, isPositive, userId, filmId, useful);
+	}
+
+	public static ReviewReaction mapRowToReviewReaction(ResultSet row, int rowNum) throws SQLException {
+		Long reviewId = row.getLong("review_id");
+		Long userId = row.getLong("user_id");
+
+		return new ReviewReaction(reviewId, userId);
+	}
 }

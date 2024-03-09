@@ -14,7 +14,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
     private Long filmID = 0L;
 
-
     @Override
     public Film findFilmById(Long filmId) {
         if (!films.containsKey(filmId)) {

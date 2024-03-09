@@ -70,12 +70,16 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
 
     @Override
     public List<Film> getAllCommonFilms(Long userId, Long friendId) {
+        log.info("Получен запрос в DATABASE на общие фильмы между пользователями {} and {}", userId, friendId);
         String sqlQuery = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, m.name AS mpa_name, " +
-                "string_agg(G2.id || ',' || G2.name, ';') AS genre " +
+                "string_agg(G2.id || ',' || G2.name, ';') AS genre, " +
+                "string_agg(D.id || ',' || D.name, ';') AS director " +
                 "FROM FILMS f " +
                 "         LEFT JOIN FILM_GENRE FG ON f.ID = FG.FILM_ID " +
                 "         LEFT JOIN MPA M ON M.ID = f.MPA_ID " +
                 "         LEFT JOIN GENRE G2 ON FG.GENRE_ID = G2.ID " +
+                "         LEFT JOIN film_director fd ON f.id = fd.film_id " +
+                "         LEFT JOIN director D ON fd.director_id = D.id " +
                 "WHERE f.ID IN ( " +
                 "    SELECT l.FILM_ID " +
                 "    FROM USER_FILM_LIKE l " +
@@ -83,9 +87,10 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
                 "    INTERSECT  " +
                 "    SELECT l.FILM_ID " +
                 "    FROM USER_FILM_LIKE l " +
-                "    WHERE USER_ID = ?" +
+                "    WHERE l.USER_ID = ?" +
                 "     ) " +
                 " GROUP BY f.ID;";
+        log.info("Запрос в DATABASE на общие фильмы между пользователями {} and {} ОТРАБОТАЛ", userId, friendId);
         return jdbcTemplate.query(sqlQuery, RowMapper::mapRowToFilm, userId, friendId);
     }
 }
