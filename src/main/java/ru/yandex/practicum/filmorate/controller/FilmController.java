@@ -77,7 +77,6 @@ public class FilmController {
         return filmService.showPopularByGenreAndDate(count, genreId, year);
     }
 
-
     @GetMapping("/director/{directorId}")
     public List<Film> getFilmsWithDirector(@PathVariable Long directorId, @RequestParam(defaultValue = "10") String sortBy) {
         log.info("Получен запрос на получение фильмов режиссёра {} с сортировкой по {}", directorId, sortBy);
@@ -95,5 +94,10 @@ public class FilmController {
         log.info("получен запрос на удаление фильма c id {}", id);
         filmService.deleteFilm(id);
     }
-}
 
+    @GetMapping("/search")
+    public List<Film> smartSearch(@RequestParam String query, @RequestParam String by) {
+        log.info("Получен запрос на получение фильма по имени подстроке");
+        return filmService.getFilmBySearch(query, by);
+    }
+}
