@@ -105,4 +105,15 @@ public class RowMapper {
 
 		return new ReviewReaction(reviewId, userId);
 	}
+
+	public static Event mapRowToEvent(ResultSet row, int rowNum) throws SQLException {
+		Long eventId = row.getLong("event_id");
+		Long userId = row.getLong("user_id");
+		Long entityId = row.getLong("entity_id");
+		EventOperation operation = EventOperation.valueOf(row.getString("operation"));
+		EventType eventType = EventType.valueOf(row.getString("event_type"));
+		Long timestamp = row.getLong("event_timestamp");
+
+		return new Event(eventId, userId, entityId, operation, eventType, timestamp);
+	}
 }

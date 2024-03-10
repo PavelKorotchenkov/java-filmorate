@@ -2,7 +2,10 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.EventOperation;
+import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.ReviewService;
 
 import javax.validation.Valid;
@@ -13,24 +16,32 @@ import java.util.List;
 public class ReviewController {
 
 	private final ReviewService reviewService;
+	private final FeedService feedService;
 
 	@Autowired
-	public ReviewController(ReviewService reviewService) {
+	public ReviewController(ReviewService reviewService, FeedService feedService) {
 		this.reviewService = reviewService;
-	}
+        this.feedService = feedService;
+    }
 
 	@PostMapping
 	public Review addReview(@Valid @RequestBody Review review) {
-		return reviewService.addReview(review);
+		Review result = reviewService.addReview(review);
+		feedService.addEvent(result.getUserId(), result.getReviewId(), EventOperation.ADD.name(), EventType.REVIEW.name());
+		return result;
 	}
 
 	@PutMapping
 	public Review updateReview(@RequestBody Review review) {
-		return reviewService.updateReview(review);
+		Review result = reviewService.updateReview(review);
+		feedService.addEvent(result.getUserId(), result.getReviewId(), EventOperation.UPDATE.name(), EventType.REVIEW.name());
+		return result;
 	}
 
 	@DeleteMapping("/{id}")
 	public void deleteReview(@PathVariable("id") Long reviewId) {
+		Review result = reviewService.getReviewById(reviewId);
+		feedService.addEvent(result.getUserId(), reviewId, EventOperation.REMOVE.name(), EventType.REVIEW.name());
 		reviewService.deleteReview(reviewId);
 	}
 
