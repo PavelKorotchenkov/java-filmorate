@@ -185,6 +185,12 @@ public class FilmDbStorage implements FilmStorage {
         return result;
     }
 
+    @Override
+    public boolean deleteById(Long id) {
+        String sqlQuery = "DELETE FROM FILMS WHERE ID = ?";
+        return jdbcTemplate.update(sqlQuery, id) > 0;
+    }
+
     private Set<Genre> getGenres(Long id) {
         List<Genre> genres = jdbcTemplate.query(
                 "SELECT fg.film_id, fg.genre_id AS id, g.name AS name " +
@@ -213,7 +219,7 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-    public Film updateFilmDirector(Film film) {
+    private Film updateFilmDirector(Film film) {
         jdbcTemplate.update("DELETE FROM film_director WHERE film_id = ?",
                 film.getId());
         for (Director director : film.getDirectors()) {
@@ -222,11 +228,5 @@ public class FilmDbStorage implements FilmStorage {
             log.info("К фильму {} добавлен режиссёр {} в связанную таблицу film_director", film, director);
         }
         return film;
-    }
-    
-    @Override
-    public boolean deleteById(Long id) {
-        String sqlQuery = "DELETE FROM FILMS WHERE ID = ?";
-        return jdbcTemplate.update(sqlQuery, id) > 0;
     }
 }
