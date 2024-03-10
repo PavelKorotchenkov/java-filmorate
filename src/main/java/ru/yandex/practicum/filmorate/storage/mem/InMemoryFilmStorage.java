@@ -51,6 +51,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         return false;
     }
 
+    @Override
+    public List<Film> findFilmBySearch(String query, String by) {
+        return null;
+    }
+
     public Film delete(Long filmId) {
         if (!films.containsKey(filmId)) {
             throw new NotFoundException("No film in database with id " + filmId);

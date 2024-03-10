@@ -123,6 +123,29 @@ public class FilmDbStorage implements FilmStorage {
 	}
 
 	@Override
+	public List<Film> findFilmBySearch(String query, String by) {
+		String pattern = "%" + query + "%";
+		String sqlQuery = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+				"string_agg(g.id || ',' || g.name, ';') AS genre, " +
+				"string_agg(d.id || ',' || d.name, ';') AS director, " +
+				"COUNT(ufl.user_id) AS user_like_count " +
+				"FROM films f\n" +
+				"         LEFT JOIN mpa ON f.mpa_id = mpa.id " +
+				"         LEFT JOIN film_genre fg ON f.id = fg.film_id " +
+				"         LEFT JOIN genre g ON fg.genre_id = g.id " +
+				"         LEFT JOIN film_director fd ON f.id = fd.film_id " +
+				"         LEFT JOIN director d ON fd.director_id = d.id " +
+				"         LEFT JOIN user_film_like ufl ON f.id = ufl.film_id " +
+				"WHERE ('title' = ? AND (LOWER(f.name) LIKE LOWER(?))) " +
+				"   OR ('director' = ? AND (LOWER(d.name) LIKE LOWER(?))) " +
+				"   OR (('title,director' = ? OR 'director,title' = ?) AND " +
+				"       ((LOWER(f.name) LIKE LOWER(?)) OR LOWER(d.name) LIKE LOWER(?))) " +
+				"GROUP BY f.id " +
+				"ORDER BY user_like_count DESC;";
+		return jdbcTemplate.query(sqlQuery, RowMapper::mapRowToFilm, by, pattern, by, pattern, by, by, pattern, pattern);
+	}
+
+	@Override
 	public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
 		String orderBy = "";
 		switch (sortBy) {

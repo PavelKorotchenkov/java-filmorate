@@ -95,5 +95,11 @@ public class FilmController {
         log.info("получен запрос на удаление фильма c id {}", id);
         filmService.deleteFilm(id);
     }
+
+    @GetMapping("/search")
+    public List<Film> smartSearch(@RequestParam String query, @RequestParam String by) {
+        log.info("Получен запрос на получение фильма по имени подстроке");
+        return filmService.getFilmBySearch(query, by);
+    }
 }
 
