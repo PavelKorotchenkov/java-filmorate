@@ -3,7 +3,10 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.EventOperation;
+import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.LikeService;
 
@@ -19,11 +22,13 @@ FilmController
 public class FilmController {
     private final FilmService filmService;
     private final LikeService likeService;
+    private final FeedService feedService;
 
     @Autowired
-    public FilmController(FilmService filmService, LikeService likeService) {
+    public FilmController(FilmService filmService, LikeService likeService, FeedService feedService) {
         this.filmService = filmService;
         this.likeService = likeService;
+        this.feedService = feedService;
     }
 
     @PostMapping
@@ -54,12 +59,14 @@ public class FilmController {
     public void likeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
         log.info("Получен запрос - фильму с id {} поставил лайк пользователь с id {}", filmId, userId);
         likeService.addLike(filmId, userId);
+        feedService.addEvent(userId, filmId, EventOperation.ADD.name(), EventType.LIKE.name());
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public void deleteLike(@PathVariable Long filmId, @PathVariable Long userId) {
         log.info("Получен запрос - фильму с id {} убрал лайк пользователь с id {}", filmId, userId);
         likeService.deleteLike(filmId, userId);
+        feedService.addEvent(userId, filmId, EventOperation.REMOVE.name(), EventType.LIKE.name());
     }
 
     @GetMapping("/popular")

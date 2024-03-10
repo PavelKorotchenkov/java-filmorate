@@ -3,8 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.FriendshipService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -18,11 +18,13 @@ public class UserController {
 
     private final UserService userService;
     private final FriendshipService friendshipService;
+    private final FeedService feedService;
 
     @Autowired
-    public UserController(UserService userService, FriendshipService friendshipService) {
+    public UserController(UserService userService, FriendshipService friendshipService, FeedService feedService) {
         this.userService = userService;
         this.friendshipService = friendshipService;
+        this.feedService = feedService;
     }
 
     @PostMapping
@@ -53,6 +55,7 @@ public class UserController {
     public void addFriend(@PathVariable Long userId, @PathVariable Long friendId) {
         log.info("Получен запрос - пользователь с id {} добавляет в друзья пользователя с id {}", userId, friendId);
         friendshipService.addFriend(userId, friendId);
+        feedService.addEvent(userId, friendId, EventOperation.ADD.name(), EventType.FRIEND.name());
     }
 
     @GetMapping("{userId}/friends")
@@ -71,6 +74,7 @@ public class UserController {
     public void deleteFriend(@PathVariable Long userId, @PathVariable Long friendId) {
         log.info("Получен запрос - пользователь с id {} удаляет из друзей пользователя с id {}", userId, friendId);
         friendshipService.deleteFriend(userId, friendId);
+        feedService.addEvent(userId, friendId, EventOperation.REMOVE.name(), EventType.FRIEND.name());
     }
 
     @DeleteMapping("/{id}")
@@ -85,4 +89,9 @@ public class UserController {
 		return userService.getRecommendation(id);
     }
 
+    @GetMapping("{userId}/feed")
+    public List<Event> getUserEvents(@PathVariable Long userId) {
+        log.info("Получен запрос на получение ленты пользователя с id: {}", userId);
+        return feedService.getEvents(userId);
+    }
 }
