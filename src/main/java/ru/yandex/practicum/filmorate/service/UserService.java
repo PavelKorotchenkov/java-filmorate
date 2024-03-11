@@ -54,7 +54,7 @@ public class UserService {
         if (!isDeleted) {
             throw new NotFoundException("Пользователя не удалось удалить пользователя");
         }
-        log.info("Фильм успешно удален с id {}", id);
+        log.info("Пользователь успешно удален с id {}", id);
     }
 
     public List<Film> getRecommendation(long id) {
