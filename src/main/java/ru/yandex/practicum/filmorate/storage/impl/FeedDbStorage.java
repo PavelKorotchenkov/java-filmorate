@@ -14,7 +14,9 @@ import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Repository
@@ -33,7 +35,7 @@ public class FeedDbStorage implements FeedStorage {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
 				.withTableName("feed")
 				.usingGeneratedKeyColumns("event_id");
-		event.setEventId(simpleJdbcInsert.executeAndReturnKey(event.toMap()).longValue());
+		event.setEventId(simpleJdbcInsert.executeAndReturnKey(toMap(event)).longValue());
 		log.info("Создан event: {}", event);
 		return event;
 	}
@@ -60,5 +62,16 @@ public class FeedDbStorage implements FeedStorage {
 		} else {
 			log.info("Событие с сущностью id {} удалено", entityId);
 		}
+	}
+
+	private Map<String, Object> toMap(Event event) {
+		Map<String, Object> values = new HashMap<>();
+		values.put("event_id", event.getEventId());
+		values.put("user_id", event.getUserId());
+		values.put("entity_id", event.getEntityId());
+		values.put("operation", event.getOperation());
+		values.put("event_type", event.getEventType());
+		values.put("event_timestamp", event.getTimestamp());
+		return values;
 	}
 }
