@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.yandex.practicum.filmorate.validator.LocalDateNotBefore;
 
 import javax.validation.constraints.NotBlank;
@@ -19,6 +16,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Film {
 	private Long id;
 
@@ -59,19 +57,6 @@ public class Film {
 		this.releaseDate = releaseDate;
 		this.duration = duration;
 		this.mpa = mpa;
-	}
-
-	@Override
-	public String toString() {
-		return "Film{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", description='" + description + '\'' +
-				", releaseDate=" + releaseDate +
-				", duration=" + duration +
-				", mpa=" + mpa +
-				", genres=" + genres +
-				'}';
 	}
 
 	@Override

@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -11,6 +8,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ReviewReaction {
 	private Long reviewId;
 	private Long userId;
@@ -26,13 +24,5 @@ public class ReviewReaction {
 	@Override
 	public int hashCode() {
 		return Objects.hash(reviewId, userId);
-	}
-
-	@Override
-	public String toString() {
-		return "ReviewReaction{" +
-				"id=" + reviewId +
-				", userId=" + userId +
-				'}';
 	}
 }

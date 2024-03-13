@@ -17,6 +17,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class User {
 	private Long id;
 
@@ -56,18 +57,6 @@ public class User {
 		this.login = login;
 		this.name = name;
 		this.birthday = birthday;
-	}
-
-
-	@Override
-	public String toString() {
-		return "User{" +
-				"id=" + id +
-				", email='" + email + '\'' +
-				", login='" + login + '\'' +
-				", name='" + name + '\'' +
-				", birthday=" + birthday +
-				'}';
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserFilmLike {
 	private Long filmId;
 	private Long userId;
@@ -23,13 +24,5 @@ public class UserFilmLike {
 	@Override
 	public int hashCode() {
 		return Objects.hash(filmId, userId);
-	}
-
-	@Override
-	public String toString() {
-		return "UserFilmLike{" +
-				"filmId=" + filmId +
-				", userId=" + userId +
-				'}';
 	}
 }
