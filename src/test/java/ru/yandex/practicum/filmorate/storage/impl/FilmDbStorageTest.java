@@ -13,6 +13,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -88,7 +89,7 @@ class FilmDbStorageTest {
 
 	@Test
 	void updateWithGenres() {
-		Set<Genre> genres = new HashSet<>();
+		Set<Genre> genres = new LinkedHashSet<>();
 		genres.add(new Genre(1L, "Комедия"));
 		genres.add(new Genre(6L, "Боевик"));
 
@@ -120,7 +121,7 @@ class FilmDbStorageTest {
 
 	@Test
 	void updateWithGenresToWithoutGenres() {
-		Set<Genre> genres = new HashSet<>();
+		Set<Genre> genres = new LinkedHashSet<>();
 		genres.add(new Genre(1L, "Комедия"));
 		genres.add(new Genre(6L, "Боевик"));
 
