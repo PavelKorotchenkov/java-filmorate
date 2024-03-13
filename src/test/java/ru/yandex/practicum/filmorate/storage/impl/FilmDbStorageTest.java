@@ -90,14 +90,14 @@ class FilmDbStorageTest {
 	void updateWithGenres() {
 		Set<Genre> genres = new LinkedHashSet<>();
 		genres.add(new Genre(1L, "Комедия"));
-		genres.add(new Genre(6L, "Боевик"));
+		genres.add(new Genre(4L, "Триллер"));
 
 		Film newFilm = new Film(1L, "Harry Potter and Learning Java",
 				"Harry's doing a hell of a job there",
 				LocalDate.of(1990, 1, 1), 120000, new Mpa(2L, "PG"),
 				genres);
 
-		genres.add(new Genre(4L, "Триллер"));
+		genres.add(new Genre(6L, "Боевик"));
 
 		Film updatedFilm = new Film(1L, "Mission Impossible. Cracking Java",
 				"Will it be Tom Cruise's last mission?",

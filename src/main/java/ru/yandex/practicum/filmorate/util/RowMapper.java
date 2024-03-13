@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Slf4j
@@ -38,7 +39,7 @@ public class RowMapper {
 		Mpa mpa = new Mpa(mpaId, mpaName);
 
 		String genreRowData = row.getString("genre");
-		Set<Genre> genreSet = new HashSet<>();
+		Set<Genre> genreSet = new LinkedHashSet<>();
 
 		if (genreRowData != null && !genreRowData.isEmpty() && !genreRowData.isBlank()) {
 			String[] genreRow = genreRowData.split(";");
@@ -54,7 +55,7 @@ public class RowMapper {
 		Film film = new Film(id, name, description, releaseDate, duration, mpa, genreSet);
 
 		String directorRowData = row.getString("director");
-		Set<Director> directorSet = new HashSet<>();
+		Set<Director> directorSet = new LinkedHashSet<>();
 
 		if (directorRowData != null && !directorRowData.isEmpty() && !directorRowData.isBlank()) {
 			String[] directorRow = directorRowData.split(";");

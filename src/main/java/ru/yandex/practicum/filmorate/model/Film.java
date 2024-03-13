@@ -70,6 +70,7 @@ public class Film {
 				", releaseDate=" + releaseDate +
 				", duration=" + duration +
 				", mpa=" + mpa +
+				", genres=" + genres +
 				'}';
 	}
 
