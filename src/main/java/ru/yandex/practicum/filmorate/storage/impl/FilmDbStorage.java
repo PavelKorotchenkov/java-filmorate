@@ -16,10 +16,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
 import java.sql.Types;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Repository
@@ -201,7 +198,7 @@ public class FilmDbStorage implements FilmStorage {
                 RowMapper::mapRowToGenre,
                 id
         );
-        return new HashSet<>(genres);
+        return new LinkedHashSet<>(genres);
     }
 
     private void updateFilmGenres(Film film, Set<Genre> genres) {
