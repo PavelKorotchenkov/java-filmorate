@@ -28,7 +28,7 @@ public class ReviewDbStorage implements ReviewStorage {
 	}
 
 	@Override
-	public Review addReview(Review review) {
+	public Review add(Review review) {
 		PreparedStatementCreatorFactory pscf = new PreparedStatementCreatorFactory(
 				"INSERT INTO reviews (content, isPositive, user_id, film_id, useful) " +
 						"VALUES (?, ?, ?, ?, ?)",
@@ -52,22 +52,22 @@ public class ReviewDbStorage implements ReviewStorage {
 	}
 
 	@Override
-	public Review updateReview(Review review) {
+	public Review update(Review review) {
 		Long id = review.getReviewId();
-		findReviewById(id); //проверяем, что отзыв есть в базе
+		findById(id); //проверяем, что отзыв есть в базе
 		jdbcTemplate.update("UPDATE reviews " +
 						"SET content = ?, isPositive = ? " +
 						"WHERE id = ?",
 				review.getContent(), review.getIsPositive(), id);
 
-		Review updReview = findReviewById(id);
+		Review updReview = findById(id);
 		log.info("Обновлен отзыв: " + updReview);
 
 		return updReview;
 	}
 
 	@Override
-	public void deleteReview(Long reviewId) {
+	public void delete(Long reviewId) {
 		jdbcTemplate.update("DELETE FROM reviews " +
 						"WHERE id = ?",
 				reviewId);
@@ -76,7 +76,7 @@ public class ReviewDbStorage implements ReviewStorage {
 	}
 
 	@Override
-	public Review findReviewById(Long reviewId) {
+	public Review findById(Long reviewId) {
 		List<Review> result = jdbcTemplate.query(
 				"SELECT * " +
 						"FROM reviews " +
@@ -95,7 +95,7 @@ public class ReviewDbStorage implements ReviewStorage {
 	}
 
 	@Override
-	public List<Review> getAllReviewsByFilmId(Long filmId, int count) {
+	public List<Review> findAllByFilmId(Long filmId, int count) {
 		log.info("Запрос отзывов к фильму с id: {}", filmId);
 		return jdbcTemplate.query(
 				"SELECT * FROM reviews " +
@@ -108,7 +108,7 @@ public class ReviewDbStorage implements ReviewStorage {
 	}
 
 	@Override
-	public List<Review> getAllReviews(int count) {
+	public List<Review> findAll(int count) {
 		log.info("Запрос всех отзывов");
 		return jdbcTemplate.query(
 				"SELECT * FROM reviews " +

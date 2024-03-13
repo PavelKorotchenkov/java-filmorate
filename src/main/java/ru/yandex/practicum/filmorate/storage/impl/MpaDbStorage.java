@@ -20,7 +20,7 @@ public class MpaDbStorage implements MpaStorage {
 	}
 
 	@Override
-	public List<Mpa> findAllMpas() {
+	public List<Mpa> findAll() {
 		log.info("Запрос всех возрастных рейтингов");
 		return jdbcTemplate.query(
 				"SELECT * " +
@@ -30,7 +30,7 @@ public class MpaDbStorage implements MpaStorage {
 	}
 
 	@Override
-	public Mpa findMpaById(Long id) {
+	public Mpa findById(Long id) {
 		log.info("Запрос возрастного рейтинга по id");
 		List<Mpa> mpa = jdbcTemplate.query(
 				"SELECT * " +

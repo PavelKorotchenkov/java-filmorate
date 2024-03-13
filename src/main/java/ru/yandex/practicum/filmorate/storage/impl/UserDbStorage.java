@@ -29,7 +29,7 @@ public class UserDbStorage implements UserStorage {
 	}
 
 	@Override
-	public User findUserById(Long id) {
+	public User findById(Long id) {
 		List<User> result = jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday FROM users WHERE id = ?",
 				RowMapper::mapRowToUser,
@@ -45,7 +45,7 @@ public class UserDbStorage implements UserStorage {
 	}
 
 	@Override
-	public List<User> findAllUsers() {
+	public List<User> findAll() {
 		log.info("Запрос всех пользователей");
 		return jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday FROM users",
@@ -76,7 +76,7 @@ public class UserDbStorage implements UserStorage {
 	@Override
 	public User update(User user) {
 		Long id = user.getId();
-		findUserById(id); //проверяем, что пользователь есть в базе данных
+		findById(id); //проверяем, что пользователь есть в базе данных
 
 		jdbcTemplate.update("UPDATE users SET email = ?, name = ?, login = ?, birthday = ? WHERE id = ?",
 				user.getEmail(), user.getName(), user.getLogin(), user.getBirthday(), id);

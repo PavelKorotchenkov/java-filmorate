@@ -22,7 +22,7 @@ public class DirectorController {
 	@GetMapping
 	public List<Director> getDirectors() {
 		log.info("Получен запрос на получение всех режиссёров");
-		List<Director> allDirectors = directorService.getAllDirectors();
+		List<Director> allDirectors = directorService.getAll();
 		log.info("Отработан запрос на получение всех режиссёров");
 		return allDirectors;
 	}
@@ -30,7 +30,7 @@ public class DirectorController {
 	@GetMapping("/{directorId}")
 	public Director getDirectorById(@PathVariable Long directorId) {
 		log.info("Получен запрос на получение режиссёра с id: {}", directorId);
-		Director directorById = directorService.getDirectorById(directorId);
+		Director directorById = directorService.getById(directorId);
 		log.info("Отработан запрос на получение режиссёра с id: {}", directorId);
 		return directorById;
 	}
@@ -38,7 +38,7 @@ public class DirectorController {
 	@PostMapping
 	public Director createDirector(@Valid @RequestBody Director director) {
 		log.info("Получен запрос на создание режиссёра: {}", director);
-		Director director1 = directorService.createDirector(director);
+		Director director1 = directorService.create(director);
 		log.info("Отработан запрос на создание режиссёра: {}", director);
 		return director1;
 	}
@@ -46,7 +46,7 @@ public class DirectorController {
 	@PutMapping
 	public Director updateDirector(@Valid @RequestBody Director director) {
 		log.info("Получен запрос на изменение режиссёра: {}", director);
-		Director director1 = directorService.updateDirector(director);
+		Director director1 = directorService.update(director);
 		log.info("Отработан запрос на изменение режиссёра: {}", director);
 		return director1;
 	}
@@ -54,7 +54,7 @@ public class DirectorController {
 	@DeleteMapping("/{directorId}")
 	public void deleteDirector(@PathVariable Long directorId) {
 		log.info("Получен запрос на удаление режиссёра: {}", directorId);
-		directorService.deleteDirector(directorId);
+		directorService.delete(directorId);
 		log.info("Отработан запрос на удаление режиссёра: {}", directorId);
 	}
 }

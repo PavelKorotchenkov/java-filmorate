@@ -69,7 +69,7 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
     }
 
     @Override
-    public List<Film> getAllCommonFilms(Long userId, Long friendId) {
+    public List<Film> getCommon(Long userId, Long friendId) {
         log.info("Получен запрос в DATABASE на общие фильмы между пользователями {} and {}", userId, friendId);
         String sqlQuery = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, m.name AS mpa_name, " +
                 "string_agg(G2.id || ',' || G2.name, ';') AS genre, " +

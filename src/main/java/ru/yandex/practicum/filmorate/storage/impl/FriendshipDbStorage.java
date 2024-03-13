@@ -21,7 +21,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 	}
 
 	@Override
-	public boolean addFriend(Long userId, Long friendId) {
+	public boolean add(Long userId, Long friendId) {
 		List<Friendship> result = jdbcTemplate.query(
 				"SELECT user_id, friend_id, friendship_status " +
 						"FROM friendship " +
@@ -62,7 +62,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 	}
 
 	@Override
-	public List<User> findAllFriends(Long id) {
+	public List<User> findAll(Long id) {
 		log.info("Запрос всех друзей пользователя");
 		return jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday " +
@@ -75,7 +75,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 	}
 
 	@Override
-	public List<User> findAllMutualFriends(Long userId, Long friendId) {
+	public List<User> findMutual(Long userId, Long friendId) {
 		log.info("Запрос всех общих друзей с другом");
 
 		return jdbcTemplate.query(
@@ -93,7 +93,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 	}
 
 	@Override
-	public void deleteFriend(Long userId, Long friendId) {
+	public void delete(Long userId, Long friendId) {
 		jdbcTemplate.update(
 				"DELETE FROM friendship " +
 						"WHERE user_id = ? " +

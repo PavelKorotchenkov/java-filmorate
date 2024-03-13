@@ -33,7 +33,7 @@ class FilmDbStorageTest {
 		FilmStorage filmStorage = new FilmDbStorage(jdbcTemplate);
 		filmStorage.save(newFilm);
 
-		Film savedFilm = filmStorage.findFilmById(newFilm.getId());
+		Film savedFilm = filmStorage.findById(newFilm.getId());
 
 		assertThat(savedFilm)
 				.isNotNull()
@@ -55,7 +55,7 @@ class FilmDbStorageTest {
 		filmStorage.save(newFilm);
 		filmStorage.save(newFilm2);
 
-		List<Film> films = filmStorage.findAllFilms();
+		List<Film> films = filmStorage.findAll();
 
 		assertEquals(2, films.size());
 		Assertions.assertTrue(films.contains(newFilm));
@@ -78,7 +78,7 @@ class FilmDbStorageTest {
 		updatedFilm.setId(id);
 		filmStorage.update(updatedFilm);
 
-		Film savedFilm2 = filmStorage.findFilmById(id);
+		Film savedFilm2 = filmStorage.findById(id);
 
 		assertThat(savedFilm2)
 				.isNotNull()
@@ -110,7 +110,7 @@ class FilmDbStorageTest {
 		updatedFilm.setId(id);
 		filmStorage.update(updatedFilm);
 
-		Film savedFilm2 = filmStorage.findFilmById(id);
+		Film savedFilm2 = filmStorage.findById(id);
 
 		assertThat(savedFilm2)
 				.isNotNull()
@@ -142,7 +142,7 @@ class FilmDbStorageTest {
 		updatedFilm.setId(id);
 		filmStorage.update(updatedFilm);
 
-		Film savedFilm2 = filmStorage.findFilmById(id);
+		Film savedFilm2 = filmStorage.findById(id);
 
 		assertThat(savedFilm2)
 				.isNotNull()

@@ -27,57 +27,57 @@ public class ReviewService {
 	}
 
 	public Review addReview(Review review) {
-		userStorage.findUserById(review.getUserId());
-		filmStorage.findFilmById(review.getFilmId());
+		userStorage.findById(review.getUserId());
+		filmStorage.findById(review.getFilmId());
 
-		return reviewStorage.addReview(review);
+		return reviewStorage.add(review);
 	}
 
 	public Review updateReview(Review review) {
-		userStorage.findUserById(review.getUserId());
-		filmStorage.findFilmById(review.getFilmId());
+		userStorage.findById(review.getUserId());
+		filmStorage.findById(review.getFilmId());
 
-		return reviewStorage.updateReview(review);
+		return reviewStorage.update(review);
 	}
 
 	public void deleteReview(Long reviewId) {
-		Review review = reviewStorage.findReviewById(reviewId);
-		reviewStorage.deleteReview(review.getReviewId());
+		Review review = reviewStorage.findById(reviewId);
+		reviewStorage.delete(review.getReviewId());
 	}
 
-	public Review getReviewById(Long reviewId) {
-		return reviewStorage.findReviewById(reviewId);
+	public Review getById(Long reviewId) {
+		return reviewStorage.findById(reviewId);
 	}
 
-	public List<Review> getAllReviewsByFilmId(Long filmId, int count) {
+	public List<Review> getAllByFilmId(Long filmId, int count) {
 		if (filmId != null) {
-			Film film = filmStorage.findFilmById(filmId);
-			return reviewStorage.getAllReviewsByFilmId(film.getId(), count);
+			Film film = filmStorage.findById(filmId);
+			return reviewStorage.findAllByFilmId(film.getId(), count);
 		}
-		return reviewStorage.getAllReviews(count);
+		return reviewStorage.findAll(count);
 	}
 
 	public void addLike(Long reviewId, Long userId) {
-		Review review = reviewStorage.findReviewById(reviewId);
-		User user = userStorage.findUserById(userId);
+		Review review = reviewStorage.findById(reviewId);
+		User user = userStorage.findById(userId);
 		reviewStorage.addLike(review.getReviewId(), user.getId());
 	}
 
 	public void addDislike(Long reviewId, Long userId) {
-		Review review = reviewStorage.findReviewById(reviewId);
-		User user = userStorage.findUserById(userId);
+		Review review = reviewStorage.findById(reviewId);
+		User user = userStorage.findById(userId);
 		reviewStorage.addDislike(review.getReviewId(), user.getId());
 	}
 
 	public void deleteLike(Long reviewId, Long userId) {
-		Review review = reviewStorage.findReviewById(reviewId);
-		User user = userStorage.findUserById(userId);
+		Review review = reviewStorage.findById(reviewId);
+		User user = userStorage.findById(userId);
 		reviewStorage.deleteLike(review.getReviewId(), user.getId());
 	}
 
 	public void deleteDislike(Long reviewId, Long userId) {
-		Review review = reviewStorage.findReviewById(reviewId);
-		User user = userStorage.findUserById(userId);
+		Review review = reviewStorage.findById(reviewId);
+		User user = userStorage.findById(userId);
 		reviewStorage.deleteDislike(review.getReviewId(), user.getId());
 	}
 }

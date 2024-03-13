@@ -27,7 +27,7 @@ class UserDbStorageTest {
 		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
 		userStorage.save(newUser);
 
-		User savedUser = userStorage.findUserById(newUser.getId());
+		User savedUser = userStorage.findById(newUser.getId());
 
 		assertThat(savedUser)
 				.isNotNull()
@@ -47,7 +47,7 @@ class UserDbStorageTest {
 		userStorage.save(newUser);
 		userStorage.save(newUser2);
 
-		List<User> users = userStorage.findAllUsers();
+		List<User> users = userStorage.findAll();
 
 		assertEquals(2, users.size());
 		Assertions.assertTrue(users.contains(newUser));
@@ -68,7 +68,7 @@ class UserDbStorageTest {
 		updatedUser.setId(id);
 		userStorage.update(updatedUser);
 
-		User user2 = userStorage.findUserById(id);
+		User user2 = userStorage.findById(id);
 
 		assertThat(user2)
 				.isNotNull()

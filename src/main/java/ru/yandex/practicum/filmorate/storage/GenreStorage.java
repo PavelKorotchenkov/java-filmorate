@@ -8,7 +8,7 @@ import java.util.List;
 @Component
 public interface GenreStorage {
 
-	List<Genre> findAllGenre();
+	List<Genre> findAll();
 
-	Genre findGenreById(Long id);
+	Genre findById(Long id);
 }

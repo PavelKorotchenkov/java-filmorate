@@ -25,7 +25,7 @@ public class MpaController {
 	@GetMapping
 	public List<Mpa> getMpas() {
 		log.info("Получен запрос на получение всех рейтингов MPA");
-		List<Mpa> mpas = mpaService.getMpas();
+		List<Mpa> mpas = mpaService.getAll();
 		log.info("Отработан запрос на получение всех рейтингов MPA");
 		return mpas;
 	}
@@ -34,6 +34,6 @@ public class MpaController {
 	public Mpa getMpaById(@PathVariable Long id) {
 		log.info("Получен запрос на получение рейтинга MPA с id: {}", id);
 		log.info("Отработан запрос на получение рейтинга MPA с id: {}", id);
-		return mpaService.getMpaById(id);
+		return mpaService.getById(id);
 	}
 }

@@ -32,7 +32,7 @@ class FriendshipDbStorageTest {
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
-		boolean isConfirmed = friendshipStorage.addFriend(newUser.getId(), friend.getId());
+		boolean isConfirmed = friendshipStorage.add(newUser.getId(), friend.getId());
 
 		Assertions.assertFalse(isConfirmed);
 	}
@@ -51,8 +51,8 @@ class FriendshipDbStorageTest {
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		boolean isConfirmed = friendshipStorage.addFriend(friend.getId(), newUser.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		boolean isConfirmed = friendshipStorage.add(friend.getId(), newUser.getId());
 
 		Assertions.assertTrue(isConfirmed);
 	}
@@ -74,9 +74,9 @@ class FriendshipDbStorageTest {
 		userStorage.save(friend);
 		userStorage.save(friend2);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
-		List<User> friends = friendshipStorage.findAllFriends(newUser.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend2.getId());
+		List<User> friends = friendshipStorage.findAll(newUser.getId());
 
 		Assertions.assertTrue(friends.contains(friend));
 		Assertions.assertTrue(friends.contains(friend2));
@@ -99,9 +99,9 @@ class FriendshipDbStorageTest {
 		userStorage.save(friend);
 		userStorage.save(friend2);
 
-		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
-		friendshipStorage.addFriend(friend.getId(), friend2.getId());
-		List<User> friends = friendshipStorage.findAllMutualFriends(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend2.getId());
+		friendshipStorage.add(friend.getId(), friend2.getId());
+		List<User> friends = friendshipStorage.findMutual(newUser.getId(), friend.getId());
 
 		Assertions.assertTrue(friends.contains(friend2));
 	}
@@ -123,11 +123,11 @@ class FriendshipDbStorageTest {
 		userStorage.save(friend);
 		userStorage.save(friend2);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend2.getId());
 
-		friendshipStorage.deleteFriend(newUser.getId(), friend2.getId());
-		List<User> friends = friendshipStorage.findAllFriends(newUser.getId());
+		friendshipStorage.delete(newUser.getId(), friend2.getId());
+		List<User> friends = friendshipStorage.findAll(newUser.getId());
 
 		Assertions.assertTrue(friends.contains(friend));
 		Assertions.assertFalse(friends.contains(friend2));
@@ -147,11 +147,11 @@ class FriendshipDbStorageTest {
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		friendshipStorage.addFriend(friend.getId(), newUser.getId());
-		friendshipStorage.deleteFriend(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(friend.getId(), newUser.getId());
+		friendshipStorage.delete(newUser.getId(), friend.getId());
 
-		boolean isConfirmed = friendshipStorage.addFriend(friend.getId(), newUser.getId());
+		boolean isConfirmed = friendshipStorage.add(friend.getId(), newUser.getId());
 
 		Assertions.assertFalse(isConfirmed);
 	}

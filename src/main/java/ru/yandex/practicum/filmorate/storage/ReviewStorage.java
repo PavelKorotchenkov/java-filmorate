@@ -7,17 +7,17 @@ import java.util.List;
 
 @Component
 public interface ReviewStorage {
-	Review addReview(Review review);
+	Review add(Review review);
 
-	Review updateReview(Review review);
+	Review update(Review review);
 
-	void deleteReview(Long reviewId);
+	void delete(Long reviewId);
 
-	Review findReviewById(Long reviewId);
+	Review findById(Long reviewId);
 
-	List<Review> getAllReviewsByFilmId(Long filmId, int count);
+	List<Review> findAllByFilmId(Long filmId, int count);
 
-	List<Review> getAllReviews(int count);
+	List<Review> findAll(int count);
 
 	void addLike(Long reviewId, Long userId);
 

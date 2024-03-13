@@ -21,7 +21,7 @@ public class GenreDbStorage implements GenreStorage {
 	}
 
 	@Override
-	public List<Genre> findAllGenre() {
+	public List<Genre> findAll() {
 		log.info("Запрос всех жанров");
 		return jdbcTemplate.query(
 				"SELECT * " +
@@ -31,7 +31,7 @@ public class GenreDbStorage implements GenreStorage {
 	}
 
 	@Override
-	public Genre findGenreById(Long id) {
+	public Genre findById(Long id) {
 		log.info("Запрос жанра по id");
 		List<Genre> genres = jdbcTemplate.query(
 				"SELECT * " +

@@ -19,15 +19,15 @@ public class FeedService {
     }
 
     public Event addEvent(Long userId, Long entityId, String operation, String eventType) {
-        return feedStorage.addEvent(userId, entityId, operation, eventType);
+        return feedStorage.add(userId, entityId, operation, eventType);
     }
 
     public List<Event> getEvents(Long userId) {
-        User user = userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
-        return feedStorage.getEvents(userId);
+        User user = userStorage.findById(userId); //проверяем, что пользователь есть в базе
+        return feedStorage.getByUserId(user.getId());
     }
 
     public void deleteEvent(Long entityId) {
-        feedStorage.deleteEvent(entityId);
+        feedStorage.delete(entityId);
     }
 }

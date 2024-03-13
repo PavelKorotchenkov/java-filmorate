@@ -16,11 +16,11 @@ public class MpaService {
 		this.mpaStorage = mpaStorage;
 	}
 
-	public List<Mpa> getMpas() {
-		return mpaStorage.findAllMpas();
+	public List<Mpa> getAll() {
+		return mpaStorage.findAll();
 	}
 
-	public Mpa getMpaById(Long id) {
-		return mpaStorage.findMpaById(id);
+	public Mpa getById(Long id) {
+		return mpaStorage.findById(id);
 	}
 }

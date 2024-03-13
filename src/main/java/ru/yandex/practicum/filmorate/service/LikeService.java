@@ -22,16 +22,16 @@ public class LikeService {
 		this.userFilmLikeStorage = userFilmLikeStorage;
 	}
 
-	public void addLike(Long filmId, Long userId) {
-		Film film = filmStorage.findFilmById(filmId); //проверяем, что фильм есть в базе
-		User user = userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
+	public void add(Long filmId, Long userId) {
+		Film film = filmStorage.findById(filmId); //проверяем, что фильм есть в базе
+		User user = userStorage.findById(userId); //проверяем, что пользователь есть в базе
 
 		userFilmLikeStorage.addLike(film.getId(), user.getId());
 	}
 
-	public void deleteLike(Long filmId, Long userId) {
-		Film film = filmStorage.findFilmById(filmId); //проверяем, что фильм есть в базе
-		User user = userStorage.findUserById(userId); //проверяем, что пользователь есть в базе
+	public void delete(Long filmId, Long userId) {
+		Film film = filmStorage.findById(filmId); //проверяем, что фильм есть в базе
+		User user = userStorage.findById(userId); //проверяем, что пользователь есть в базе
 
 		userFilmLikeStorage.deleteLike(film.getId(), user.getId());
 	}

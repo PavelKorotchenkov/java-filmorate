@@ -30,7 +30,7 @@ public class FeedDbStorage implements FeedStorage {
 	}
 
 	@Override
-	public Event addEvent(Long userId, Long entityId, String operation, String eventType) {
+	public Event add(Long userId, Long entityId, String operation, String eventType) {
 		Event event = new Event(userId, entityId, EventOperation.valueOf(operation), EventType.valueOf(eventType), Instant.now().toEpochMilli());
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
 				.withTableName("feed")
@@ -41,7 +41,7 @@ public class FeedDbStorage implements FeedStorage {
 	}
 
 	@Override
-	public List<Event> getEvents(Long userId) {
+	public List<Event> getByUserId(Long userId) {
 		log.info("Запрос ленты по id: {}", userId);
 
 		return jdbcTemplate.query(
@@ -53,7 +53,7 @@ public class FeedDbStorage implements FeedStorage {
 	}
 
 	@Override
-	public void deleteEvent(Long entityId) {
+	public void delete(Long entityId) {
 		String sqlQuery = "DELETE FROM feed WHERE entity_id = ?";
 		int recordsAffected = jdbcTemplate.update(sqlQuery, entityId);
 		if (recordsAffected == 0) {

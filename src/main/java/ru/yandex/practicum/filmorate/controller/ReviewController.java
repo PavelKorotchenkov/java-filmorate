@@ -47,7 +47,7 @@ public class ReviewController {
 	@DeleteMapping("/{id}")
 	public void deleteReview(@PathVariable("id") Long reviewId) {
 		log.info("Получен запрос на удаление отзыва с id: {}.", reviewId);
-		Review result = reviewService.getReviewById(reviewId);
+		Review result = reviewService.getById(reviewId);
 		feedService.addEvent(result.getUserId(), reviewId, EventOperation.REMOVE.name(), EventType.REVIEW.name());
 		reviewService.deleteReview(reviewId);
 		log.info("Отработан запрос на удаление отзыва с id: {}.", reviewId);
@@ -56,7 +56,7 @@ public class ReviewController {
 	@GetMapping("/{id}")
 	public Review getReviewById(@PathVariable("id") Long reviewId) {
 		log.info("Получен запрос на получение отзыва с id: {}.", reviewId);
-		Review reviewById = reviewService.getReviewById(reviewId);
+		Review reviewById = reviewService.getById(reviewId);
 		log.info("Отработан запрос на получение отзыва с id: {}.", reviewId);
 		return reviewById;
 	}
@@ -65,7 +65,7 @@ public class ReviewController {
 	public List<Review> getAllReviewsByFilmId(@RequestParam(required = false) Long filmId,
 											  @RequestParam(defaultValue = "10") int count) {
 		log.info("Получен запрос на получение {} отзывов фильма с id: {}.", count, filmId);
-		List<Review> allReviewsByFilmId = reviewService.getAllReviewsByFilmId(filmId, count);
+		List<Review> allReviewsByFilmId = reviewService.getAllByFilmId(filmId, count);
 		log.info("Отработан запрос на получение отзывов.");
 		return allReviewsByFilmId;
 	}

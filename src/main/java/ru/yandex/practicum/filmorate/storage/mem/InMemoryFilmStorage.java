@@ -15,7 +15,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private Long filmID = 0L;
 
     @Override
-    public Film findFilmById(Long filmId) {
+    public Film findById(Long filmId) {
         if (!films.containsKey(filmId)) {
             throw new NotFoundException("No film in database with id " + filmId);
         }
@@ -23,7 +23,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> findAllFilms() {
+    public List<Film> findAll() {
         return List.copyOf(films.values());
     }
 
@@ -42,7 +42,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
+    public List<Film> getWithDirector(Long directorId, String sortBy) {
         return null;
     }
 
@@ -52,7 +52,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> findFilmBySearch(String query, String by) {
+    public List<Film> findBySearch(String query, String by) {
         return null;
     }
 

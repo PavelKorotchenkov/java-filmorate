@@ -41,7 +41,7 @@ public class RecommendationDbStorage implements RecommendationStorage {
     }
 
     @Override
-    public List<Film> getRecommendation(long id) {
+    public List<Film> getById(long id) {
         Optional<User> overlapUser = getUserMaxOverlapLikes(id);
         if (overlapUser.isEmpty()) return new ArrayList<>();
 

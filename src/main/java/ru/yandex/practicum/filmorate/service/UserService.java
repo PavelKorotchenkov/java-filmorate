@@ -24,29 +24,29 @@ public class UserService {
 		this.recommendationStorage = recommendationStorage;
 	}
 
-	public User addUser(User user) {
+	public User add(User user) {
 		return userStorage.save(user);
 	}
 
-	public List<User> getAllUsers() {
-		List<User> allUsers = userStorage.findAllUsers();
+	public List<User> getAll() {
+		List<User> allUsers = userStorage.findAll();
 		return allUsers;
 	}
 
 
-	public User getUserById(Long userId) {
-		User userById = userStorage.findUserById(userId);
+	public User getById(Long userId) {
+		User userById = userStorage.findById(userId);
 		if (userById == null) {
 			throw new NotFoundException("Пользователь с id " + userId + " не найден.");
 		}
 		return userById;
 	}
 
-	public User updateUser(User user) {
+	public User update(User user) {
 		return userStorage.update(user);
 	}
 
-	public void deleteUser(Long id) {
+	public void delete(Long id) {
 		boolean isDeleted = userStorage.deleteById(id);
 		System.err.println(isDeleted);
 		if (!isDeleted) {
@@ -56,6 +56,6 @@ public class UserService {
 	}
 
 	public List<Film> getRecommendation(long id) {
-		return recommendationStorage.getRecommendation(id);
+		return recommendationStorage.getById(id);
 	}
 }

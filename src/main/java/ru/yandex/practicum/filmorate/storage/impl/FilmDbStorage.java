@@ -34,7 +34,7 @@ public class FilmDbStorage implements FilmStorage {
 	}
 
 	@Override
-	public Film findFilmById(Long id) {
+	public Film findById(Long id) {
 		List<Film> result = jdbcTemplate.query(
 				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
 						"string_agg(g.id || ',' || g.name, ';') AS genre, " +
@@ -61,7 +61,7 @@ public class FilmDbStorage implements FilmStorage {
 	}
 
 	@Override
-	public List<Film> findAllFilms() {
+	public List<Film> findAll() {
 		log.info("Запрос всех фильмов");
 		List<Film> films = jdbcTemplate.query(
 				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
@@ -107,7 +107,7 @@ public class FilmDbStorage implements FilmStorage {
 	@Override
 	public Film update(Film film) {
 		Long id = film.getId();
-		findFilmById(id); //проверяем, что фильм есть в базе
+		findById(id); //проверяем, что фильм есть в базе
 		jdbcTemplate.update("UPDATE films " +
 						"SET name = ?, description = ?, releaseDate = ?, duration = ?, mpa_id = ? " +
 						"WHERE id = ?",
@@ -123,7 +123,7 @@ public class FilmDbStorage implements FilmStorage {
 	}
 
 	@Override
-	public List<Film> findFilmBySearch(String query, String by) {
+	public List<Film> findBySearch(String query, String by) {
 		String pattern = "%" + query + "%";
 		String sqlQuery = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
 				"string_agg(g.id || ',' || g.name, ';') AS genre, " +
@@ -146,7 +146,7 @@ public class FilmDbStorage implements FilmStorage {
 	}
 
 	@Override
-	public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
+	public List<Film> getWithDirector(Long directorId, String sortBy) {
 		String orderBy = "";
 		switch (sortBy) {
 			case ("year"):

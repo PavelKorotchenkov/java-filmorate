@@ -31,7 +31,7 @@ public class UserController {
 	public User addUser(@Valid @RequestBody User user) {
 		log.info("Получен запрос на добавление пользователя: {}", user);
 
-		User user1 = userService.addUser(user);
+		User user1 = userService.add(user);
 		log.info("Отработан запрос на добавление пользователя: {}", user);
 		return user1;
 	}
@@ -39,7 +39,7 @@ public class UserController {
 	@GetMapping()
 	public List<User> getUsers() {
 		log.info("Получен запрос на получение всех пользователей");
-		List<User> allUsers = userService.getAllUsers();
+		List<User> allUsers = userService.getAll();
 		log.info("Отработан запрос на получение всех пользователей");
 		return allUsers;
 	}
@@ -47,7 +47,7 @@ public class UserController {
 	@GetMapping("/{userId}")
 	public User getUserById(@PathVariable Long userId) {
 		log.info("Получен запрос на получение пользователя с d: {}", userId);
-		User userById = userService.getUserById(userId);
+		User userById = userService.getById(userId);
 		log.info("Отработан запрос на получение пользователя с d: {}", userId);
 		return userById;
 	}
@@ -55,7 +55,7 @@ public class UserController {
 	@PutMapping
 	public User updateUser(@Valid @RequestBody User user) {
 		log.info("Получен запрос на обновление пользователя: {}", user);
-		User updatedUser = userService.updateUser(user);
+		User updatedUser = userService.update(user);
 		log.info("Отработан запрос на обновление пользователя: {}", user);
 		return updatedUser;
 	}
@@ -64,7 +64,7 @@ public class UserController {
 	public void addFriend(@PathVariable Long userId,
 						  @PathVariable Long friendId) {
 		log.info("Получен запрос - пользователь с id {} добавляет в друзья пользователя с id {}", userId, friendId);
-		friendshipService.addFriend(userId, friendId);
+		friendshipService.add(userId, friendId);
 		feedService.addEvent(userId, friendId, EventOperation.ADD.name(), EventType.FRIEND.name());
 		log.info("Отработан запрос - пользователь с id {} добавляет в друзья пользователя с id {}", userId, friendId);
 	}
@@ -72,7 +72,7 @@ public class UserController {
 	@GetMapping("{userId}/friends")
 	public List<User> getFriends(@PathVariable Long userId) {
 		log.info("Получен запрос на получение друзей пользователя с id: {}", userId);
-		List<User> friends = friendshipService.getFriends(userId);
+		List<User> friends = friendshipService.getAll(userId);
 		log.info("Отработан запрос на получение друзей пользователя с id: {}", userId);
 		return friends;
 	}
@@ -81,7 +81,7 @@ public class UserController {
 	public List<User> getMutualFriends(@PathVariable Long userId,
 									   @PathVariable Long friendId) {
 		log.info("Получен запрос на получение общих друзей пользователя с id: {} с пользователем с id: {}", userId, friendId);
-		List<User> users = friendshipService.showMutualFriends(userId, friendId);
+		List<User> users = friendshipService.showMutual(userId, friendId);
 		log.info("Отработан запрос на получение общих друзей пользователя с id: {} с пользователем с id: {}", userId, friendId);
 		return users;
 	}
@@ -90,7 +90,7 @@ public class UserController {
 	public void deleteFriend(@PathVariable Long userId,
 							 @PathVariable Long friendId) {
 		log.info("Получен запрос - пользователь с id {} удаляет из друзей пользователя с id {}", userId, friendId);
-		friendshipService.deleteFriend(userId, friendId);
+		friendshipService.delete(userId, friendId);
 		feedService.addEvent(userId, friendId, EventOperation.REMOVE.name(), EventType.FRIEND.name());
 		log.info("Отработан запрос - пользователь с id {} удаляет из друзей пользователя с id {}", userId, friendId);
 	}
@@ -98,7 +98,7 @@ public class UserController {
 	@DeleteMapping("/{id}")
 	public void deleteUser(@PathVariable Long id) {
 		log.info("Получен запрос на удаление пользователя с id {}", id);
-		userService.deleteUser(id);
+		userService.delete(id);
 		log.info("Отработан запрос на удаление пользователя с id {}", id);
 	}
 

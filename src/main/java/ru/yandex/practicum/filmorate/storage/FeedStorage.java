@@ -5,9 +5,9 @@ import ru.yandex.practicum.filmorate.model.Event;
 import java.util.List;
 
 public interface FeedStorage {
-    Event addEvent(Long userId, Long entityId, String operation, String eventType);
+    Event add(Long userId, Long entityId, String operation, String eventType);
 
-    List<Event> getEvents(Long userId);
+    List<Event> getByUserId(Long userId);
 
-    void deleteEvent(Long entityId);
+    void delete(Long entityId);
 }
