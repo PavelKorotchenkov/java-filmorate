@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +16,6 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 
-@Slf4j
 @Repository
 @Primary
 public class JdbcUserStorage implements UserStorage {
@@ -36,17 +34,14 @@ public class JdbcUserStorage implements UserStorage {
 				id
 		);
 		if (result.isEmpty()) {
-			log.info("Пользователь с идентификатором {} не найден.", id);
 			throw new NotFoundException("Пользователь с id " + id + " не найден.");
 		}
-		log.info("Найден пользователь с id: {}", id);
 
 		return result.get(0);
 	}
 
 	@Override
 	public List<User> findAll() {
-		log.info("Запрос всех пользователей");
 		return jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday FROM users",
 				RowMapper::mapRowToUser);
@@ -69,7 +64,6 @@ public class JdbcUserStorage implements UserStorage {
 		jdbcTemplate.update(psc, keyHolder);
 		long orderId = keyHolder.getKey().longValue();
 		user.setId(orderId);
-		log.info("Создан новый пользователь: " + user);
 		return user;
 	}
 
@@ -80,8 +74,6 @@ public class JdbcUserStorage implements UserStorage {
 
 		jdbcTemplate.update("UPDATE users SET email = ?, name = ?, login = ?, birthday = ? WHERE id = ?",
 				user.getEmail(), user.getName(), user.getLogin(), user.getBirthday(), id);
-
-		log.info("Обновлен пользователь: " + user);
 
 		return user;
 	}

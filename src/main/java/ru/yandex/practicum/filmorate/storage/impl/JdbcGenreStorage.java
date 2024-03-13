@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -10,7 +9,6 @@ import ru.yandex.practicum.filmorate.util.RowMapper;
 
 import java.util.List;
 
-@Slf4j
 @Repository
 public class JdbcGenreStorage implements GenreStorage {
 
@@ -22,7 +20,6 @@ public class JdbcGenreStorage implements GenreStorage {
 
 	@Override
 	public List<Genre> findAll() {
-		log.info("Запрос всех жанров");
 		return jdbcTemplate.query(
 				"SELECT * " +
 						"FROM genre " +
@@ -32,7 +29,6 @@ public class JdbcGenreStorage implements GenreStorage {
 
 	@Override
 	public Genre findById(Long id) {
-		log.info("Запрос жанра по id");
 		List<Genre> genres = jdbcTemplate.query(
 				"SELECT * " +
 						"FROM genre " +

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Repository
 @Primary
 public class JdbcFeedStorage implements FeedStorage {
@@ -36,14 +34,11 @@ public class JdbcFeedStorage implements FeedStorage {
 				.withTableName("feed")
 				.usingGeneratedKeyColumns("event_id");
 		event.setEventId(simpleJdbcInsert.executeAndReturnKey(toMap(event)).longValue());
-		log.info("Создан event: {}", event);
 		return event;
 	}
 
 	@Override
 	public List<Event> getByUserId(Long userId) {
-		log.info("Запрос ленты по id: {}", userId);
-
 		return jdbcTemplate.query(
 				"SELECT * " +
 						"FROM feed " +
@@ -57,10 +52,7 @@ public class JdbcFeedStorage implements FeedStorage {
 		String sqlQuery = "DELETE FROM feed WHERE entity_id = ?";
 		int recordsAffected = jdbcTemplate.update(sqlQuery, entityId);
 		if (recordsAffected == 0) {
-			log.warn("Удаление события - Событие с id сущности {} не найдено", entityId);
 			throw new NotFoundException("Сущность события с id " + entityId + " не найдена");
-		} else {
-			log.info("Событие с сущностью id {} удалено", entityId);
 		}
 	}
 

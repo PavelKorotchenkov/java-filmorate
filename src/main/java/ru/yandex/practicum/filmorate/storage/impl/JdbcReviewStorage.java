@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -17,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @Repository
-@Slf4j
 public class JdbcReviewStorage implements ReviewStorage {
 
 	private final JdbcTemplate jdbcTemplate;
@@ -46,7 +44,6 @@ public class JdbcReviewStorage implements ReviewStorage {
 		jdbcTemplate.update(psc, keyHolder);
 		long reviewId = keyHolder.getKey().longValue();
 		review.setReviewId(reviewId);
-		log.info("В базу добавлен новый отзыв: " + review);
 
 		return review;
 	}
@@ -61,7 +58,6 @@ public class JdbcReviewStorage implements ReviewStorage {
 				review.getContent(), review.getIsPositive(), id);
 
 		Review updReview = findById(id);
-		log.info("Обновлен отзыв: " + updReview);
 
 		return updReview;
 	}
@@ -71,8 +67,6 @@ public class JdbcReviewStorage implements ReviewStorage {
 		jdbcTemplate.update("DELETE FROM reviews " +
 						"WHERE id = ?",
 				reviewId);
-
-		log.info("Удален отзыв с id: " + reviewId);
 	}
 
 	@Override
@@ -85,18 +79,15 @@ public class JdbcReviewStorage implements ReviewStorage {
 				reviewId
 		);
 		if (result.size() != 1) {
-			log.info("Отзыв с id {} не найден", reviewId);
 			throw new NotFoundException("Отзыв с id " + reviewId + " не найден");
 		}
 
 		Review review = result.get(0);
-		log.info("Найден отзыв с id: {}", reviewId);
 		return review;
 	}
 
 	@Override
 	public List<Review> findAllByFilmId(Long filmId, int count) {
-		log.info("Запрос отзывов к фильму с id: {}", filmId);
 		return jdbcTemplate.query(
 				"SELECT * FROM reviews " +
 						"WHERE film_id = ? " +
@@ -109,7 +100,6 @@ public class JdbcReviewStorage implements ReviewStorage {
 
 	@Override
 	public List<Review> findAll(int count) {
-		log.info("Запрос всех отзывов");
 		return jdbcTemplate.query(
 				"SELECT * FROM reviews " +
 						"ORDER BY useful DESC " +
@@ -141,7 +131,6 @@ public class JdbcReviewStorage implements ReviewStorage {
 							"WHERE id = ?",
 					reviewId
 			);
-			log.info("Добавлен лайк отзыву {} от юзера {}", reviewId, userId);
 		}
 	}
 
@@ -168,8 +157,6 @@ public class JdbcReviewStorage implements ReviewStorage {
 							"WHERE id = ?",
 					reviewId
 			);
-
-			log.info("Добавлен дизлайк отзыву {} от юзера {}", reviewId, userId);
 		}
 	}
 
@@ -189,8 +176,6 @@ public class JdbcReviewStorage implements ReviewStorage {
 						"WHERE id = ?",
 				reviewId
 		);
-
-		log.info("Удален лайк отзыву {} от юзера {}", reviewId, userId);
 	}
 
 	@Override
@@ -210,7 +195,5 @@ public class JdbcReviewStorage implements ReviewStorage {
 						"WHERE id = ?",
 				reviewId
 		);
-
-		log.info("Удален дизлайк отзыву {} от юзера {}", reviewId, userId);
 	}
 }

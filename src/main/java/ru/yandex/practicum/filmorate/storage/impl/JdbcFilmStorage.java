@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +20,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-@Slf4j
 @Repository
 @Primary
 public class JdbcFilmStorage implements FilmStorage {
@@ -51,18 +49,15 @@ public class JdbcFilmStorage implements FilmStorage {
 				id
 		);
 		if (result.size() != 1) {
-			log.info("Фильм с идентификатором {} не найден.", id);
 			throw new NotFoundException("Фильм с id " + id + " не найден.");
 		}
 
 		Film film = result.get(0);
-		log.info("Найден фильм с id: {}", id);
 		return film;
 	}
 
 	@Override
 	public List<Film> findAll() {
-		log.info("Запрос всех фильмов");
 		List<Film> films = jdbcTemplate.query(
 				"SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
 						"string_agg(g.id || ',' || g.name, ';') AS genre, " +
@@ -96,7 +91,6 @@ public class JdbcFilmStorage implements FilmStorage {
 		jdbcTemplate.update(psc, keyHolder);
 		long orderId = keyHolder.getKey().longValue();
 		film.setId(orderId);
-		log.info("В базу добавлен новый фильм: " + film);
 
 		updateFilmGenres(film, film.getGenres());
 		updateFilmDirector(film);
@@ -112,8 +106,6 @@ public class JdbcFilmStorage implements FilmStorage {
 						"SET name = ?, description = ?, releaseDate = ?, duration = ?, mpa_id = ? " +
 						"WHERE id = ?",
 				film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa().getId(), id);
-
-		log.info("Обновлен фильм: " + film);
 
 		updateFilmGenres(film, film.getGenres()); //вносим строку фильм-жанр в связанную таблицу
 		film.setGenres(getGenres(film.getId()));  //получаем названия жанров, обновляем жанры в Film
@@ -179,7 +171,6 @@ public class JdbcFilmStorage implements FilmStorage {
 				directorId
 		);
 		if (result.isEmpty()) {
-			log.info("Режиссёр с идентификатором {} не найден.", directorId);
 			throw new NotFoundException("Режиссёр с id " + directorId + " не найден.");
 		}
 		return result;
@@ -215,7 +206,6 @@ public class JdbcFilmStorage implements FilmStorage {
 		for (Genre genre : genres) {
 			jdbcTemplate.update("INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)",
 					film.getId(), genre.getId());
-			log.info("К фильму {} добавлен новый жанр {} в связанную таблицу film_genre", film, genre);
 		}
 	}
 
@@ -225,7 +215,6 @@ public class JdbcFilmStorage implements FilmStorage {
 		for (Director director : film.getDirectors()) {
 			jdbcTemplate.update("INSERT INTO film_director (film_id, director_id) VALUES (?, ?)",
 					film.getId(), director.getId());
-			log.info("К фильму {} добавлен режиссёр {} в связанную таблицу film_director", film, director);
 		}
 		return film;
 	}

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -10,7 +9,6 @@ import ru.yandex.practicum.filmorate.util.RowMapper;
 
 import java.util.List;
 
-@Slf4j
 @Repository
 public class JdbcMpaStorage implements MpaStorage {
 	private final JdbcTemplate jdbcTemplate;
@@ -21,7 +19,6 @@ public class JdbcMpaStorage implements MpaStorage {
 
 	@Override
 	public List<Mpa> findAll() {
-		log.info("Запрос всех возрастных рейтингов");
 		return jdbcTemplate.query(
 				"SELECT * " +
 						"FROM mpa " +
@@ -31,7 +28,6 @@ public class JdbcMpaStorage implements MpaStorage {
 
 	@Override
 	public Mpa findById(Long id) {
-		log.info("Запрос возрастного рейтинга по id");
 		List<Mpa> mpa = jdbcTemplate.query(
 				"SELECT * " +
 						"FROM mpa " +

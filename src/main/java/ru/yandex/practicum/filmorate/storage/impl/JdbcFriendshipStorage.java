@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Friendship;
@@ -10,7 +9,6 @@ import ru.yandex.practicum.filmorate.util.RowMapper;
 
 import java.util.List;
 
-@Slf4j
 @Repository
 public class JdbcFriendshipStorage implements FriendshipStorage {
 
@@ -39,7 +37,6 @@ public class JdbcFriendshipStorage implements FriendshipStorage {
 					userId,
 					friendId,
 					false);
-			log.info("Друг добавлен");
 			return false;
 		} else {
 			jdbcTemplate.update(
@@ -56,14 +53,12 @@ public class JdbcFriendshipStorage implements FriendshipStorage {
 					true,
 					friendId,
 					userId);
-			log.info("Друг добавлен");
 			return true;
 		}
 	}
 
 	@Override
 	public List<User> findAll(Long id) {
-		log.info("Запрос всех друзей пользователя");
 		return jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday " +
 						"FROM users " +
@@ -76,8 +71,6 @@ public class JdbcFriendshipStorage implements FriendshipStorage {
 
 	@Override
 	public List<User> findMutual(Long userId, Long friendId) {
-		log.info("Запрос всех общих друзей с другом");
-
 		return jdbcTemplate.query(
 				"SELECT u.id, u.email, u.name, u.login, u.birthday " +
 						"FROM users u " +
@@ -109,6 +102,5 @@ public class JdbcFriendshipStorage implements FriendshipStorage {
 				false,
 				friendId,
 				userId);
-		log.info("Друг удален");
 	}
 }
