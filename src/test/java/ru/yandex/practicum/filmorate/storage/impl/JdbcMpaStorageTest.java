@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class MpaDbStorageTest {
+class JdbcMpaStorageTest {
 
 	private final JdbcTemplate jdbcTemplate;
 
 	@Test
 	void findAllMpas() {
-		MpaStorage mpaStorage = new MpaDbStorage(jdbcTemplate);
+		MpaStorage mpaStorage = new JdbcMpaStorage(jdbcTemplate);
 		List<Mpa> mpas = new ArrayList<>(mpaStorage.findAll());
 
 		Assertions.assertEquals(5, mpas.size());
@@ -30,7 +30,7 @@ class MpaDbStorageTest {
 
 	@Test
 	void findMpaById() {
-		MpaStorage mpaStorage = new MpaDbStorage(jdbcTemplate);
+		MpaStorage mpaStorage = new JdbcMpaStorage(jdbcTemplate);
 		Mpa g = mpaStorage.findById(1L);
 		Mpa pg = mpaStorage.findById(2L);
 		Mpa pg13 = mpaStorage.findById(3L);

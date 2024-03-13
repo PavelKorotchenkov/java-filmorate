@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class RecommendationDbStorage implements RecommendationStorage {
+public class JdbcRecommendationStorage implements RecommendationStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public RecommendationDbStorage(JdbcTemplate jdbcTemplate) {
+    public JdbcRecommendationStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

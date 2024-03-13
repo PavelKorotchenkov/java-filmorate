@@ -16,11 +16,11 @@ import java.util.List;
 @Slf4j
 @Repository
 @Primary
-public class DirectorDbStorage implements DirectorStorage {
+public class JdbcDirectorStorage implements DirectorStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public DirectorDbStorage(JdbcTemplate jdbcTemplate) {
+    public JdbcDirectorStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

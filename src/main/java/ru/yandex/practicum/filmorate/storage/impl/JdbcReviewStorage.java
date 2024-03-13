@@ -18,12 +18,12 @@ import java.util.List;
 
 @Repository
 @Slf4j
-public class ReviewDbStorage implements ReviewStorage {
+public class JdbcReviewStorage implements ReviewStorage {
 
 	private final JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	public ReviewDbStorage(JdbcTemplate jdbcTemplate) {
+	public JdbcReviewStorage(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 

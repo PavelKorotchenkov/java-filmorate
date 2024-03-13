@@ -21,11 +21,11 @@ import java.util.Map;
 @Slf4j
 @Repository
 @Primary
-public class FeedDbStorage implements FeedStorage {
+public class JdbcFeedStorage implements FeedStorage {
 	private final JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	public FeedDbStorage(JdbcTemplate jdbcTemplate) {
+	public JdbcFeedStorage(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 

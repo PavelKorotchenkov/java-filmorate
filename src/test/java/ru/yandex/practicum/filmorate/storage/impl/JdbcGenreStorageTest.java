@@ -14,13 +14,13 @@ import java.util.List;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class GenreDbStorageTest {
+class JdbcGenreStorageTest {
 
 	private final JdbcTemplate jdbcTemplate;
 
 	@Test
 	void findAllGenre() {
-		GenreStorage genreStorage = new GenreDbStorage(jdbcTemplate);
+		GenreStorage genreStorage = new JdbcGenreStorage(jdbcTemplate);
 
 		List<Genre> genres = new ArrayList<>(genreStorage.findAll());
 
@@ -29,7 +29,7 @@ class GenreDbStorageTest {
 
 	@Test
 	void findGenreById() {
-		GenreStorage genreStorage = new GenreDbStorage(jdbcTemplate);
+		GenreStorage genreStorage = new JdbcGenreStorage(jdbcTemplate);
 		Genre comedy = genreStorage.findById(1L);
 		Genre drama = genreStorage.findById(2L);
 		Genre cartoon = genreStorage.findById(3L);

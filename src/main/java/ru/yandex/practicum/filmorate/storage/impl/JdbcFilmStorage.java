@@ -24,12 +24,12 @@ import java.util.Set;
 @Slf4j
 @Repository
 @Primary
-public class FilmDbStorage implements FilmStorage {
+public class JdbcFilmStorage implements FilmStorage {
 
 	private final JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	public FilmDbStorage(JdbcTemplate jdbcTemplate) {
+	public JdbcFilmStorage(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 

@@ -12,11 +12,11 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class GenreDbStorage implements GenreStorage {
+public class JdbcGenreStorage implements GenreStorage {
 
 	private final JdbcTemplate jdbcTemplate;
 
-	public GenreDbStorage(JdbcTemplate jdbcTemplate) {
+	public JdbcGenreStorage(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 

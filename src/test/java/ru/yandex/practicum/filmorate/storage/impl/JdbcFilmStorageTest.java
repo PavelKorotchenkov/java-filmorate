@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class FilmDbStorageTest {
+class JdbcFilmStorageTest {
 
 	private final JdbcTemplate jdbcTemplate;
 
@@ -30,7 +30,7 @@ class FilmDbStorageTest {
 		Film newFilm = new Film(1L, "Harry Potter and Learning Java",
 				"Harry's doing a hell of a job there",
 				LocalDate.of(1990, 1, 1), 120000, new Mpa(2L, "PG"));
-		FilmStorage filmStorage = new FilmDbStorage(jdbcTemplate);
+		FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 		filmStorage.save(newFilm);
 
 		Film savedFilm = filmStorage.findById(newFilm.getId());
@@ -51,7 +51,7 @@ class FilmDbStorageTest {
 				"Harry's gonna cry",
 				LocalDate.of(1992, 2, 2), 500000, new Mpa(5L, "NC-17"));
 
-		FilmStorage filmStorage = new FilmDbStorage(jdbcTemplate);
+		FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 		filmStorage.save(newFilm);
 		filmStorage.save(newFilm2);
 
@@ -72,7 +72,7 @@ class FilmDbStorageTest {
 				"Will it be Tom Cruise's last mission?",
 				LocalDate.of(2023, 2, 14), 160000, new Mpa(5L, "NC-17"));
 
-		FilmStorage filmStorage = new FilmDbStorage(jdbcTemplate);
+		FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 		filmStorage.save(newFilm);
 		long id = newFilm.getId();
 		updatedFilm.setId(id);
@@ -104,7 +104,7 @@ class FilmDbStorageTest {
 				LocalDate.of(2023, 2, 14), 160000, new Mpa(5L, "NC-17"),
 				genres);
 
-		FilmStorage filmStorage = new FilmDbStorage(jdbcTemplate);
+		FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 		filmStorage.save(newFilm);
 		long id = newFilm.getId();
 		updatedFilm.setId(id);
@@ -136,7 +136,7 @@ class FilmDbStorageTest {
 				LocalDate.of(2023, 2, 14), 160000, new Mpa(5L, "NC-17"),
 				genres);
 
-		FilmStorage filmStorage = new FilmDbStorage(jdbcTemplate);
+		FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 		filmStorage.save(newFilm);
 		long id = newFilm.getId();
 		updatedFilm.setId(id);

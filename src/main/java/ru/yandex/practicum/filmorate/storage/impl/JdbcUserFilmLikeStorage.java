@@ -13,12 +13,12 @@ import java.util.List;
 
 @Repository
 @Slf4j
-public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
+public class JdbcUserFilmLikeStorage implements UserFilmLikeStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public UserFilmLikeDbStorage(JdbcTemplate jdbcTemplate) {
+    public JdbcUserFilmLikeStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -70,7 +70,7 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
 
     @Override
     public List<Film> getCommon(Long userId, Long friendId) {
-        log.info("Получен запрос в DATABASE на общие фильмы между пользователями {} and {}", userId, friendId);
+        log.info("Получен запрос в DATABASE на общие фильмы между пользователями {} и {}", userId, friendId);
         String sqlQuery = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, m.name AS mpa_name, " +
                 "string_agg(G2.id || ',' || G2.name, ';') AS genre, " +
                 "string_agg(D.id || ',' || D.name, ';') AS director " +
@@ -90,7 +90,7 @@ public class UserFilmLikeDbStorage implements UserFilmLikeStorage {
                 "    WHERE l.USER_ID = ?" +
                 "     ) " +
                 " GROUP BY f.ID;";
-        log.info("Запрос в DATABASE на общие фильмы между пользователями {} and {} ОТРАБОТАЛ", userId, friendId);
+        log.info("Запрос в DATABASE на общие фильмы между пользователями {} и {} ОТРАБОТАЛ", userId, friendId);
         return jdbcTemplate.query(sqlQuery, RowMapper::mapRowToFilm, userId, friendId);
     }
 }

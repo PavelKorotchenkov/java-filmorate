@@ -12,11 +12,11 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class FriendshipDbStorage implements FriendshipStorage {
+public class JdbcFriendshipStorage implements FriendshipStorage {
 
 	private final JdbcTemplate jdbcTemplate;
 
-	public FriendshipDbStorage(JdbcTemplate jdbcTemplate) {
+	public JdbcFriendshipStorage(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 

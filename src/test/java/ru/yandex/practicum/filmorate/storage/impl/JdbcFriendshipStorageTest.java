@@ -14,7 +14,7 @@ import java.util.List;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class FriendshipDbStorageTest {
+class JdbcFriendshipStorageTest {
 
 	private final JdbcTemplate jdbcTemplate;
 
@@ -27,8 +27,8 @@ class FriendshipDbStorageTest {
 		User friend = new User(2L, "bf@email.ru", "chipichipi", "chapachapa",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
@@ -46,8 +46,8 @@ class FriendshipDbStorageTest {
 		User friend = new User(2L, "bf@email.ru", "chipichipi", "chapachapa",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
@@ -68,8 +68,8 @@ class FriendshipDbStorageTest {
 		User friend2 = new User(3L, "bff@email.ru", "dubidubi", "dabadaba",
 				LocalDate.of(1992, 3, 22));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 		userStorage.save(friend2);
@@ -93,8 +93,8 @@ class FriendshipDbStorageTest {
 		User friend2 = new User(3L, "bff@email.ru", "dubidubi", "dabadaba",
 				LocalDate.of(1992, 3, 22));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 		userStorage.save(friend2);
@@ -117,8 +117,8 @@ class FriendshipDbStorageTest {
 		User friend2 = new User(3L, "bff@email.ru", "dubidubi", "dabadaba",
 				LocalDate.of(1992, 3, 22));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 		userStorage.save(friend2);
@@ -142,8 +142,8 @@ class FriendshipDbStorageTest {
 		User friend = new User(2L, "bf@email.ru", "chipichipi", "chapachapa",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 

@@ -12,10 +12,10 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class MpaDbStorage implements MpaStorage {
+public class JdbcMpaStorage implements MpaStorage {
 	private final JdbcTemplate jdbcTemplate;
 
-	public MpaDbStorage(JdbcTemplate jdbcTemplate) {
+	public JdbcMpaStorage(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
