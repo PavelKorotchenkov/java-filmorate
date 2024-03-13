@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.model.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -98,13 +97,6 @@ public class RowMapper {
 		Long useful = row.getLong("useful");
 
 		return new Review(id, content, isPositive, userId, filmId, useful);
-	}
-
-	public static ReviewReaction mapRowToReviewReaction(ResultSet row, int rowNum) throws SQLException {
-		Long reviewId = row.getLong("review_id");
-		Long userId = row.getLong("user_id");
-
-		return new ReviewReaction(reviewId, userId);
 	}
 
 	public static Event mapRowToEvent(ResultSet row, int rowNum) throws SQLException {

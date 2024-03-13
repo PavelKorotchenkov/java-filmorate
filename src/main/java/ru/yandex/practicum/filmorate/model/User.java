@@ -15,14 +15,12 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
 public class User {
 	private Long id;
 
 	@Email(message = "Should have Email format")
-	@NotBlank(message = "Name cannot be empty")
+	@NotBlank(message = "Email cannot be empty")
 	private String email;
 
 	@NoSpaces
@@ -35,11 +33,9 @@ public class User {
 	@NotNull(message = "Date of Birth cannot be empty")
 	private LocalDate birthday;
 
-	//@JsonBackReference
 	@ToString.Exclude
 	private List<User> friendList = new ArrayList<>();
 
-	//@JsonBackReference
 	@ToString.Exclude
 	private List<Long> likedFilms = new ArrayList<>();
 
@@ -48,6 +44,9 @@ public class User {
 		this.email = email;
 		this.login = login;
 		this.name = name;
+		if (this.name == null || this.name.isBlank()) {
+			this.name = login;
+		}
 		this.birthday = birthday;
 	}
 
@@ -56,6 +55,9 @@ public class User {
 		this.email = email;
 		this.login = login;
 		this.name = name;
+		if (this.name == null || this.name.isBlank()) {
+			this.name = login;
+		}
 		this.birthday = birthday;
 	}
 

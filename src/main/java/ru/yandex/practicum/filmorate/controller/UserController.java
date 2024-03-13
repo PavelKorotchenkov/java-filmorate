@@ -30,6 +30,7 @@ public class UserController {
 	@PostMapping
 	public User addUser(@Valid @RequestBody User user) {
 		log.info("Получен запрос на добавление пользователя: {}", user);
+
 		User user1 = userService.addUser(user);
 		log.info("Отработан запрос на добавление пользователя: {}", user);
 		return user1;

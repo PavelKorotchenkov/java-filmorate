@@ -9,7 +9,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.model.ReviewReaction;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 import ru.yandex.practicum.filmorate.util.RowMapper;
 
@@ -121,17 +120,15 @@ public class ReviewDbStorage implements ReviewStorage {
 
 	@Override
 	public void addLike(Long reviewId, Long userId) {
-		List<ReviewReaction> result = jdbcTemplate.query(
-				"SELECT review_id, user_id " +
+		Integer count = jdbcTemplate.queryForObject(
+				"SELECT COUNT(*) " +
 						"FROM reviews_likes " +
-						"WHERE review_id = ? " +
-						"AND user_id = ?",
-				RowMapper::mapRowToReviewReaction,
-				reviewId,
-				userId
+						"WHERE review_id = ? AND user_id = ?",
+				Integer.class,
+				reviewId, userId
 		);
 
-		if (result.isEmpty()) {
+		if (count != null && count == 0) {
 			jdbcTemplate.update(
 					"INSERT INTO reviews_likes (review_id, user_id, isPositive) " +
 							"VALUES (?, ?, ?)",
@@ -150,17 +147,15 @@ public class ReviewDbStorage implements ReviewStorage {
 
 	@Override
 	public void addDislike(Long reviewId, Long userId) {
-		List<ReviewReaction> result = jdbcTemplate.query(
-				"SELECT review_id, user_id " +
+		Integer count = jdbcTemplate.queryForObject(
+				"SELECT COUNT(*) " +
 						"FROM reviews_likes " +
-						"WHERE review_id = ? " +
-						"AND user_id = ?",
-				RowMapper::mapRowToReviewReaction,
-				reviewId,
-				userId
+						"WHERE review_id = ? AND user_id = ?",
+				Integer.class,
+				reviewId, userId
 		);
 
-		if (result.isEmpty()) {
+		if (count != null && count == 0) {
 			jdbcTemplate.update(
 					"INSERT INTO reviews_likes (review_id, user_id, isPositive) " +
 							"VALUES (?, ?, ?)",
