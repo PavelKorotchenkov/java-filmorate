@@ -11,31 +11,31 @@ import java.util.List;
 
 @Service
 public class FeedService {
-    private final FeedStorage feedStorage;
-    private final UserStorage userStorage;
+	private final FeedStorage feedStorage;
+	private final UserStorage userStorage;
 
-    public FeedService(FeedStorage feedStorage, UserStorage userStorage) {
-        this.feedStorage = feedStorage;
-        this.userStorage = userStorage;
-    }
+	public FeedService(FeedStorage feedStorage, UserStorage userStorage) {
+		this.feedStorage = feedStorage;
+		this.userStorage = userStorage;
+	}
 
-    public Event addEvent(Long userId, Long entityId, String operation, String eventType) {
-        User user = userStorage.findById(userId);
-        if (user == null) {
-            throw new NotFoundException("Пользователь с id " + userId + " не найден.");
-        }
-        return feedStorage.add(userId, entityId, operation, eventType);
-    }
+	public Event addEvent(Long userId, Long entityId, String operation, String eventType) {
+		User user = userStorage.findById(userId);
+		if (user == null) {
+			throw new NotFoundException("Пользователь с id " + userId + " не найден.");
+		}
+		return feedStorage.add(userId, entityId, operation, eventType);
+	}
 
-    public List<Event> getEvents(Long userId) {
-        User user = userStorage.findById(userId);
-        if (user == null) {
-            throw new NotFoundException("Пользователь с id " + userId + " не найден.");
-        }
-        return feedStorage.getByUserId(user.getId());
-    }
+	public List<Event> getEvents(Long userId) {
+		User user = userStorage.findById(userId);
+		if (user == null) {
+			throw new NotFoundException("Пользователь с id " + userId + " не найден.");
+		}
+		return feedStorage.getByUserId(user.getId());
+	}
 
-    public void deleteEvent(Long entityId) {
-        feedStorage.delete(entityId);
-    }
+	public void deleteEvent(Long entityId) {
+		feedStorage.delete(entityId);
+	}
 }
