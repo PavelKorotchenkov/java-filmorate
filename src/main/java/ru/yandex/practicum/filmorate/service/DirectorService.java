@@ -1,12 +1,16 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Slf4j
 public class DirectorService {
     private final DirectorStorage directorStorage;
 
@@ -14,23 +18,35 @@ public class DirectorService {
         this.directorStorage = directorStorage;
     }
 
-    public List<Director> getAllDirectors() {
+    public List<Director> getAll() {
         return directorStorage.getAll();
     }
 
-    public Director getDirectorById(Long directorId) {
-        return directorStorage.getById(directorId);
+    public Director getById(Long directorId) {
+        Optional<Director> result = directorStorage.getById(directorId);
+        if (result.isPresent()) {
+            log.info("Получен режиссёр: {}", result);
+            return result.get();
+        } else {
+            throw new NotFoundException("Режиссёр с id " + directorId + " не найден");
+        }
     }
 
-    public Director createDirector(Director director) {
+    public Director create(Director director) {
         return directorStorage.create(director);
     }
 
-    public Director updateDirector(Director director) {
-        return directorStorage.update(director);
+    public Director update(Director director) {
+        Optional<Director> result = directorStorage.update(director);
+        if (result.isPresent()) {
+            log.info("Изменен режиссёр: {}", result);
+            return result.get();
+        } else {
+            throw new NotFoundException("Режиссёр с id " + director.getId() + " не найден");
+        }
     }
 
-    public void deleteDirector(Long directorId) {
+    public void delete(Long directorId) {
         directorStorage.delete(directorId);
     }
 }

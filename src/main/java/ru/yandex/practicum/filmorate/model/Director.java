@@ -16,11 +16,4 @@ public class Director {
     @NotBlank
     @EqualsAndHashCode.Exclude
     private String name;
-
-    public Map<String, Object> toMap() {
-        Map<String, Object> values = new HashMap<>();
-        values.put("id", id);
-        values.put("name", name);
-        return values;
-    }
 }

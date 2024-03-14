@@ -52,19 +52,19 @@ public class FilmController {
 		return filmService.updateFilm(film);
 	}
 
-	@PutMapping("/{filmId}/like/{userId}")
-	public void likeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
-		log.info("Получен запрос - фильму с id {} поставил лайк пользователь с id {}", filmId, userId);
-		likeService.addLike(filmId, userId);
-		feedService.addEvent(userId, filmId, EventOperation.ADD.name(), EventType.LIKE.name());
-	}
+    @PutMapping("/{filmId}/like/{userId}")
+    public void likeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
+        log.info("Получен запрос - фильму с id {} поставил лайк пользователь с id {}", filmId, userId);
+        likeService.addLike(filmId, userId);
+        feedService.add(userId, filmId, EventOperation.ADD.name(), EventType.LIKE.name());
+    }
 
-	@DeleteMapping("/{filmId}/like/{userId}")
-	public void deleteLike(@PathVariable Long filmId, @PathVariable Long userId) {
-		log.info("Получен запрос - фильму с id {} убрал лайк пользователь с id {}", filmId, userId);
-		likeService.deleteLike(filmId, userId);
-		feedService.addEvent(userId, filmId, EventOperation.REMOVE.name(), EventType.LIKE.name());
-	}
+    @DeleteMapping("/{filmId}/like/{userId}")
+    public void deleteLike(@PathVariable Long filmId, @PathVariable Long userId) {
+        log.info("Получен запрос - фильму с id {} убрал лайк пользователь с id {}", filmId, userId);
+        likeService.deleteLike(filmId, userId);
+        feedService.add(userId, filmId, EventOperation.REMOVE.name(), EventType.LIKE.name());
+    }
 
 	@GetMapping("/popular")
 	public List<Film> getTopRatedFilmsByGenreAndDate(@RequestParam(defaultValue = "10") int count,

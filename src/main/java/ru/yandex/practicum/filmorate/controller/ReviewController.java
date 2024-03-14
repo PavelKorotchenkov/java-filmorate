@@ -27,21 +27,21 @@ public class ReviewController {
 	@PostMapping
 	public Review addReview(@Valid @RequestBody Review review) {
 		Review result = reviewService.addReview(review);
-		feedService.addEvent(result.getUserId(), result.getReviewId(), EventOperation.ADD.name(), EventType.REVIEW.name());
+		feedService.add(result.getUserId(), result.getReviewId(), EventOperation.ADD.name(), EventType.REVIEW.name());
 		return result;
 	}
 
 	@PutMapping
 	public Review updateReview(@RequestBody Review review) {
 		Review result = reviewService.updateReview(review);
-		feedService.addEvent(result.getUserId(), result.getReviewId(), EventOperation.UPDATE.name(), EventType.REVIEW.name());
+		feedService.add(result.getUserId(), result.getReviewId(), EventOperation.UPDATE.name(), EventType.REVIEW.name());
 		return result;
 	}
 
 	@DeleteMapping("/{id}")
 	public void deleteReview(@PathVariable("id") Long reviewId) {
 		Review result = reviewService.getReviewById(reviewId);
-		feedService.addEvent(result.getUserId(), reviewId, EventOperation.REMOVE.name(), EventType.REVIEW.name());
+		feedService.add(result.getUserId(), reviewId, EventOperation.REMOVE.name(), EventType.REVIEW.name());
 		reviewService.deleteReview(reviewId);
 	}
 
