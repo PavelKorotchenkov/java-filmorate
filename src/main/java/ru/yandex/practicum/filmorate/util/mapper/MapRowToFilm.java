@@ -37,11 +37,11 @@ public class MapRowToFilm {
 		}
 
 		Set<Director> directorSet = new LinkedHashSet<>();
-		String directorRowData = "";
+		String directorRowData;
 		try {
 			directorRowData = row.getString("director");
 		} catch (SQLException e) {
-
+			directorRowData = "";
 		}
 
 		if (directorRowData != null && !directorRowData.isEmpty() && !directorRowData.isBlank()) {
