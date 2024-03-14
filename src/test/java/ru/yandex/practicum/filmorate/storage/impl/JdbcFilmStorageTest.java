@@ -94,16 +94,14 @@ class JdbcFilmStorageTest {
 
 		Film newFilm = new Film(1L, "Harry Potter and Learning Java",
 				"Harry's doing a hell of a job there",
-				LocalDate.of(1990, 1, 1), 120000, new Mpa(2L, "PG"),
-				genres);
-
+				LocalDate.of(1990, 1, 1), 120000, new Mpa(2L, "PG"));
+		newFilm.setGenres(genres);
 		genres.add(new Genre(6L, "Боевик"));
 
 		Film updatedFilm = new Film(1L, "Mission Impossible. Cracking Java",
 				"Will it be Tom Cruise's last mission?",
-				LocalDate.of(2023, 2, 14), 160000, new Mpa(5L, "NC-17"),
-				genres);
-
+				LocalDate.of(2023, 2, 14), 160000, new Mpa(5L, "NC-17"));
+		updatedFilm.setGenres(genres);
 		FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 		filmStorage.save(newFilm);
 		long id = newFilm.getId();
@@ -126,16 +124,14 @@ class JdbcFilmStorageTest {
 
 		Film newFilm = new Film(1L, "Harry Potter and Learning Java",
 				"Harry's doing a hell of a job there",
-				LocalDate.of(1990, 1, 1), 120000, new Mpa(2L, "PG"),
-				genres);
-
+				LocalDate.of(1990, 1, 1), 120000, new Mpa(2L, "PG"));
+		newFilm.setGenres(genres);
 		genres.clear();
 
 		Film updatedFilm = new Film(1L, "Mission Impossible. Cracking Java",
 				"Will it be Tom Cruise's last mission?",
-				LocalDate.of(2023, 2, 14), 160000, new Mpa(5L, "NC-17"),
-				genres);
-
+				LocalDate.of(2023, 2, 14), 160000, new Mpa(5L, "NC-17"));
+		updatedFilm.setGenres(genres);
 		FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 		filmStorage.save(newFilm);
 		long id = newFilm.getId();
