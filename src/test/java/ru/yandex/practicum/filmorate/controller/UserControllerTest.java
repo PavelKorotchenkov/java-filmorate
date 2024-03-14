@@ -45,11 +45,7 @@ class UserControllerTest {
 
 	@BeforeEach
 	void setUp() {
-		user = new User();
-		user.setEmail("email@dat.ru");
-		user.setLogin("Login");
-		user.setName("Name");
-		user.setBirthday(LocalDate.of(2000, 10, 25));
+		user = new User("email@dat.ru", "Login", "Name", LocalDate.of(2000, 10, 25) );
 	}
 
 	@Test
