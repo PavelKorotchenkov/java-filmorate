@@ -74,4 +74,15 @@ public class FeedDbStorage implements FeedStorage {
         values.put("event_timestamp", event.getTimestamp());
         return values;
     }
+	@Override
+	public void deleteEvent(Long entityId) {
+		String sqlQuery = "DELETE FROM feed WHERE entity_id = ?";
+		int recordsAffected = jdbcTemplate.update(sqlQuery, entityId);
+		if (recordsAffected == 0) {
+			log.warn("Удаление события - Событие с id сущности {} не найдено", entityId);
+			throw new NotFoundException("Сущность события с id " + entityId + " не найдена");
+		} else {
+			log.info("Событие с сущностью id {} удалено", entityId);
+		}
+	}
 }
