@@ -64,10 +64,37 @@ public class RowMapper {
 				directorSet.add(director);
 			}
 		}
-
 		Film film = new Film(id, name, description, releaseDate, duration, mpa);
 		film.setGenres(genreSet);
 		film.setDirectors(directorSet);
+		return film;
+	}
+
+	public static Film mapRowToFilmWithoutDirector(ResultSet row, int rowNum) throws SQLException {
+		Long id = row.getLong("id");
+		String name = row.getString("name");
+		String description = row.getString("description");
+		LocalDate releaseDate = row.getDate("releaseDate").toLocalDate();
+		long duration = row.getLong("duration");
+		long mpaId = row.getInt("mpa_id");
+		String mpaName = row.getString("mpa_name");
+		Mpa mpa = new Mpa(mpaId, mpaName);
+
+		String genreRowData = row.getString("genre");
+		Set<Genre> genreSet = new LinkedHashSet<>();
+
+		if (genreRowData != null && !genreRowData.isEmpty() && !genreRowData.isBlank()) {
+			String[] genreRow = genreRowData.split(";");
+			for (String s : genreRow) {
+				String[] finalGenre = s.split(",");
+				long genreId = Long.parseLong(finalGenre[0]);
+				String genreName = finalGenre[1];
+				Genre genre = new Genre(genreId, genreName);
+				genreSet.add(genre);
+			}
+		}
+		Film film = new Film(id, name, description, releaseDate, duration, mpa);
+		film.setGenres(genreSet);
 		return film;
 	}
 
