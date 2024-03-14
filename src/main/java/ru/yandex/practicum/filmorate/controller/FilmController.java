@@ -101,9 +101,9 @@ public class FilmController {
 	public List<Film> getCommonFilms(@RequestParam Long userId,
 									 @RequestParam Long friendId) {
 		log.info("Получен запрос на общие фильмы между пользователями {} and {}", userId, friendId);
-		List<Film> filmsWithDirector = filmService.getCommon(userId, friendId);
+		List<Film> commonFilms = filmService.getCommon(userId, friendId);
 		log.info("Отработан запрос на общие фильмы между пользователями {} and {}", userId, friendId);
-		return filmsWithDirector;
+		return commonFilms;
 	}
 
 	@DeleteMapping("/{id}")

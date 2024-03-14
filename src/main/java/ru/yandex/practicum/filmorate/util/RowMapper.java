@@ -51,8 +51,6 @@ public class RowMapper {
 			}
 		}
 
-		Film film = new Film(id, name, description, releaseDate, duration, mpa, genreSet);
-
 		String directorRowData = row.getString("director");
 		Set<Director> directorSet = new LinkedHashSet<>();
 
@@ -66,6 +64,9 @@ public class RowMapper {
 				directorSet.add(director);
 			}
 		}
+
+		Film film = new Film(id, name, description, releaseDate, duration, mpa);
+		film.setGenres(genreSet);
 		film.setDirectors(directorSet);
 		return film;
 	}
