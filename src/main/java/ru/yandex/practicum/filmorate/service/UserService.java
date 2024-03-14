@@ -3,8 +3,8 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.RecommendationStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -29,10 +29,8 @@ public class UserService {
 	}
 
 	public List<User> getAll() {
-		List<User> allUsers = userStorage.findAll();
-		return allUsers;
+		return userStorage.findAll();
 	}
-
 
 	public User getById(Long userId) {
 		User userById = userStorage.findById(userId);
@@ -43,6 +41,10 @@ public class UserService {
 	}
 
 	public User update(User user) {
+		User userById = userStorage.findById(user.getId());
+		if (userById == null) {
+			throw new NotFoundException("Пользователь с id " + user.getId() + " не найден.");
+		}
 		return userStorage.update(user);
 	}
 
@@ -50,7 +52,7 @@ public class UserService {
 		boolean isDeleted = userStorage.deleteById(id);
 		System.err.println(isDeleted);
 		if (!isDeleted) {
-			throw new NotFoundException("Пользователя не удалось удалить пользователя");
+			throw new NotFoundException("Пользователя не удалось удалить");
 		}
 		log.info("Пользователь успешно удален с id {}", id);
 	}

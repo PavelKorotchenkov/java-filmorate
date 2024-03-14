@@ -6,10 +6,9 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToReview;
 
 import java.sql.Types;
 import java.util.Arrays;
@@ -51,15 +50,12 @@ public class JdbcReviewStorage implements ReviewStorage {
 	@Override
 	public Review update(Review review) {
 		Long id = review.getReviewId();
-		findById(id); //проверяем, что отзыв есть в базе
 		jdbcTemplate.update("UPDATE reviews " +
 						"SET content = ?, isPositive = ? " +
 						"WHERE id = ?",
 				review.getContent(), review.getIsPositive(), id);
 
-		Review updReview = findById(id);
-
-		return updReview;
+		return findById(id);
 	}
 
 	@Override
@@ -75,15 +71,15 @@ public class JdbcReviewStorage implements ReviewStorage {
 				"SELECT * " +
 						"FROM reviews " +
 						"WHERE id = ?",
-				RowMapper::mapRowToReview,
+				MapRowToReview::map,
 				reviewId
 		);
-		if (result.size() != 1) {
-			throw new NotFoundException("Отзыв с id " + reviewId + " не найден");
+
+		if (result.isEmpty()) {
+			return null;
 		}
 
-		Review review = result.get(0);
-		return review;
+		return result.get(0);
 	}
 
 	@Override
@@ -93,7 +89,7 @@ public class JdbcReviewStorage implements ReviewStorage {
 						"WHERE film_id = ? " +
 						"ORDER BY useful DESC " +
 						"LIMIT ?",
-				RowMapper::mapRowToReview,
+				MapRowToReview::map,
 				filmId,
 				count);
 	}
@@ -104,7 +100,7 @@ public class JdbcReviewStorage implements ReviewStorage {
 				"SELECT * FROM reviews " +
 						"ORDER BY useful DESC " +
 						"LIMIT ?",
-				RowMapper::mapRowToReview,
+				MapRowToReview::map,
 				count);
 	}
 

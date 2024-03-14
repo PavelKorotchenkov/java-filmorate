@@ -10,8 +10,9 @@ import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.EventOperation;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class JdbcFeedStorage implements FeedStorage {
 				"SELECT * " +
 						"FROM feed " +
 						"WHERE user_id = ?",
-				RowMapper::mapRowToEvent,
+				JdbcFeedStorage::mapRowToEvent,
 				userId);
 	}
 
@@ -65,5 +66,16 @@ public class JdbcFeedStorage implements FeedStorage {
 		values.put("event_type", event.getEventType());
 		values.put("event_timestamp", event.getTimestamp());
 		return values;
+	}
+
+	private static Event mapRowToEvent(ResultSet row, int rowNum) throws SQLException {
+		Long eventId = row.getLong("event_id");
+		Long userId = row.getLong("user_id");
+		Long entityId = row.getLong("entity_id");
+		EventOperation operation = EventOperation.valueOf(row.getString("operation"));
+		EventType eventType = EventType.valueOf(row.getString("event_type"));
+		Long timestamp = row.getLong("event_timestamp");
+
+		return new Event(eventId, userId, entityId, operation, eventType, timestamp);
 	}
 }

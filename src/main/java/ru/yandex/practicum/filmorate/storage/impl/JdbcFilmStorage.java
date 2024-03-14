@@ -12,7 +12,8 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToFilm;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToGenre;
 
 import java.sql.Types;
 import java.util.Arrays;
@@ -45,15 +46,14 @@ public class JdbcFilmStorage implements FilmStorage {
 						"LEFT JOIN director AS d ON fd.director_id = d.id " +
 						"WHERE f.id = ? " +
 						"GROUP BY f.id,f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name;",
-				RowMapper::mapRowToFilm,
+				MapRowToFilm::map,
 				id
 		);
-		if (result.size() != 1) {
-			throw new NotFoundException("Фильм с id " + id + " не найден.");
+		if (result.isEmpty()) {
+			return null;
 		}
 
-		Film film = result.get(0);
-		return film;
+		return result.get(0);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class JdbcFilmStorage implements FilmStorage {
 						"LEFT JOIN film_director AS fd ON f.id = fd.film_id " +
 						"LEFT JOIN director AS d ON fd.director_id = d.id " +
 						"GROUP BY f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name;",
-				RowMapper::mapRowToFilm);
+				MapRowToFilm::map);
 		return films;
 	}
 
@@ -134,7 +134,7 @@ public class JdbcFilmStorage implements FilmStorage {
 				"       ((LOWER(f.name) LIKE LOWER(?)) OR LOWER(d.name) LIKE LOWER(?))) " +
 				"GROUP BY f.id " +
 				"ORDER BY user_like_count DESC;";
-		return jdbcTemplate.query(sqlQuery, RowMapper::mapRowToFilm, by, pattern, by, pattern, by, by, pattern, pattern);
+		return jdbcTemplate.query(sqlQuery, MapRowToFilm::map, by, pattern, by, pattern, by, by, pattern, pattern);
 	}
 
 	@Override
@@ -167,11 +167,11 @@ public class JdbcFilmStorage implements FilmStorage {
 						"WHERE fd.director_id = ? " +
 						"GROUP BY f.id " +
 						"ORDER BY " + orderBy + " ASC;",
-				RowMapper::mapRowToFilm,
+				MapRowToFilm::map,
 				directorId
 		);
 		if (result.isEmpty()) {
-			throw new NotFoundException("Режиссёр с id " + directorId + " не найден.");
+			return null;
 		}
 		return result;
 	}
@@ -189,7 +189,7 @@ public class JdbcFilmStorage implements FilmStorage {
 						"LEFT JOIN genre g ON fg.genre_id = g.id " +
 						"WHERE film_id = ? " +
 						"ORDER BY id",
-				RowMapper::mapRowToGenre,
+				MapRowToGenre::map,
 				id
 		);
 		return new LinkedHashSet<>(genres);

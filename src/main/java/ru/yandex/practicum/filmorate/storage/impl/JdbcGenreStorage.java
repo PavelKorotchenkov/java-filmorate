@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToGenre;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class JdbcGenreStorage implements GenreStorage {
 				"SELECT * " +
 						"FROM genre " +
 						"ORDER by id",
-				RowMapper::mapRowToGenre);
+				MapRowToGenre::map);
 	}
 
 	@Override
@@ -33,13 +33,12 @@ public class JdbcGenreStorage implements GenreStorage {
 				"SELECT * " +
 						"FROM genre " +
 						"WHERE id = ?",
-				RowMapper::mapRowToGenre,
+				MapRowToGenre::map,
 				id);
 
-		if (genres.size() != 1) {
-			throw new NotFoundException("Жанр с идентификатором + " + id + " не найден.");
+		if (genres.isEmpty()) {
+			return null;
 		}
-
 		return genres.get(0);
 	}
 }

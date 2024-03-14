@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToMpa;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class JdbcMpaStorage implements MpaStorage {
 				"SELECT * " +
 						"FROM mpa " +
 						"ORDER BY id",
-				RowMapper::mapRowToMpa);
+				MapRowToMpa::map);
 	}
 
 	@Override
@@ -32,11 +32,11 @@ public class JdbcMpaStorage implements MpaStorage {
 				"SELECT * " +
 						"FROM mpa " +
 						"WHERE id = ?",
-				RowMapper::mapRowToMpa,
+				MapRowToMpa::map,
 				id);
 
 		if (mpa.isEmpty()) {
-			throw new NotFoundException("Возрастной рейтинг с идентификатором + " + id + " не найден.");
+			return null;
 		}
 
 		return mpa.get(0);

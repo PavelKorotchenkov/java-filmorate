@@ -5,10 +5,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToDirector;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class JdbcDirectorStorage implements DirectorStorage {
 				"SELECT * " +
 						"FROM director " +
 						"ORDER by id",
-				RowMapper::mapRowToDirector);
+				MapRowToDirector::map);
 	}
 
 	@Override
@@ -37,13 +36,11 @@ public class JdbcDirectorStorage implements DirectorStorage {
 				"SELECT * " +
 						"FROM director " +
 						"WHERE id = ? ",
-				RowMapper::mapRowToDirector,
+				MapRowToDirector::map,
 				directorId);
-
-		if (directors.size() != 1) {
-			throw new NotFoundException("Режиссёр с идентификатором + " + directorId + " не найден.");
+		if (directors.isEmpty()) {
+			return null;
 		}
-
 		return directors.get(0);
 	}
 
@@ -61,22 +58,13 @@ public class JdbcDirectorStorage implements DirectorStorage {
 		String sqlQuery = "UPDATE director SET " +
 				"name = ? " +
 				"WHERE id = ?";
-		int recordsAffected = jdbcTemplate.update(sqlQuery,
-				director.getName(),
-				director.getId()
-		);
-		if (recordsAffected == 0) {
-			throw new NotFoundException("Режиссёр с id " + director.getId() + " не найден");
-		}
+		jdbcTemplate.update(sqlQuery, director.getName(), director.getId());
 		return director;
 	}
 
 	@Override
 	public void delete(Long directorId) {
 		String sqlQuery = "DELETE FROM director WHERE id = ?";
-		int recordsAffected = jdbcTemplate.update(sqlQuery, directorId);
-		if (recordsAffected == 0) {
-			throw new NotFoundException("Режиссёр с id " + directorId + " не найден");
-		}
+		jdbcTemplate.update(sqlQuery, directorId);
 	}
 }

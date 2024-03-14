@@ -31,7 +31,7 @@ public class ReviewController {
 		log.info("Получен запрос на добавление отзыва: {}.", review);
 		Review result = reviewService.addReview(review);
 		feedService.addEvent(result.getUserId(), result.getReviewId(), EventOperation.ADD.name(), EventType.REVIEW.name());
-		log.info("Отработан запрос на добавление отзыва.");
+		log.info("Отработан запрос на добавление отзыва: {}.", review);
 		return result;
 	}
 

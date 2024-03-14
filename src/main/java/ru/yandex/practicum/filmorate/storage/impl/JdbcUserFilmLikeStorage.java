@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToFilm;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,7 +42,7 @@ public class JdbcUserFilmLikeStorage implements UserFilmLikeStorage {
 						"GROUP BY f.id " +
 						"ORDER BY user_like_count DESC " +
 						"LIMIT ?",
-				RowMapper::mapRowToFilm, genreId, genreId, year, year, count);
+				MapRowToFilm::map, genreId, genreId, year, year, count);
 	}
 
 	@Override
@@ -81,6 +81,6 @@ public class JdbcUserFilmLikeStorage implements UserFilmLikeStorage {
 				"    WHERE l.USER_ID = ?" +
 				"     ) " +
 				" GROUP BY f.ID;";
-		return jdbcTemplate.query(sqlQuery, RowMapper::mapRowToFilmWithoutDirector, userId, friendId);
+		return jdbcTemplate.query(sqlQuery, MapRowToFilm::map, userId, friendId);
 	}
 }

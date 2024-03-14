@@ -7,10 +7,9 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToUser;
 
 import java.sql.Types;
 import java.util.Arrays;
@@ -30,13 +29,12 @@ public class JdbcUserStorage implements UserStorage {
 	public User findById(Long id) {
 		List<User> result = jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday FROM users WHERE id = ?",
-				RowMapper::mapRowToUser,
+				MapRowToUser::map,
 				id
 		);
 		if (result.isEmpty()) {
-			throw new NotFoundException("Пользователь с id " + id + " не найден.");
+			return null;
 		}
-
 		return result.get(0);
 	}
 
@@ -44,7 +42,7 @@ public class JdbcUserStorage implements UserStorage {
 	public List<User> findAll() {
 		return jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday FROM users",
-				RowMapper::mapRowToUser);
+				MapRowToUser::map);
 	}
 
 	@Override

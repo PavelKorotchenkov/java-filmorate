@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToUser;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +27,7 @@ public class JdbcFriendshipStorage implements FriendshipStorage {
 						"FROM friendship " +
 						"WHERE user_id = ? " +
 						"AND friend_id = ?",
-				RowMapper::mapRowToFriendship,
+				JdbcFriendshipStorage::mapRowToFriendship,
 				friendId,
 				userId
 		);
@@ -67,7 +67,7 @@ public class JdbcFriendshipStorage implements FriendshipStorage {
 						"WHERE id IN (" +
 						"SELECT friend_id FROM friendship " +
 						"WHERE user_id = ?)",
-				RowMapper::mapRowToUser,
+				MapRowToUser::map,
 				id);
 	}
 
@@ -82,7 +82,7 @@ public class JdbcFriendshipStorage implements FriendshipStorage {
 						"(SELECT friend_id " +
 						"FROM friendship " +
 						"WHERE user_id = ?))",
-				RowMapper::mapRowToUser,
+				MapRowToUser::map,
 				userId,
 				friendId);
 	}
@@ -104,5 +104,12 @@ public class JdbcFriendshipStorage implements FriendshipStorage {
 				false,
 				friendId,
 				userId);
+	}
+
+	private static Friendship mapRowToFriendship(ResultSet row, int rowNum) throws SQLException {
+		Long userId = row.getLong("user_id");
+		Long friendId = row.getLong("friend_id");
+		Boolean status = row.getBoolean("friendship_status");
+		return new Friendship(userId, friendId, status);
 	}
 }

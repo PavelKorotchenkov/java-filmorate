@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.RecommendationStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToFilm;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class JdbcRecommendationStorage implements RecommendationStorage {
                 "ORDER BY COUNT(*) DESC\n" +
                 "LIMIT 1); ";
 
-        List<User> users = jdbcTemplate.query(sql, RowMapper::mapRowToUser, id, id);
+        List<User> users = jdbcTemplate.query(sql, MapRowToUser::map, id, id);
         if (users.isEmpty()) {
             return Optional.empty();
         } else {
@@ -66,6 +67,6 @@ public class JdbcRecommendationStorage implements RecommendationStorage {
                 ")\n" +
                 "GROUP BY f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name;";
 
-        return jdbcTemplate.query(sql, RowMapper::mapRowToFilm, overlapUser.get().getId(), id);
+        return jdbcTemplate.query(sql, MapRowToFilm::map, overlapUser.get().getId(), id);
     }
 }
