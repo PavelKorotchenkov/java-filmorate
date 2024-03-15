@@ -47,8 +47,18 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> findPopularByGenreAndDate(int count, Long genreId, Integer year) {
+        return null;
+    }
+
+    @Override
     public boolean deleteById(Long id) {
         return false;
+    }
+
+    @Override
+    public List<Film> getCommon(Long userId, Long friendId) {
+        return null;
     }
 
     @Override

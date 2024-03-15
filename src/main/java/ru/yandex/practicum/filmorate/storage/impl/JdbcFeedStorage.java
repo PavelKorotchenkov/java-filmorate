@@ -2,10 +2,11 @@ package ru.yandex.practicum.filmorate.storage.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.EventOperation;
 import ru.yandex.practicum.filmorate.model.EventType;
@@ -14,58 +15,58 @@ import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @Primary
 public class JdbcFeedStorage implements FeedStorage {
-	private final JdbcTemplate jdbcTemplate;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Autowired
-	public JdbcFeedStorage(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+	public JdbcFeedStorage(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
 	@Override
 	public Event add(Long userId, Long entityId, String operation, String eventType) {
-		Event event = new Event(userId, entityId, EventOperation.valueOf(operation), EventType.valueOf(eventType), Instant.now().toEpochMilli());
-		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-				.withTableName("feed")
-				.usingGeneratedKeyColumns("event_id");
-		event.setEventId(simpleJdbcInsert.executeAndReturnKey(toMap(event)).longValue());
+		Event event = new Event(userId, entityId, EventOperation.valueOf(operation), EventType.valueOf(eventType),
+				Instant.now().toEpochMilli());
+
+		String sql = "INSERT INTO feed (user_id, entity_id, operation, event_type, event_timestamp) " +
+				"VALUES (:userId, :entityId, :operation, :eventType, :event_timestamp)";
+
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("userId", event.getUserId());
+		params.addValue("entityId", event.getEntityId());
+		params.addValue("operation", event.getOperation().toString());
+		params.addValue("eventType", event.getEventType().toString());
+		params.addValue("event_timestamp", event.getTimestamp());
+
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		namedParameterJdbcTemplate.update(sql, params, keyHolder);
+
+		Long generatedId = keyHolder.getKey().longValue();
+		event.setEventId(generatedId);
+
 		return event;
 	}
 
 	@Override
 	public List<Event> getByUserId(Long userId) {
-		return jdbcTemplate.query(
-				"SELECT * " +
-						"FROM feed " +
-						"WHERE user_id = ?",
-				JdbcFeedStorage::mapRowToEvent,
-				userId);
+		String sql = "SELECT * FROM feed WHERE user_id = :userId";
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("userId", userId);
+
+		return namedParameterJdbcTemplate.query(sql, params, JdbcFeedStorage::mapRowToEvent);
 	}
 
 	@Override
 	public void delete(Long entityId) {
-		String sqlQuery = "DELETE FROM feed WHERE entity_id = ?";
-		int recordsAffected = jdbcTemplate.update(sqlQuery, entityId);
-		if (recordsAffected == 0) {
-			throw new NotFoundException("Сущность события с id " + entityId + " не найдена");
-		}
-	}
+		String sql = "DELETE FROM feed WHERE entity_id = :entityId";
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("entityId", entityId);
 
-	private Map<String, Object> toMap(Event event) {
-		Map<String, Object> values = new HashMap<>();
-		values.put("event_id", event.getEventId());
-		values.put("user_id", event.getUserId());
-		values.put("entity_id", event.getEntityId());
-		values.put("operation", event.getOperation());
-		values.put("event_type", event.getEventType());
-		values.put("event_timestamp", event.getTimestamp());
-		return values;
+		namedParameterJdbcTemplate.update(sql, params);
 	}
 
 	private static Event mapRowToEvent(ResultSet row, int rowNum) throws SQLException {

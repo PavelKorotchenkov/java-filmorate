@@ -6,10 +6,11 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
@@ -18,16 +19,16 @@ import java.util.List;
 @Slf4j
 public class FilmService {
 	private final FilmStorage filmStorage;
-	private final UserFilmLikeStorage userFilmLikeStorage;
 	private final UserStorage userStorage;
 	private final DirectorStorage directorStorage;
+	private final GenreStorage genreStorage;
 
 	@Autowired
-	public FilmService(FilmStorage filmStorage, UserFilmLikeStorage userFilmLikeStorage, UserStorage userStorage, DirectorStorage directorStorage) {
+	public FilmService(FilmStorage filmStorage, UserStorage userStorage, DirectorStorage directorStorage, GenreStorage genreStorage) {
 		this.filmStorage = filmStorage;
-		this.userFilmLikeStorage = userFilmLikeStorage;
 		this.userStorage = userStorage;
 		this.directorStorage = directorStorage;
+		this.genreStorage = genreStorage;
 	}
 
 	public Film add(Film film) {
@@ -40,6 +41,7 @@ public class FilmService {
 
 	public Film getById(Long filmId) {
 		Film film = filmStorage.findById(filmId);
+		System.out.println(filmId);
 		if (film == null) {
 			throw new NotFoundException("Фильм с id " + filmId + " не найден");
 		}
@@ -54,9 +56,14 @@ public class FilmService {
 		return filmStorage.update(film);
 	}
 
-	public List<Film> showPopularByGenreAndDate(int count, Integer genreId, Integer year) {
-
-		return userFilmLikeStorage.findPopularByGenreAndDate(count, genreId, year);
+	public List<Film> showPopularByGenreAndDate(int count, Long genreId, Integer year) {
+		if (genreId != null) {
+			Genre genre = genreStorage.findById(genreId);
+			if (genre == null) {
+				throw new NotFoundException("Жанр с id " + genreId + " не найден");
+			}
+		}
+		return filmStorage.findPopularByGenreAndDate(count, genreId, year);
 	}
 
 	public List<Film> getCommon(Long userId, Long friendId) {
@@ -68,7 +75,7 @@ public class FilmService {
 		if (friend == null) {
 			throw new NotFoundException("Пользователь с id " + friendId + " не найден");
 		}
-		return userFilmLikeStorage.getCommon(user.getId(), friend.getId());
+		return filmStorage.getCommon(user.getId(), friend.getId());
 	}
 
 	public List<Film> getWithDirector(Long directorId, String sortBy) {
