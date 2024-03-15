@@ -23,7 +23,7 @@ create TABLE IF NOT EXISTS films
     releaseDate timestamp,
     duration    integer,
     mpa_id      integer,
-    FOREIGN KEY (mpa_id) REFERENCES mpa (id) ON delete CASCADE
+    FOREIGN KEY (mpa_id) REFERENCES mpa (id) ON DELETE CASCADE
 );
 
 create TABLE IF NOT EXISTS genre
@@ -79,8 +79,8 @@ create TABLE IF NOT EXISTS reviews
     user_id integer,
     film_id integer,
     useful integer,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON delete CASCADE,
-    FOREIGN KEY (film_id) REFERENCES films(id) ON delete CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (film_id) REFERENCES films(id) ON DELETE CASCADE
 );
 
 create TABLE IF NOT EXISTS reviews_likes
@@ -88,8 +88,8 @@ create TABLE IF NOT EXISTS reviews_likes
     review_id integer,
     user_id integer,
     isPositive boolean,
-    FOREIGN KEY (review_id) REFERENCES reviews(id) ON delete CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON delete CASCADE
+    FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS feed

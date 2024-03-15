@@ -10,6 +10,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Review {
 	private Long reviewId;
 	@NotNull
@@ -34,17 +35,5 @@ public class Review {
 	@Override
 	public int hashCode() {
 		return Objects.hash(reviewId);
-	}
-
-	@Override
-	public String toString() {
-		return "Review{" +
-				"id=" + reviewId +
-				", content='" + content + '\'' +
-				", isPositive=" + isPositive +
-				", userId=" + userId +
-				", filmId=" + filmId +
-				", useful=" + useful +
-				'}';
 	}
 }

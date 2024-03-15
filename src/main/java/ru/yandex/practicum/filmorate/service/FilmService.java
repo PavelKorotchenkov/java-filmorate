@@ -3,8 +3,11 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -14,53 +17,74 @@ import java.util.List;
 @Service
 @Slf4j
 public class FilmService {
-    private final FilmStorage filmStorage;
-    private final UserFilmLikeStorage userFilmLikeStorage;
-    private final UserStorage userStorage;
+	private final FilmStorage filmStorage;
+	private final UserFilmLikeStorage userFilmLikeStorage;
+	private final UserStorage userStorage;
+	private final DirectorStorage directorStorage;
 
-    @Autowired
-    public FilmService(FilmStorage filmStorage, UserFilmLikeStorage userFilmLikeStorage, UserStorage userStorage) {
-        this.filmStorage = filmStorage;
-        this.userFilmLikeStorage = userFilmLikeStorage;
-        this.userStorage = userStorage;
-    }
+	@Autowired
+	public FilmService(FilmStorage filmStorage, UserFilmLikeStorage userFilmLikeStorage, UserStorage userStorage, DirectorStorage directorStorage) {
+		this.filmStorage = filmStorage;
+		this.userFilmLikeStorage = userFilmLikeStorage;
+		this.userStorage = userStorage;
+		this.directorStorage = directorStorage;
+	}
 
-    public Film addFilm(Film film) {
-        return filmStorage.save(film);
-    }
+	public Film add(Film film) {
+		return filmStorage.save(film);
+	}
 
-    public List<Film> getAllFilms() {
-        return filmStorage.findAllFilms();
-    }
+	public List<Film> getAll() {
+		return filmStorage.findAll();
+	}
 
-    public Film getFilmById(Long filmId) {
-        return filmStorage.findFilmById(filmId);
-    }
+	public Film getById(Long filmId) {
+		Film film = filmStorage.findById(filmId);
+		System.out.println(filmId);
+		if (film == null) {
+			throw new NotFoundException("Фильм с id " + filmId + " не найден");
+		}
+		return film;
+	}
 
-    public Film updateFilm(Film film) {
-        return filmStorage.update(film);
-    }
+	public Film update(Film film) {
+		Film filmById = filmStorage.findById(film.getId());
+		if (filmById == null) {
+			throw new NotFoundException("Фильм с id " + film.getId() + " не найден");
+		}
+		return filmStorage.update(film);
+	}
 
-    public List<Film> showPopularByGenreAndDate(int count, Integer genreId, Integer year) {
+	public List<Film> showPopularByGenreAndDate(int count, Integer genreId, Integer year) {
 
-        return userFilmLikeStorage.findPopularByGenreAndDate(count, genreId, year);
-    }
+		return filmStorage.findPopularByGenreAndDate(count, genreId, year);
+	}
 
-    public List<Film> getFilmCommon(Long userId, Long friendId) {
-        User user = userStorage.findUserById(userId);
-        User friend = userStorage.findUserById(friendId);
-        return userFilmLikeStorage.getAllCommonFilms(user.getId(), friend.getId());
-    }
+	public List<Film> getCommon(Long userId, Long friendId) {
+		User user = userStorage.findById(userId);
+		if (user == null) {
+			throw new NotFoundException("Пользователь с id " + userId + " не найден");
+		}
+		User friend = userStorage.findById(friendId);
+		if (friend == null) {
+			throw new NotFoundException("Пользователь с id " + friendId + " не найден");
+		}
+		return filmStorage.getCommon(user.getId(), friend.getId());
+	}
 
-    public List<Film> getFilmsWithDirector(Long directorId, String sortBy) {
-        return filmStorage.getFilmsWithDirector(directorId, sortBy);
-    }
+	public List<Film> getWithDirector(Long directorId, String sortBy) {
+		Director director = directorStorage.getById(directorId);
+		if (director == null) {
+			throw new NotFoundException("Режиссёр с id " + directorId + "не найден");
+		}
+		return filmStorage.getWithDirector(directorId, sortBy);
+	}
 
-    public void deleteFilm(Long id) {
-        filmStorage.deleteById(id);
-    }
+	public void delete(Long id) {
+		filmStorage.deleteById(id);
+	}
 
-    public List<Film> getFilmBySearch(String query, String by) {
-        return filmStorage.findFilmBySearch(query, by);
-    }
+	public List<Film> getBySearch(String query, String by) {
+		return filmStorage.findBySearch(query, by);
+	}
 }
