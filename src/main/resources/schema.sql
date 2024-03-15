@@ -44,7 +44,6 @@ create TABLE IF NOT EXISTS user_film_like
 (
     user_id    integer,
     film_id    integer,
-    created_at timestamp,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (film_id) REFERENCES films (id) ON DELETE CASCADE
 );

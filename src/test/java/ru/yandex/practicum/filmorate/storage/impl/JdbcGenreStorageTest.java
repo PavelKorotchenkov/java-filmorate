@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
@@ -16,11 +16,11 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class JdbcGenreStorageTest {
 
-	private final JdbcTemplate jdbcTemplate;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Test
 	void findAllGenre() {
-		GenreStorage genreStorage = new JdbcGenreStorage(jdbcTemplate);
+		GenreStorage genreStorage = new JdbcGenreStorage(namedParameterJdbcTemplate);
 
 		List<Genre> genres = new ArrayList<>(genreStorage.findAll());
 
@@ -29,7 +29,7 @@ class JdbcGenreStorageTest {
 
 	@Test
 	void findGenreById() {
-		GenreStorage genreStorage = new JdbcGenreStorage(jdbcTemplate);
+		GenreStorage genreStorage = new JdbcGenreStorage(namedParameterJdbcTemplate);
 		Genre comedy = genreStorage.findById(1L);
 		Genre drama = genreStorage.findById(2L);
 		Genre cartoon = genreStorage.findById(3L);
@@ -43,5 +43,4 @@ class JdbcGenreStorageTest {
 		Assertions.assertEquals(5, documentary.getId());
 		Assertions.assertEquals(6, action.getId());
 	}
-
 }

@@ -80,7 +80,7 @@ public class FilmController {
 
 	@GetMapping("/popular")
 	public List<Film> getTopRatedFilmsByGenreAndDate(@RequestParam(defaultValue = "10") int count,
-													 @RequestParam(required = false) Integer genreId,
+													 @RequestParam(required = false) Long genreId,
 													 @RequestParam(required = false) Integer year) {
 		log.info("Получен запрос на получение топ {} по популярности фильмов", count);
 		List<Film> films = filmService.showPopularByGenreAndDate(count, genreId, year);
