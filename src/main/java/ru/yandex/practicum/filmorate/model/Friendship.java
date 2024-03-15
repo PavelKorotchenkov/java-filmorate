@@ -8,6 +8,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Friendship {
 	Long userId;
 	Long friendId;
@@ -24,14 +25,5 @@ public class Friendship {
 	@Override
 	public int hashCode() {
 		return Objects.hash(userId, friendId);
-	}
-
-	@Override
-	public String toString() {
-		return "Friendship{" +
-				"userId=" + userId +
-				", friendId=" + friendId +
-				", friendshipStatus=" + friendshipStatus +
-				'}';
 	}
 }

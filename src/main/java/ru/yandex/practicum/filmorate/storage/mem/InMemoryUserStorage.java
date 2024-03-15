@@ -18,7 +18,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(Long userId) {
+    public User findById(Long userId) {
         if (!users.containsKey(userId)) {
             throw new NotFoundException("No user in database with id: " + userId);
         }
@@ -26,7 +26,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> findAllUsers() {
+    public List<User> findAll() {
         return List.copyOf(users.values());
     }
 

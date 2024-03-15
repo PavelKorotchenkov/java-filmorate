@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,6 +16,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Film {
 	private Long id;
 
@@ -35,19 +36,9 @@ public class Film {
 
 	private Mpa mpa;
 
-	private Set<Genre> genres = new HashSet<>();
+	private Set<Genre> genres = new LinkedHashSet<>();
 
-	private Set<Director> directors = new HashSet<>();
-
-	public Film(Long id, String name, String description, LocalDate releaseDate, long duration, Mpa mpa, Set<Genre> genres) {
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.releaseDate = releaseDate;
-		this.duration = duration;
-		this.mpa = mpa;
-		this.genres = genres;
-	}
+	private Set<Director> directors = new LinkedHashSet<>();
 
 	public Film(Long id, String name, String description, LocalDate releaseDate, long duration, Mpa mpa) {
 		this.id = id;
@@ -56,19 +47,6 @@ public class Film {
 		this.releaseDate = releaseDate;
 		this.duration = duration;
 		this.mpa = mpa;
-	}
-
-
-	@Override
-	public String toString() {
-		return "Film{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", description='" + description + '\'' +
-				", releaseDate=" + releaseDate +
-				", duration=" + duration +
-				", mpa=" + mpa +
-				'}';
 	}
 
 	@Override

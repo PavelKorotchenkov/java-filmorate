@@ -14,7 +14,7 @@ import java.util.List;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class FriendshipDbStorageTest {
+class JdbcFriendshipStorageTest {
 
 	private final JdbcTemplate jdbcTemplate;
 
@@ -27,12 +27,12 @@ class FriendshipDbStorageTest {
 		User friend = new User(2L, "bf@email.ru", "chipichipi", "chapachapa",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
-		boolean isConfirmed = friendshipStorage.addFriend(newUser.getId(), friend.getId());
+		boolean isConfirmed = friendshipStorage.add(newUser.getId(), friend.getId());
 
 		Assertions.assertFalse(isConfirmed);
 	}
@@ -46,13 +46,13 @@ class FriendshipDbStorageTest {
 		User friend = new User(2L, "bf@email.ru", "chipichipi", "chapachapa",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		boolean isConfirmed = friendshipStorage.addFriend(friend.getId(), newUser.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		boolean isConfirmed = friendshipStorage.add(friend.getId(), newUser.getId());
 
 		Assertions.assertTrue(isConfirmed);
 	}
@@ -68,15 +68,15 @@ class FriendshipDbStorageTest {
 		User friend2 = new User(3L, "bff@email.ru", "dubidubi", "dabadaba",
 				LocalDate.of(1992, 3, 22));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 		userStorage.save(friend2);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
-		List<User> friends = friendshipStorage.findAllFriends(newUser.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend2.getId());
+		List<User> friends = friendshipStorage.findAll(newUser.getId());
 
 		Assertions.assertTrue(friends.contains(friend));
 		Assertions.assertTrue(friends.contains(friend2));
@@ -93,15 +93,15 @@ class FriendshipDbStorageTest {
 		User friend2 = new User(3L, "bff@email.ru", "dubidubi", "dabadaba",
 				LocalDate.of(1992, 3, 22));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 		userStorage.save(friend2);
 
-		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
-		friendshipStorage.addFriend(friend.getId(), friend2.getId());
-		List<User> friends = friendshipStorage.findAllMutualFriends(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend2.getId());
+		friendshipStorage.add(friend.getId(), friend2.getId());
+		List<User> friends = friendshipStorage.findMutual(newUser.getId(), friend.getId());
 
 		Assertions.assertTrue(friends.contains(friend2));
 	}
@@ -117,17 +117,17 @@ class FriendshipDbStorageTest {
 		User friend2 = new User(3L, "bff@email.ru", "dubidubi", "dabadaba",
 				LocalDate.of(1992, 3, 22));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 		userStorage.save(friend2);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend2.getId());
 
-		friendshipStorage.deleteFriend(newUser.getId(), friend2.getId());
-		List<User> friends = friendshipStorage.findAllFriends(newUser.getId());
+		friendshipStorage.delete(newUser.getId(), friend2.getId());
+		List<User> friends = friendshipStorage.findAll(newUser.getId());
 
 		Assertions.assertTrue(friends.contains(friend));
 		Assertions.assertFalse(friends.contains(friend2));
@@ -142,16 +142,16 @@ class FriendshipDbStorageTest {
 		User friend = new User(2L, "bf@email.ru", "chipichipi", "chapachapa",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		friendshipStorage.addFriend(friend.getId(), newUser.getId());
-		friendshipStorage.deleteFriend(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(friend.getId(), newUser.getId());
+		friendshipStorage.delete(newUser.getId(), friend.getId());
 
-		boolean isConfirmed = friendshipStorage.addFriend(friend.getId(), newUser.getId());
+		boolean isConfirmed = friendshipStorage.add(friend.getId(), newUser.getId());
 
 		Assertions.assertFalse(isConfirmed);
 	}
