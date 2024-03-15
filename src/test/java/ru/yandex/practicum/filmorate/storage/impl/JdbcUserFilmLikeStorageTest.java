@@ -17,15 +17,15 @@ import java.util.List;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class UserFilmLikeDbStorageTest {
+class JdbcUserFilmLikeStorageTest {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Test
     void findPopular() {
-        UserFilmLikeDbStorage userFilmLikeDbStorage = new UserFilmLikeDbStorage(jdbcTemplate);
-        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-        FilmStorage filmStorage = new FilmDbStorage(jdbcTemplate);
+        JdbcUserFilmLikeStorage jdbcUserFilmLikeStorage = new JdbcUserFilmLikeStorage(jdbcTemplate);
+        JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+        FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 
         Film newFilm = new Film(1L, "Harry Potter and Learning Java",
                 "Harry's doing a hell of a job there",
@@ -53,20 +53,20 @@ class UserFilmLikeDbStorageTest {
         long fid1 = newFilm.getId();
         long fid2 = newFilm2.getId();
 
-        userFilmLikeDbStorage.addLike(fid1, uid1);
-        userFilmLikeDbStorage.addLike(fid1, uid2);
-        userFilmLikeDbStorage.addLike(fid2, uid1);
+        jdbcUserFilmLikeStorage.addLike(fid1, uid1);
+        jdbcUserFilmLikeStorage.addLike(fid1, uid2);
+        jdbcUserFilmLikeStorage.addLike(fid2, uid1);
 
-        List<Film> popular = new ArrayList<>(userFilmLikeDbStorage.findPopularByGenreAndDate(2, null, null));
+        List<Film> popular = new ArrayList<>(jdbcUserFilmLikeStorage.findPopularByGenreAndDate(2, null, null));
         Assertions.assertEquals(fid1, popular.get(0).getId());
         Assertions.assertEquals(fid2, popular.get(1).getId());
     }
 
     @Test
     void addLike() {
-        UserFilmLikeDbStorage userFilmLikeDbStorage = new UserFilmLikeDbStorage(jdbcTemplate);
-        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-        FilmStorage filmStorage = new FilmDbStorage(jdbcTemplate);
+        JdbcUserFilmLikeStorage jdbcUserFilmLikeStorage = new JdbcUserFilmLikeStorage(jdbcTemplate);
+        JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+        FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 
         Film newFilm = new Film(1L, "Harry Potter and Learning Java",
                 "Harry's doing a hell of a job there",
@@ -81,17 +81,17 @@ class UserFilmLikeDbStorageTest {
         long uid1 = newUser.getId();
         long fid1 = newFilm.getId();
 
-        userFilmLikeDbStorage.addLike(fid1, uid1);
+        jdbcUserFilmLikeStorage.addLike(fid1, uid1);
 
-        List<Film> popular = new ArrayList<>(userFilmLikeDbStorage.findPopularByGenreAndDate(1, null, null));
+        List<Film> popular = new ArrayList<>(jdbcUserFilmLikeStorage.findPopularByGenreAndDate(1, null, null));
         Assertions.assertEquals(fid1, popular.get(0).getId());
     }
 
     @Test
     void deleteLike() {
-        UserFilmLikeDbStorage userFilmLikeDbStorage = new UserFilmLikeDbStorage(jdbcTemplate);
-        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-        FilmStorage filmStorage = new FilmDbStorage(jdbcTemplate);
+        JdbcUserFilmLikeStorage jdbcUserFilmLikeStorage = new JdbcUserFilmLikeStorage(jdbcTemplate);
+        JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
+        FilmStorage filmStorage = new JdbcFilmStorage(jdbcTemplate);
 
         Film newFilm = new Film(1L, "Harry Potter and Learning Java",
                 "Harry's doing a hell of a job there",
@@ -119,14 +119,14 @@ class UserFilmLikeDbStorageTest {
         long fid1 = newFilm.getId();
         long fid2 = newFilm2.getId();
 
-        userFilmLikeDbStorage.addLike(fid1, uid1);
-        userFilmLikeDbStorage.addLike(fid1, uid2);
-        userFilmLikeDbStorage.addLike(fid2, uid1);
-        userFilmLikeDbStorage.addLike(fid2, uid2);
+        jdbcUserFilmLikeStorage.addLike(fid1, uid1);
+        jdbcUserFilmLikeStorage.addLike(fid1, uid2);
+        jdbcUserFilmLikeStorage.addLike(fid2, uid1);
+        jdbcUserFilmLikeStorage.addLike(fid2, uid2);
 
-        userFilmLikeDbStorage.deleteLike(fid1, uid1);
+        jdbcUserFilmLikeStorage.deleteLike(fid1, uid1);
 
-        List<Film> popular = new ArrayList<>(userFilmLikeDbStorage.findPopularByGenreAndDate(2, null, null));
+        List<Film> popular = new ArrayList<>(jdbcUserFilmLikeStorage.findPopularByGenreAndDate(2, null, null));
         Assertions.assertEquals(fid2, popular.get(0).getId());
         Assertions.assertEquals(fid1, popular.get(1).getId());
     }

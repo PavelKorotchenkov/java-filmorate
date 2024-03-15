@@ -7,17 +7,17 @@ import java.util.List;
 
 @Component
 public interface FilmStorage {
-    Film findFilmById(Long filmId);
+    Film findById(Long filmId);
 
-    List<Film> findAllFilms();
+    List<Film> findAll();
 
     Film save(Film film);
 
     Film update(Film film);
 
-    List<Film> getFilmsWithDirector(Long directorId, String sortBy);
+    List<Film> getWithDirector(Long directorId, String sortBy);
 
     boolean deleteById(Long id);
 
-    List<Film> findFilmBySearch(String query, String by);
+    List<Film> findBySearch(String query, String by);
 }

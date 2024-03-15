@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class UserDbStorageTest {
+class JdbcUserStorageTest {
 
 	private final JdbcTemplate jdbcTemplate;
 
@@ -24,10 +24,10 @@ class UserDbStorageTest {
 	void findUserById() {
 		User newUser = new User(1L, "user@email.ru", "vanya123", "Ivan Petrov",
 				LocalDate.of(1990, 1, 1));
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
 		userStorage.save(newUser);
 
-		User savedUser = userStorage.findUserById(newUser.getId());
+		User savedUser = userStorage.findById(newUser.getId());
 
 		assertThat(savedUser)
 				.isNotNull()
@@ -43,11 +43,11 @@ class UserDbStorageTest {
 		User newUser2 = new User(2L, "user2@email.ru", "vanya1234", "Ivan Petrovsyan",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(newUser2);
 
-		List<User> users = userStorage.findAllUsers();
+		List<User> users = userStorage.findAll();
 
 		assertEquals(2, users.size());
 		Assertions.assertTrue(users.contains(newUser));
@@ -62,13 +62,13 @@ class UserDbStorageTest {
 		User updatedUser = new User(1L, "userilla@email.ru", "userling", "Uz Er",
 				LocalDate.of(2010, 3, 12));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+		JdbcUserStorage userStorage = new JdbcUserStorage(jdbcTemplate);
 		userStorage.save(newUser);
 		long id = newUser.getId();
 		updatedUser.setId(id);
 		userStorage.update(updatedUser);
 
-		User user2 = userStorage.findUserById(id);
+		User user2 = userStorage.findById(id);
 
 		assertThat(user2)
 				.isNotNull()

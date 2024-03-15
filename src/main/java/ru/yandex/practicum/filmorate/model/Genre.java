@@ -1,12 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class Genre {
 	private Long id;
 	private String name;
@@ -22,13 +26,5 @@ public class Genre {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
-	}
-
-	@Override
-	public String toString() {
-		return "Genre{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				'}';
 	}
 }

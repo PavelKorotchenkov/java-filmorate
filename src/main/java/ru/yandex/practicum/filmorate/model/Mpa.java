@@ -8,6 +8,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Mpa {
 	private Long id;
 	private String name;
@@ -27,13 +28,5 @@ public class Mpa {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, name);
-	}
-
-	@Override
-	public String toString() {
-		return "Mpa{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				'}';
 	}
 }

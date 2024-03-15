@@ -12,7 +12,7 @@ public interface UserFilmLikeStorage {
 
     void deleteLike(Long filmId, Long userId);
 
-    List<Film> getAllCommonFilms(Long userId, Long friendId);
+    List<Film> getCommon(Long userId, Long friendId);
 
     List<Film> findPopularByGenreAndDate(int count, Integer genreId, Integer year);
 }

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,48 +7,42 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.util.RowMapper;
+import ru.yandex.practicum.filmorate.util.mapper.MapRowToUser;
 
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 
-@Slf4j
 @Repository
 @Primary
-public class UserDbStorage implements UserStorage {
+public class JdbcUserStorage implements UserStorage {
 	private final JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	public UserDbStorage(JdbcTemplate jdbcTemplate) {
+	public JdbcUserStorage(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	@Override
-	public User findUserById(Long id) {
+	public User findById(Long id) {
 		List<User> result = jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday FROM users WHERE id = ?",
-				RowMapper::mapRowToUser,
+				MapRowToUser::map,
 				id
 		);
 		if (result.isEmpty()) {
-			log.info("Пользователь с идентификатором {} не найден.", id);
-			throw new NotFoundException("Пользователь с id " + id + " не найден.");
+			return null;
 		}
-		log.info("Найден пользователь с id: {}", id);
-
 		return result.get(0);
 	}
 
 	@Override
-	public List<User> findAllUsers() {
-		log.info("Запрос всех пользователей");
+	public List<User> findAll() {
 		return jdbcTemplate.query(
 				"SELECT id, email, name, login, birthday FROM users",
-				RowMapper::mapRowToUser);
+				MapRowToUser::map);
 	}
 
 	@Override
@@ -69,19 +62,16 @@ public class UserDbStorage implements UserStorage {
 		jdbcTemplate.update(psc, keyHolder);
 		long orderId = keyHolder.getKey().longValue();
 		user.setId(orderId);
-		log.info("Создан новый пользователь: " + user);
 		return user;
 	}
 
 	@Override
 	public User update(User user) {
 		Long id = user.getId();
-		findUserById(id); //проверяем, что пользователь есть в базе данных
+		findById(id); //проверяем, что пользователь есть в базе данных
 
 		jdbcTemplate.update("UPDATE users SET email = ?, name = ?, login = ?, birthday = ? WHERE id = ?",
 				user.getEmail(), user.getName(), user.getLogin(), user.getBirthday(), id);
-
-		log.info("Обновлен пользователь: " + user);
 
 		return user;
 	}
