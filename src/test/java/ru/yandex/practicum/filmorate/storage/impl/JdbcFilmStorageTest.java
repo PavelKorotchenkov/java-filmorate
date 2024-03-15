@@ -30,7 +30,7 @@ class JdbcFilmStorageTest {
 	@Test
 	void findFilmById() {
 		Film newFilm = new Film(1L, "Harry Potter and Learning Java",
-				"Harry's doing a hell of a job there",
+				"Harry's doing a hell of a job there.",
 				LocalDate.of(1990, 1, 1), 120000, new Mpa(2L, "PG"));
 		FilmStorage filmStorage = new JdbcFilmStorage(namedParameterJdbcTemplate);
 		filmStorage.save(newFilm);
