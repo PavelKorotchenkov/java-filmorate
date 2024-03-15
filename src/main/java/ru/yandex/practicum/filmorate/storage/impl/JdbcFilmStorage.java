@@ -184,7 +184,7 @@ public class JdbcFilmStorage implements FilmStorage {
 	}
 
 	@Override
-	public List<Film> findPopularByGenreAndDate(int count, Integer genreId, Integer year) {
+	public List<Film> findPopularByGenreAndDate(int count, Long genreId, Integer year) {
 
 		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
 				"COUNT(ufl.user_id) AS user_like_count " +

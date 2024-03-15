@@ -6,11 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.DirectorStorage;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserFilmLikeStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.*;
 
 import java.util.List;
 
@@ -18,16 +16,16 @@ import java.util.List;
 @Slf4j
 public class FilmService {
 	private final FilmStorage filmStorage;
-	private final UserFilmLikeStorage userFilmLikeStorage;
 	private final UserStorage userStorage;
 	private final DirectorStorage directorStorage;
+	private final GenreStorage genreStorage;
 
 	@Autowired
-	public FilmService(FilmStorage filmStorage, UserFilmLikeStorage userFilmLikeStorage, UserStorage userStorage, DirectorStorage directorStorage) {
+	public FilmService(FilmStorage filmStorage, UserStorage userStorage, DirectorStorage directorStorage, GenreStorage genreStorage) {
 		this.filmStorage = filmStorage;
-		this.userFilmLikeStorage = userFilmLikeStorage;
 		this.userStorage = userStorage;
 		this.directorStorage = directorStorage;
+		this.genreStorage = genreStorage;
 	}
 
 	public Film add(Film film) {
@@ -55,8 +53,13 @@ public class FilmService {
 		return filmStorage.update(film);
 	}
 
-	public List<Film> showPopularByGenreAndDate(int count, Integer genreId, Integer year) {
-
+	public List<Film> showPopularByGenreAndDate(int count, Long genreId, Integer year) {
+		if (genreId != null){
+			Genre genre = genreStorage.findById(genreId);
+			if (genre == null) {
+				throw new NotFoundException("Жанр с id " + genreId + " не найден");
+			}
+		}
 		return filmStorage.findPopularByGenreAndDate(count, genreId, year);
 	}
 

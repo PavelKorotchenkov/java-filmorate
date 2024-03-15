@@ -17,7 +17,7 @@ public interface FilmStorage {
 
 	List<Film> getWithDirector(Long directorId, String sortBy);
 
-	List<Film> findPopularByGenreAndDate(int count, Integer genreId, Integer year);
+	List<Film> findPopularByGenreAndDate(int count, Long genreId, Integer year);
 
 	boolean deleteById(Long id);
 
