@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -17,30 +18,10 @@ import java.util.*;
 @Component
 public class JdbcRecommendationStorage implements RecommendationStorage {
 
-	private final JdbcTemplate jdbcTemplate;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	public JdbcRecommendationStorage(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	private Optional<User> getUserMaxOverlapLikes(long id) {
-		String sql = "SELECT id, email, name, login, birthday FROM USERS u WHERE u.ID = (SELECT user_id\n" +
-				"FROM user_film_like\n" +
-				"WHERE film_id IN (\n" +
-				"    SELECT film_id\n" +
-				"    FROM user_film_like\n" +
-				"    WHERE user_id = ?\n" +
-				") AND user_id != ?\n" +
-				"GROUP BY user_id\n" +
-				"ORDER BY COUNT(*) DESC\n" +
-				"LIMIT 1); ";
-
-		List<User> users = jdbcTemplate.query(sql, MapRowToUser::map, id, id);
-		if (users.isEmpty()) {
-			return Optional.empty();
-		} else {
-			return Optional.of(users.get(0));
-		}
+	public JdbcRecommendationStorage(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
 	@Override
@@ -56,15 +37,19 @@ public class JdbcRecommendationStorage implements RecommendationStorage {
 				"WHERE f.id IN (" +
 				"    SELECT DISTINCT a.film_id " +
 				"    FROM user_film_like AS a " +
-				"    WHERE a.user_id = ? " +
+				"    WHERE a.user_id = :overlapUserId " +
 				"    AND a.film_id NOT IN (" +
 				"        SELECT film_id " +
 				"        FROM user_film_like " +
-				"        WHERE user_id = ?" +
+				"        WHERE user_id = :userId" +
 				"    )" +
 				")";
 
-		List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("overlapUserId", overlapUser.get().getId());
+		params.addValue("userId", id);
+
+		return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
 			Film film = MapRowToFilm.map(rs, rowNum);
 
 			Set<Genre> genres = new LinkedHashSet<>(getGenresForFilm(film.getId()));
@@ -74,26 +59,52 @@ public class JdbcRecommendationStorage implements RecommendationStorage {
 			film.setDirectors(directors);
 
 			return film;
-		}, overlapUser.get().getId(), id);
+		});
+	}
 
-		return films;
+	private Optional<User> getUserMaxOverlapLikes(long id) {
+		String sql = "SELECT id, email, name, login, birthday FROM USERS u WHERE u.ID = (SELECT user_id " +
+				"FROM user_film_like " +
+				"WHERE film_id IN ( " +
+				"    SELECT film_id " +
+				"    FROM user_film_like " +
+				"    WHERE user_id = :id " +
+				") AND user_id != :id " +
+				"GROUP BY user_id " +
+				"ORDER BY COUNT(*) DESC " +
+				"LIMIT 1); ";
+
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("id", id);
+		List<User> users = namedParameterJdbcTemplate.query(sql, params, MapRowToUser::map);
+		if (users.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(users.get(0));
+		}
 	}
 
 	private List<Genre> getGenresForFilm(Long filmId) {
 		String sql = "SELECT g.id, g.name " +
 				"FROM genre g " +
 				"INNER JOIN film_genre fg ON g.id = fg.genre_id " +
-				"WHERE fg.film_id = ?";
+				"WHERE fg.film_id = :filmId";
 
-		return jdbcTemplate.query(sql, new Object[]{filmId}, MapRowToGenre::map);
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("filmId", filmId);
+
+		return namedParameterJdbcTemplate.query(sql, params, MapRowToGenre::map);
 	}
 
 	private List<Director> getDirectorsForFilm(Long filmId) {
 		String sql = "SELECT d.id, d.name " +
 				"FROM director d " +
 				"INNER JOIN film_director fd ON d.id = fd.director_id " +
-				"WHERE fd.film_id = ?";
+				"WHERE fd.film_id = :filmId";
 
-		return jdbcTemplate.query(sql, new Object[]{filmId}, MapRowToDirector::map);
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("filmId", filmId);
+
+		return namedParameterJdbcTemplate.query(sql, params, MapRowToDirector::map);
 	}
 }

@@ -8,7 +8,10 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.*;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 
@@ -54,7 +57,7 @@ public class FilmService {
 	}
 
 	public List<Film> showPopularByGenreAndDate(int count, Long genreId, Integer year) {
-		if (genreId != null){
+		if (genreId != null) {
 			Genre genre = genreStorage.findById(genreId);
 			if (genre == null) {
 				throw new NotFoundException("Жанр с id " + genreId + " не найден");
