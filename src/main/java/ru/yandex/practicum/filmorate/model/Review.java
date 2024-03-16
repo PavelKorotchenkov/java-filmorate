@@ -4,13 +4,13 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode(of = "reviewId")
 public class Review {
 	private Long reviewId;
 	@NotNull
@@ -23,17 +23,4 @@ public class Review {
 	@NotNull
 	private Long filmId;
 	private Long useful;
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Review review = (Review) o;
-		return Objects.equals(reviewId, review.reviewId);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(reviewId);
-	}
 }
