@@ -3,9 +3,8 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -19,12 +18,14 @@ public class ReviewService {
 	private final FilmStorage filmStorage;
 
 	private final ReviewStorage reviewStorage;
+	private final FeedStorage feedStorage;
 
 	@Autowired
-	public ReviewService(UserStorage userStorage, FilmStorage filmStorage, ReviewStorage reviewStorage) {
+	public ReviewService(UserStorage userStorage, FilmStorage filmStorage, ReviewStorage reviewStorage, FeedStorage feedStorage) {
 		this.userStorage = userStorage;
 		this.filmStorage = filmStorage;
 		this.reviewStorage = reviewStorage;
+		this.feedStorage = feedStorage;
 	}
 
 	public Review addReview(Review review) {
@@ -38,7 +39,10 @@ public class ReviewService {
 			throw new NotFoundException("Фильм с id " + review.getFilmId() + " не найден");
 
 		}
-		return reviewStorage.add(review);
+
+		Review addedReview = reviewStorage.add(review);
+		feedStorage.add(addedReview.getUserId(), addedReview.getReviewId(), EventOperation.ADD.name(), EventType.REVIEW.name());
+		return addedReview;
 	}
 
 	public Review updateReview(Review review) {
@@ -58,10 +62,15 @@ public class ReviewService {
 		}
 
 		Review update = reviewStorage.update(review);
+		feedStorage.add(update.getUserId(), update.getReviewId(), EventOperation.UPDATE.name(), EventType.REVIEW.name());
 		return update;
 	}
 
 	public void deleteReview(Long reviewId) {
+		Review result = reviewStorage.findById(reviewId);
+		if (result != null) {
+			feedStorage.add(result.getUserId(), reviewId, EventOperation.REMOVE.name(), EventType.REVIEW.name());
+		}
 		reviewStorage.delete(reviewId);
 	}
 
@@ -74,13 +83,14 @@ public class ReviewService {
 	}
 
 	public List<Review> getAllByFilmId(Long filmId, int count) {
-		if (filmId != null) {
-			Film film = filmStorage.findById(filmId);
-			if (film == null) {
-				throw new NotFoundException("Фильм с id " + filmId + " не найден");
-			}
-			return reviewStorage.findAllByFilmId(film.getId(), count);
+		Film film = filmStorage.findById(filmId);
+		if (film == null) {
+			throw new NotFoundException("Фильм с id " + filmId + " не найден");
 		}
+		return reviewStorage.findAllByFilmId(film.getId(), count);
+	}
+
+	public List<Review> getAll(int count) {
 		return reviewStorage.findAll(count);
 	}
 
