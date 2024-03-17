@@ -3,7 +3,9 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.FriendshipService;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -65,7 +67,6 @@ public class UserController {
 						  @PathVariable Long friendId) {
 		log.info("Получен запрос - пользователь с id {} добавляет в друзья пользователя с id {}", userId, friendId);
 		friendshipService.add(userId, friendId);
-		feedService.addEvent(userId, friendId, EventOperation.ADD.name(), EventType.FRIEND.name());
 		log.info("Отработан запрос - пользователь с id {} добавляет в друзья пользователя с id {}", userId, friendId);
 	}
 
@@ -91,7 +92,6 @@ public class UserController {
 							 @PathVariable Long friendId) {
 		log.info("Получен запрос - пользователь с id {} удаляет из друзей пользователя с id {}", userId, friendId);
 		friendshipService.delete(userId, friendId);
-		feedService.addEvent(userId, friendId, EventOperation.REMOVE.name(), EventType.FRIEND.name());
 		log.info("Отработан запрос - пользователь с id {} удаляет из друзей пользователя с id {}", userId, friendId);
 	}
 
