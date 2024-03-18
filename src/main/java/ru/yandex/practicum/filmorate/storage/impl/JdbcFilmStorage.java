@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -26,6 +27,7 @@ import java.util.Set;
 public class JdbcFilmStorage implements FilmStorage {
 
 	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	JdbcTemplate jdbcTemplate; //TODO надо убрать
 
 	@Autowired
 	public JdbcFilmStorage(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -58,23 +60,37 @@ public class JdbcFilmStorage implements FilmStorage {
 
 	@Override
 	public List<Film> findAll() {
-		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name " +
-				"FROM films f " +
-				"LEFT JOIN mpa ON f.mpa_id = mpa.id";
+//		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name " +
+//				"FROM films f " +
+//				"LEFT JOIN mpa ON f.mpa_id = mpa.id";
 
-		List<Film> result = namedParameterJdbcTemplate.query(sql, (rs, rowNum) -> {
-			Film film = MapRowToFilm.map(rs, rowNum);
+	final String sqlQuery= 	"SELECT f.ID, f.NAME, DESCRIPTION, RELEASEDATE, DURATION, MPA_ID as mpa_id, " +
+				"M.NAME as mpa_name, " +
+				"GROUP_CONCAT(G2.ID)   as genre_id, " +
+				"GROUP_CONCAT(G2.NAME) as genre_name, " +
+				"FD.DIRECTOR_ID as director_id, d.NAME as director_name " +
+				"FROM FILMS f " +
+				"LEFT JOIN FILM_GENRE FG on f.ID = FG.FILM_ID " +
+				"LEFT JOIN MPA M on M.ID = f.MPA_ID " +
+				"LEFT JOIN GENRE G2 on FG.GENRE_ID = G2.ID " +
+				"LEFT JOIN FILM_DIRECTOR FD on f.ID = FD.FILM_ID " +
+				"LEFT JOIN DIRECTOR d on FD.DIRECTOR_ID = d.ID " +
+				"GROUP BY  f.ID;";
 
-			Set<Genre> genres = new LinkedHashSet<>(getGenresForFilm(film.getId()));
-			film.setGenres(genres);
-
-			Set<Director> directors = new LinkedHashSet<>(getDirectorsForFilm(film.getId()));
-			film.setDirectors(directors);
-
-			return film;
-		});
-
-		return result;
+	return 	jdbcTemplate.query(sqlQuery, MapRowToFilm::mapRowToFilm);
+//		List<Film> result = namedParameterJdbcTemplate.query(sql, (rs, rowNum) -> {
+//			Film film = MapRowToFilm.map(rs, rowNum);
+//
+		//	Set<Genre> genres = new LinkedHashSet<>(getGenresForFilm(film.getId()));
+//			film.setGenres(genres);
+//
+//			Set<Director> directors = new LinkedHashSet<>(getDirectorsForFilm(film.getId()));
+//			film.setDirectors(directors);
+//
+//			return film;
+//		});
+//
+//		return result;
 	}
 
 	@Override
@@ -275,7 +291,7 @@ public class JdbcFilmStorage implements FilmStorage {
 		return namedParameterJdbcTemplate.update(sql, params) > 0;
 	}
 
-	private List<Genre> getGenresForFilm(Long filmId) {
+	private List<Genre>getGenresForFilm(Long filmId) {
 		String sql = "SELECT g.id, g.name " +
 				"FROM genre g " +
 				"INNER JOIN film_genre fg ON g.id = fg.genre_id " +

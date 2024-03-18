@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @ToString
+@Builder
 @EqualsAndHashCode(of = "id")
 public class Director {
 	private Long id;

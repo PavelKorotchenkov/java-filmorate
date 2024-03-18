@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 @EqualsAndHashCode(of = "id")
 public class Mpa {
 	private Long id;

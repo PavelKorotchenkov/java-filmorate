@@ -1,0 +1,12 @@
+SELECT f.*,
+       M.NAME,
+       GROUP_CONCAT(G2.ID)   as genre_id,
+       GROUP_CONCAT(G2.NAME) as genre_name,
+       FD.DIRECTOR_ID, d.NAME
+FROM FILMS f
+         LEFT JOIN FILM_GENRE FG on f.ID = FG.FILM_ID
+         LEFT JOIN MPA M on M.ID = f.MPA_ID
+         LEFT JOIN GENRE G2 on FG.GENRE_ID = G2.ID
+         LEFT JOIN FILM_DIRECTOR FD on f.ID = FD.FILM_ID
+         LEFT JOIN DIRECTOR d on FD.DIRECTOR_ID = d.ID
+GROUP BY f.ID;
