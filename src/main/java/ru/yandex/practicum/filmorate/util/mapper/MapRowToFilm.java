@@ -34,6 +34,7 @@ public class MapRowToFilm {
 				film.setGenres(genres);
 			}
 		} catch (SQLException e) {
+			System.out.println();
 		}
 
 		try {
@@ -46,6 +47,7 @@ public class MapRowToFilm {
 				film.setDirectors(directors);
 			}
 		} catch (SQLException e) {
+			System.out.println();
 		}
 		return film;
 	}
