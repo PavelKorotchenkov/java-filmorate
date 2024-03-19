@@ -109,9 +109,9 @@ public class FilmController {
 	@GetMapping("/search")
 	public List<Film> smartSearch(@RequestParam String query,
 								  @RequestParam String by) {
-		log.info("Получен запрос на получение фильма по имени подстроке");
+		log.info("Получен запрос на получение фильма по имени подстроки");
 		List<Film> filmBySearch = filmService.getBySearch(query, by);
-		log.info("Отработан запрос на получение фильма по имени подстроке");
+		log.info("Отработан запрос на получение фильма по имени подстроки");
 		return filmBySearch;
 	}
 }
