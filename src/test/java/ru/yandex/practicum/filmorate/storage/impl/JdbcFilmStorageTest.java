@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
@@ -91,6 +88,7 @@ class JdbcFilmStorageTest {
 	@Test
 	void updateWithGenres() {
 		Set<Genre> genres = new LinkedHashSet<>();
+		Set<Director> directors = new LinkedHashSet<>();
 		genres.add(new Genre(1L, "Комедия"));
 		genres.add(new Genre(4L, "Триллер"));
 
@@ -98,12 +96,15 @@ class JdbcFilmStorageTest {
 				"Harry's doing a hell of a job there",
 				LocalDate.of(1990, 1, 1), 120000, new Mpa(2L, "PG"));
 		newFilm.setGenres(genres);
+		newFilm.setDirectors(directors);
+
 		genres.add(new Genre(6L, "Боевик"));
 
 		Film updatedFilm = new Film(1L, "Mission Impossible. Cracking Java",
 				"Will it be Tom Cruise's last mission?",
 				LocalDate.of(2023, 2, 14), 160000, new Mpa(5L, "NC-17"));
 		updatedFilm.setGenres(genres);
+
 		FilmStorage filmStorage = new JdbcFilmStorage(namedParameterJdbcTemplate);
 		filmStorage.save(newFilm);
 		long id = newFilm.getId();

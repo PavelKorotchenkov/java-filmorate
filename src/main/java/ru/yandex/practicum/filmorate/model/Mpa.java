@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(of = "id")
+@Builder(toBuilder = true)
 public class Mpa {
 	private Long id;
 	private String name;

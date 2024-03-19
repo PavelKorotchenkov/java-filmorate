@@ -17,6 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(of = "id")
+@Builder(toBuilder = true)
 public class Film {
 	private Long id;
 

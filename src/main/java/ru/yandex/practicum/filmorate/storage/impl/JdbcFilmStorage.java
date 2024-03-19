@@ -16,10 +16,7 @@ import ru.yandex.practicum.filmorate.util.mapper.MapRowToDirector;
 import ru.yandex.practicum.filmorate.util.mapper.MapRowToFilm;
 import ru.yandex.practicum.filmorate.util.mapper.MapRowToGenre;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 @Primary
@@ -34,47 +31,74 @@ public class JdbcFilmStorage implements FilmStorage {
 
 	@Override
 	public Film findById(Long id) {
-		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name " +
+		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+				"g.id AS genre_id, g.name AS genre_name, " +
+				"d.id AS director_id, d.name AS director_name " +
 				"FROM films f " +
 				"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
+				"LEFT JOIN film_genre fg ON f.id = fg.film_id " +
+				"LEFT JOIN genre g ON fg.genre_id = g.id " +
+				"LEFT JOIN film_director fd ON f.id = fd.film_id " +
+				"LEFT JOIN director d ON fd.director_id = d.id " +
 				"WHERE f.id = :id";
+
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id", id);
 
+		Map<Long, Film> filmMap = new LinkedHashMap<>();
+
 		List<Film> result = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-			Film film = MapRowToFilm.map(rs, rowNum);
+			Long filmId = rs.getLong("id");
+			Film film = filmMap.get(filmId);
+			if (film == null) {
+				film = MapRowToFilm.map(rs, rowNum);
+				filmMap.put(filmId, film);
+			} else {
+				Genre genre = new Genre(rs.getLong("genre_id"), rs.getString("genre_name"));
+				film.getGenres().add(genre);
 
-			Set<Genre> genres = new LinkedHashSet<>(getGenresForFilm(film.getId()));
-			film.setGenres(genres);
-
-			Set<Director> directors = new LinkedHashSet<>(getDirectorsForFilm(film.getId()));
-			film.setDirectors(directors);
+				long directorId = rs.getLong("director_id");
+				if (directorId != 0) {
+					Director director = new Director(rs.getLong("director_id"), rs.getString("director_name"));
+					film.getDirectors().add(director);
+				}
+			}
 
 			return film;
 		});
 
-		return result.isEmpty() ? null : result.get(0);
+		return filmMap.get(id);
 	}
 
 	@Override
 	public List<Film> findAll() {
-		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name " +
+		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+				"g.id AS genre_id, g.name AS genre_name, " +
+				"d.id AS director_id, d.name AS director_name " +
 				"FROM films f " +
-				"LEFT JOIN mpa ON f.mpa_id = mpa.id";
+				"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
+				"LEFT JOIN film_genre fg ON f.id = fg.film_id " +
+				"LEFT JOIN genre g ON fg.genre_id = g.id " +
+				"LEFT JOIN film_director fd ON f.id = fd.film_id " +
+				"LEFT JOIN director d ON fd.director_id = d.id";
+
+		Map<Long, Film> filmMap = new HashMap<>();
 
 		List<Film> result = namedParameterJdbcTemplate.query(sql, (rs, rowNum) -> {
-			Film film = MapRowToFilm.map(rs, rowNum);
+			Long filmId = rs.getLong("id");
+			Film film = filmMap.get(filmId);
+			Film dbFilm = MapRowToFilm.map(rs, rowNum);
 
-			Set<Genre> genres = new LinkedHashSet<>(getGenresForFilm(film.getId()));
-			film.setGenres(genres);
-
-			Set<Director> directors = new LinkedHashSet<>(getDirectorsForFilm(film.getId()));
-			film.setDirectors(directors);
+			if (film == null) {
+				filmMap.put(filmId, dbFilm);
+			} else {
+				film.getGenres().addAll(dbFilm.getGenres());
+				film.getDirectors().addAll(dbFilm.getDirectors());
+			}
 
 			return film;
 		});
-
-		return result;
+		return new ArrayList<>(filmMap.values());
 	}
 
 	@Override
@@ -134,6 +158,8 @@ public class JdbcFilmStorage implements FilmStorage {
 		params.addValue("by", by);
 
 		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
+				"g.id AS genre_id, g.name AS genre_name, " +
+				"d.id AS director_id, d.name AS director_name, " +
 				"COUNT(ufl.user_id) AS user_like_count " +
 				"FROM films f " +
 				"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
@@ -149,22 +175,28 @@ public class JdbcFilmStorage implements FilmStorage {
 				"GROUP BY f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name " +
 				"ORDER BY user_like_count DESC";
 
-		return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-			Film film = MapRowToFilm.map(rs, rowNum);
+		Map<Long, Film> filmMap = new LinkedHashMap<>();
 
-			Set<Genre> genres = new LinkedHashSet<>(getGenresForFilm(film.getId()));
-			film.setGenres(genres);
+		List<Film> result = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+			Long filmId = rs.getLong("id");
+			Film film = filmMap.get(filmId);
+			Film dbFilm = MapRowToFilm.map(rs, rowNum);
 
-			Set<Director> directors = new LinkedHashSet<>(getDirectorsForFilm(film.getId()));
-			film.setDirectors(directors);
+			if (film == null) {
+				filmMap.put(filmId, dbFilm);
+			} else {
+				film.getGenres().addAll(dbFilm.getGenres());
+				film.getDirectors().addAll(dbFilm.getDirectors());
+			}
 
 			return film;
 		});
+		return new ArrayList<>(filmMap.values());
 	}
 
 	@Override
 	public List<Film> getWithDirector(Long directorId, String sortBy) {
-		String orderBy = "";
+		String orderBy;
 		switch (sortBy) {
 			case "year":
 				orderBy = "f.releaseDate";
@@ -181,26 +213,37 @@ public class JdbcFilmStorage implements FilmStorage {
 		params.addValue("directorId", directorId);
 
 		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa.name AS mpa_name, " +
-				"COUNT(ufl.user_id) AS user_like_count " +
+				"COUNT(ufl.user_id) AS user_like_count, " +
+				"g.id AS genre_id, g.name AS genre_name, " +
+				"d.id AS director_id, d.name AS director_name, " +
 				"FROM film_director fd " +
 				"LEFT JOIN films AS f ON f.id = fd.film_id " +
 				"LEFT JOIN mpa ON f.mpa_id = mpa.id " +
 				"LEFT JOIN user_film_like ufl on f.id = ufl.film_id " +
+				"LEFT JOIN film_genre fg ON f.id = fg.film_id " +
+				"LEFT JOIN genre g ON fg.genre_id = g.id " +
+				"LEFT JOIN director d ON fd.director_id = d.id " +
 				"WHERE fd.director_id = :directorId " +
 				"GROUP BY f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name " +
 				"ORDER BY " + orderBy + " ASC";
 
-		return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-			Film film = MapRowToFilm.map(rs, rowNum);
+		Map<Long, Film> filmMap = new LinkedHashMap<>();
 
-			Set<Genre> genres = new LinkedHashSet<>(getGenresForFilm(film.getId()));
-			film.setGenres(genres);
+		List<Film> result = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+			Long filmId = rs.getLong("id");
+			Film film = filmMap.get(filmId);
+			Film dbFilm = MapRowToFilm.map(rs, rowNum);
 
-			Set<Director> directors = new LinkedHashSet<>(getDirectorsForFilm(film.getId()));
-			film.setDirectors(directors);
+			if (film == null) {
+				filmMap.put(filmId, dbFilm);
+			} else {
+				film.getGenres().addAll(dbFilm.getGenres());
+				film.getDirectors().addAll(dbFilm.getDirectors());
+			}
 
 			return film;
 		});
+		return new ArrayList<>(filmMap.values());
 	}
 
 	@Override
@@ -215,34 +258,78 @@ public class JdbcFilmStorage implements FilmStorage {
 				"               FROM films AS f " +
 				"               LEFT JOIN film_genre AS fg ON f.id = fg.film_id " +
 				"               WHERE (:genreId IS NULL OR fg.genre_id = :genreId) " +
-				"                 AND (:year IS NULL OR YEAR(f.releaseDate) = :year)) " +
+				"               AND (:year IS NULL OR YEAR(f.releaseDate) = :year)) " +
 				"GROUP BY f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, mpa_name " +
 				"ORDER BY user_like_count DESC " +
 				"LIMIT :count";
+
+		String sqlFilmGenres = "SELECT fg.film_id, fg.genre_id AS id, g.name AS name " +
+				"FROM film_genre fg " +
+				"LEFT JOIN genre g ON fg.genre_id = g.id";
+
+		String sqlFilmDirectors = "SELECT fd.film_id AS film_id, fd.director_id AS id, d.name AS name " +
+				"FROM film_director fd " +
+				"LEFT JOIN director d ON fd.director_id = d.id";
 
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("genreId", genreId);
 		params.addValue("year", year);
 		params.addValue("count", count);
 
+		Map<Long, List<Genre>> genresMap = new LinkedHashMap<>();
+		Map<Long, List<Director>> directorsMap = new LinkedHashMap<>();
+
+		List<Genre> genres = namedParameterJdbcTemplate.query(sqlFilmGenres, (rs, rowNum) -> {
+			Long filmId = rs.getLong("film_id");
+			Genre genre = MapRowToGenre.map(rs, rowNum);
+			if (genresMap.containsKey(filmId)) {
+				List<Genre> genreList = genresMap.get(filmId);
+				genreList.add(genre);
+				genresMap.replace(filmId, genreList);
+			} else {
+				genresMap.put(filmId, new ArrayList<>(List.of(genre)));
+			}
+			return genre;
+		});
+
+		List<Director> directors = namedParameterJdbcTemplate.query(sqlFilmDirectors, (rs, rowNum) -> {
+			Long filmId = rs.getLong("film_id");
+			Director director = MapRowToDirector.map(rs, rowNum);
+			if (directorsMap.containsKey(filmId)) {
+				List<Director> directorList = directorsMap.get(filmId);
+				directorList.add(director);
+				directorsMap.put(filmId, directorList);
+			} else {
+				directorsMap.put(filmId, new ArrayList<>(List.of(director)));
+			}
+			return director;
+		});
+
+		Map<Long, Film> filmMap = new LinkedHashMap<>();
+
 		return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-			Film film = MapRowToFilm.map(rs, rowNum);
-
-			Set<Genre> genres = new LinkedHashSet<>(getGenresForFilm(film.getId()));
-			film.setGenres(genres);
-
-			Set<Director> directors = new LinkedHashSet<>(getDirectorsForFilm(film.getId()));
-			film.setDirectors(directors);
-
-			return film;
+			Film dbFilm = MapRowToFilm.map(rs, rowNum);
+			if (genresMap.containsKey(dbFilm.getId())) {
+				dbFilm.setGenres(new LinkedHashSet<>(genresMap.get(dbFilm.getId())));
+			}
+			if (directorsMap.containsKey(dbFilm.getId())) {
+				dbFilm.setDirectors(new LinkedHashSet<>(directorsMap.get(dbFilm.getId())));
+			}
+			return dbFilm;
 		});
 	}
 
 	@Override
 	public List<Film> getCommon(Long userId, Long friendId) {
-		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, m.name AS mpa_name " +
+		String sql = "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, f.mpa_id, m.name AS mpa_name, " +
+				"g.id AS genre_id, g.name AS genre_name, " +
+				"d.id AS director_id, d.name AS director_name " +
 				"FROM FILMS f " +
 				"LEFT JOIN MPA m ON f.mpa_id = m.id " +
+				"LEFT JOIN film_genre fg ON f.id = fg.film_id " +
+				"LEFT JOIN genre g ON fg.genre_id = g.id " +
+				"LEFT JOIN film_director fd ON f.id = fd.film_id " +
+				"LEFT JOIN director d ON fd.director_id = d.id " +
 				"WHERE f.ID IN ( " +
 				"    SELECT l.FILM_ID " +
 				"    FROM USER_FILM_LIKE l " +
@@ -257,14 +344,23 @@ public class JdbcFilmStorage implements FilmStorage {
 		params.addValue("userId", userId);
 		params.addValue("friendId", friendId);
 
-		return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-			Film film = MapRowToFilm.map(rs, rowNum);
+		Map<Long, Film> filmMap = new HashMap<>();
 
-			Set<Genre> genres = new LinkedHashSet<>(getGenresForFilm(film.getId()));
-			film.setGenres(genres);
+		List<Film> result = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+			Long filmId = rs.getLong("id");
+			Film film = filmMap.get(filmId);
+			Film dbFilm = MapRowToFilm.map(rs, rowNum);
+
+			if (film == null) {
+				filmMap.put(filmId, dbFilm);
+			} else {
+				film.getGenres().addAll(dbFilm.getGenres());
+				film.getDirectors().addAll(dbFilm.getDirectors());
+			}
 
 			return film;
 		});
+		return new ArrayList<>(filmMap.values());
 	}
 
 	@Override
@@ -273,30 +369,6 @@ public class JdbcFilmStorage implements FilmStorage {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id", id);
 		return namedParameterJdbcTemplate.update(sql, params) > 0;
-	}
-
-	private List<Genre> getGenresForFilm(Long filmId) {
-		String sql = "SELECT g.id, g.name " +
-				"FROM genre g " +
-				"INNER JOIN film_genre fg ON g.id = fg.genre_id " +
-				"WHERE fg.film_id = :filmId";
-
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("filmId", filmId);
-
-		return namedParameterJdbcTemplate.query(sql, params, MapRowToGenre::map);
-	}
-
-	private List<Director> getDirectorsForFilm(Long filmId) {
-		String sql = "SELECT d.id, d.name " +
-				"FROM director d " +
-				"INNER JOIN film_director fd ON d.id = fd.director_id " +
-				"WHERE fd.film_id = :filmId";
-
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("filmId", filmId);
-
-		return namedParameterJdbcTemplate.query(sql, params, MapRowToDirector::map);
 	}
 
 	private void updateFilmGenres(Film film) {
@@ -318,14 +390,14 @@ public class JdbcFilmStorage implements FilmStorage {
 		}
 	}
 
-	private Film updateFilmDirector(Film film) {
+	private void updateFilmDirector(Film film) {
 		Long filmId = film.getId();
 		List<Director> directors = new ArrayList<>(film.getDirectors());
 
 		String sql = "DELETE FROM film_director WHERE film_id = :filmId";
-		MapSqlParameterSource deleteParams = new MapSqlParameterSource();
-		deleteParams.addValue("filmId", filmId);
-		namedParameterJdbcTemplate.update(sql, deleteParams);
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("filmId", filmId);
+		namedParameterJdbcTemplate.update(sql, params);
 
 		if (!directors.isEmpty()) {
 			String insertSql = "INSERT INTO film_director (film_id, director_id) VALUES (:filmId, :directorId)";
@@ -335,7 +407,5 @@ public class JdbcFilmStorage implements FilmStorage {
 					.toArray(SqlParameterSource[]::new);
 			namedParameterJdbcTemplate.batchUpdate(insertSql, batchParams);
 		}
-
-		return film;
 	}
 }
