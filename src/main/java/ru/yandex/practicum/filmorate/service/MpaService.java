@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
@@ -16,11 +17,15 @@ public class MpaService {
 		this.mpaStorage = mpaStorage;
 	}
 
-	public List<Mpa> getMpas() {
-		return mpaStorage.findAllMpas();
+	public List<Mpa> getAll() {
+		return mpaStorage.findAll();
 	}
 
-	public Mpa getMpaById(Long id) {
-		return mpaStorage.findMpaById(id);
+	public Mpa getById(Long id) {
+		Mpa byId = mpaStorage.findById(id);
+		if (byId == null) {
+			throw new NotFoundException("Возрастной рейтинг с идентификатором + " + id + " не найден");
+		}
+		return byId;
 	}
 }

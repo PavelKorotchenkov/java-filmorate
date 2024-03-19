@@ -7,11 +7,11 @@ import java.util.List;
 
 @Component
 public interface FriendshipStorage {
-	boolean addFriend(Long userId, Long friendId);
+	boolean add(Long userId, Long friendId);
 
-	void deleteFriend(Long userId, Long friendId);
+	void delete(Long userId, Long friendId);
 
-	List<User> findAllFriends(Long id);
+	List<User> findAll(Long id);
 
-	List<User> findAllMutualFriends(Long userId, Long friendId);
+	List<User> findMutual(Long userId, Long friendId);
 }

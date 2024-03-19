@@ -5,54 +5,54 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class FriendshipDbStorageTest {
+class JdbcFriendshipStorageTest {
 
-	private final JdbcTemplate jdbcTemplate;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Test
 	void addOneSidedFriendship() {
-
 		User newUser = new User(1L, "user@email.ru", "vanya123", "Ivan Petrov",
 				LocalDate.of(1990, 1, 1));
 
 		User friend = new User(2L, "bf@email.ru", "chipichipi", "chapachapa",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		UserStorage userStorage = new JdbcUserStorage(namedParameterJdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(namedParameterJdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
-		boolean isConfirmed = friendshipStorage.addFriend(newUser.getId(), friend.getId());
+		boolean isConfirmed = friendshipStorage.add(newUser.getId(), friend.getId());
 
 		Assertions.assertFalse(isConfirmed);
 	}
 
 	@Test
 	void addTwoSidedFriendship() {
-
 		User newUser = new User(1L, "user@email.ru", "vanya123", "Ivan Petrov",
 				LocalDate.of(1990, 1, 1));
 
 		User friend = new User(2L, "bf@email.ru", "chipichipi", "chapachapa",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		UserStorage userStorage = new JdbcUserStorage(namedParameterJdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(namedParameterJdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		boolean isConfirmed = friendshipStorage.addFriend(friend.getId(), newUser.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(friend.getId(), newUser.getId());
+		boolean isConfirmed = friendshipStorage.add(friend.getId(), newUser.getId());
 
 		Assertions.assertTrue(isConfirmed);
 	}
@@ -68,15 +68,15 @@ class FriendshipDbStorageTest {
 		User friend2 = new User(3L, "bff@email.ru", "dubidubi", "dabadaba",
 				LocalDate.of(1992, 3, 22));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		UserStorage userStorage = new JdbcUserStorage(namedParameterJdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(namedParameterJdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 		userStorage.save(friend2);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
-		List<User> friends = friendshipStorage.findAllFriends(newUser.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend2.getId());
+		List<User> friends = friendshipStorage.findAll(newUser.getId());
 
 		Assertions.assertTrue(friends.contains(friend));
 		Assertions.assertTrue(friends.contains(friend2));
@@ -93,15 +93,15 @@ class FriendshipDbStorageTest {
 		User friend2 = new User(3L, "bff@email.ru", "dubidubi", "dabadaba",
 				LocalDate.of(1992, 3, 22));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		UserStorage userStorage = new JdbcUserStorage(namedParameterJdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(namedParameterJdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 		userStorage.save(friend2);
 
-		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
-		friendshipStorage.addFriend(friend.getId(), friend2.getId());
-		List<User> friends = friendshipStorage.findAllMutualFriends(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend2.getId());
+		friendshipStorage.add(friend.getId(), friend2.getId());
+		List<User> friends = friendshipStorage.findMutual(newUser.getId(), friend.getId());
 
 		Assertions.assertTrue(friends.contains(friend2));
 	}
@@ -117,17 +117,17 @@ class FriendshipDbStorageTest {
 		User friend2 = new User(3L, "bff@email.ru", "dubidubi", "dabadaba",
 				LocalDate.of(1992, 3, 22));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		UserStorage userStorage = new JdbcUserStorage(namedParameterJdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(namedParameterJdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 		userStorage.save(friend2);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		friendshipStorage.addFriend(newUser.getId(), friend2.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend2.getId());
 
-		friendshipStorage.deleteFriend(newUser.getId(), friend2.getId());
-		List<User> friends = friendshipStorage.findAllFriends(newUser.getId());
+		friendshipStorage.delete(newUser.getId(), friend2.getId());
+		List<User> friends = friendshipStorage.findAll(newUser.getId());
 
 		Assertions.assertTrue(friends.contains(friend));
 		Assertions.assertFalse(friends.contains(friend2));
@@ -135,23 +135,22 @@ class FriendshipDbStorageTest {
 
 	@Test
 	void afterDeleteFriendOneSidedFriendship() {
-
 		User newUser = new User(1L, "user@email.ru", "vanya123", "Ivan Petrov",
 				LocalDate.of(1990, 1, 1));
 
 		User friend = new User(2L, "bf@email.ru", "chipichipi", "chapachapa",
 				LocalDate.of(1991, 2, 2));
 
-		UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-		FriendshipStorage friendshipStorage = new FriendshipDbStorage(jdbcTemplate);
+		UserStorage userStorage = new JdbcUserStorage(namedParameterJdbcTemplate);
+		FriendshipStorage friendshipStorage = new JdbcFriendshipStorage(namedParameterJdbcTemplate);
 		userStorage.save(newUser);
 		userStorage.save(friend);
 
-		friendshipStorage.addFriend(newUser.getId(), friend.getId());
-		friendshipStorage.addFriend(friend.getId(), newUser.getId());
-		friendshipStorage.deleteFriend(newUser.getId(), friend.getId());
+		friendshipStorage.add(newUser.getId(), friend.getId());
+		friendshipStorage.add(friend.getId(), newUser.getId());
+		friendshipStorage.delete(newUser.getId(), friend.getId());
 
-		boolean isConfirmed = friendshipStorage.addFriend(friend.getId(), newUser.getId());
+		boolean isConfirmed = friendshipStorage.add(friend.getId(), newUser.getId());
 
 		Assertions.assertFalse(isConfirmed);
 	}

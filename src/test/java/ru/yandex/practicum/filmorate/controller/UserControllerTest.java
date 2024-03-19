@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.yandex.practicum.filmorate.model.User;
@@ -39,17 +39,13 @@ class UserControllerTest {
 	private UserStorage userStorage;
 
 	@MockBean
-	private JdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate jdbcTemplate;
 
 	private User user;
 
 	@BeforeEach
 	void setUp() {
-		user = new User();
-		user.setEmail("email@dat.ru");
-		user.setLogin("Login");
-		user.setName("Name");
-		user.setBirthday(LocalDate.of(2000, 10, 25));
+		user = new User("email@dat.ru", "Login", "Name", LocalDate.of(2000, 10, 25));
 	}
 
 	@Test

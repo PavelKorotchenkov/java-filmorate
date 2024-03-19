@@ -9,9 +9,11 @@ import java.util.List;
 public interface UserStorage {
 	User save(User user);
 
-	List<User> findAllUsers();
+	List<User> findAll();
 
-	User findUserById(Long userId);
+	User findById(Long userId);
 
 	User update(User user);
+
+	boolean deleteById(Long id);
 }
